@@ -8,6 +8,7 @@ public abstract class SPNetwork
 	private static final String VALIDATION_SBOX_SIZE          = "  - SBox size must divide block size.\n";
 	private static final String VALIDATION_PERMUTATION_LENGTH = "  - Permutation length must equal (block size)/(num rounds).\n";
 	
+	private int         numRounds;
 	private int         blockSize;
 	private SBox        sbox;
 	private Permutation perm;
@@ -45,6 +46,7 @@ public abstract class SPNetwork
 			throw new IllegalArgumentException(errMsg);
 		}
 		
+		this.numRounds = numRounds;
 		this.blockSize = blockSize;
 		this.sbox      = sbox;
 		this.perm      = perm;

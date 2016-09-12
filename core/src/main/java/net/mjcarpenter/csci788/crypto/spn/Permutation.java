@@ -1,5 +1,9 @@
 package net.mjcarpenter.csci788.crypto.spn;
 
+import java.util.BitSet;
+
+import org.apache.commons.lang3.ArrayUtils;
+
 public class Permutation
 {
 	private static final String VALIDATION_INDICES = "All inputs must have corresponding output.";
@@ -7,7 +11,7 @@ public class Permutation
 	private int[] mapping;
 	private int[] reverse;
 	
-	public Permutation(int[] mapping)
+	public Permutation(int... mapping)
 	{
 		int[] reverse = new int[mapping.length];
 		
@@ -37,6 +41,36 @@ public class Permutation
 	public int length()
 	{
 		return mapping.length;
+	}
+	
+	public byte[] permuteFwd(byte[] in)
+	{
+		return permute(in, mapping);
+	}
+	
+	public byte[] permuteRev(byte[] in)
+	{
+		return permute(in, reverse);
+	}
+	
+	private byte[] permute(byte[] in, int[] map)
+	{
+		if(in.length*8 != map.length)
+			throw new IllegalArgumentException("Input length must match permutation size!");
+		
+		ArrayUtils.reverse(in);
+		BitSet set = BitSet.valueOf(in);
+		BitSet out = new BitSet(map.length);
+		
+		for(int i=0; i<map.length; i++)
+		{
+			if(set.get(i))
+				out.set(map[i]);
+		}
+		
+		byte[] outArray = out.toByteArray();
+		ArrayUtils.reverse(outArray);
+		return outArray;
 	}
 	
 	public int outPosition(int inPosition)

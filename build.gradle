@@ -13,12 +13,15 @@ buildscript {
 subprojects {
     apply plugin: 'java'
     apply plugin: 'eclipse'
+    apply plugin: 'jacoco'
     
     libsDirName = '../../lib'
     
     eclipse {
-        sourceCompatibility = 1.8
-        targetCompatibility = 1.8
+        jdt {
+            sourceCompatibility = 1.8
+            targetCompatibility = 1.8
+        }
     }
 
     repositories {
@@ -33,6 +36,8 @@ subprojects {
         apply plugin: 'java'
         dependencies {
             // compile project(':common')
+            compile     'org.apache.commons:commons-lang3:3.4'
+            testCompile 'junit:junit:4.12'
         }
         jar {
             manifest {
@@ -45,12 +50,25 @@ subprojects {
         apply plugin: 'java'
         dependencies {
             // compile project(':common')
+            compile     'org.apache.commons:commons-lang3:3.4'
+            testCompile 'junit:junit:4.12'
         }
         jar {
             manifest {
                 attributes 'Main-Class': 'net.mjcarpenter.csci788.ui.Main',
                            'Class-Path': 'common.jar'
             }
+        }
+    }
+    
+    jacocoTestReport {
+        additionalSourceDirs = files(sourceSets.main.allSource.srcDirs)
+        sourceDirectories = files(sourceSets.main.allSource.srcDirs)
+        classDirectories =  files(sourceSets.main.output)
+        reports {
+            html.enabled = true
+            xml.enabled = true
+            csv.enabled = false
         }
     }
 }
