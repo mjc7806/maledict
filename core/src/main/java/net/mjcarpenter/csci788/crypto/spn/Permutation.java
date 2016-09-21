@@ -4,14 +4,14 @@ import java.util.BitSet;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-public class Permutation
+public final class Permutation
 {
 	private static final String VALIDATION_INDICES = "All inputs must have corresponding output.";
 	
-	private int[] mapping;
-	private int[] reverse;
+	private final int[] mapping;
+	private final int[] reverse;
 	
-	public Permutation(int... mapping)
+	public Permutation(final int... mapping)
 	{
 		int[] reverse = new int[mapping.length];
 		
@@ -38,22 +38,30 @@ public class Permutation
 		this.reverse = reverse;
 	}
 	
+	public static Permutation noop(final int length)
+	{
+		int[] map = new int[length];
+		for(int i=0; i<map.length; i++)
+			map[i] = i;
+		return new Permutation(map);
+	}
+	
 	public int length()
 	{
 		return mapping.length;
 	}
 	
-	public byte[] permuteFwd(byte[] in)
+	public byte[] permuteFwd(final byte[] in)
 	{
 		return permute(in, mapping);
 	}
 	
-	public byte[] permuteRev(byte[] in)
+	public byte[] permuteRev(final byte[] in)
 	{
 		return permute(in, reverse);
 	}
 	
-	private byte[] permute(byte[] in, int[] map)
+	private byte[] permute(final byte[] in, final int[] map)
 	{
 		if(in.length*8 != map.length)
 			throw new IllegalArgumentException("Input length must match permutation size!");
@@ -73,12 +81,12 @@ public class Permutation
 		return outArray;
 	}
 	
-	public int outPosition(int inPosition)
+	public int outPosition(final int inPosition)
 	{
 		return mapping[inPosition];
 	}
 	
-	public int inPosition(int outPosition)
+	public int inPosition(final int outPosition)
 	{
 		return reverse[outPosition];
 	}

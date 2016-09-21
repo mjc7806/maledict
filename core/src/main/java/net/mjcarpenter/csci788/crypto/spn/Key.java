@@ -2,16 +2,16 @@ package net.mjcarpenter.csci788.crypto.spn;
 
 import java.util.BitSet;
 
-public class Key
+public final class Key
 {
-	byte[] key;
+	final byte[] key;
 	
-	public Key(byte[] key)
+	public Key(final byte[] key)
 	{
 		this.key = key;
 	}
 	
-	public byte[] xor(byte[] in)
+	public byte[] xor(final byte[] in)
 	{
 		BitSet inSet = BitSet.valueOf(in);
 		BitSet keySet = BitSet.valueOf(key);
@@ -22,6 +22,6 @@ public class Key
 	
 	public int length()
 	{
-		return key.length;
+		return key.length*8;
 	}
 }

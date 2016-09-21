@@ -4,15 +4,15 @@ import java.util.Arrays;
 
 import net.mjcarpenter.csci788.util.BitUtils;
 
-public class SBox
+public final class SBox
 {
 	private static final String VALIDATION_INDICES = "All inputs must have corresponding output.";
 	
-	private int[]   mapFwd;
-	private int[][] lat;
-	private int[][] ddt;
+	private final int[]   mapFwd;
+	private final int[][] lat;
+	private final int[][] ddt;
 	
-	public SBox(int... mapFwd)
+	public SBox(final int... mapFwd)
 	{	
 		if(BitUtils.countSetBits(mapFwd.length) != 1) // Only one bit set == power of two
 			throw new IllegalArgumentException("SBox size must be power of two!");
@@ -35,6 +35,15 @@ public class SBox
 		this.mapFwd = mapFwd;
 		this.lat = constructLAT();
 		this.ddt = constructDDT();
+	}
+	
+	public static SBox noop(final int length)
+	{
+		int[] map = new int[length];
+		for(int i=0; i<map.length; i++)
+			map[i] = i;
+		
+		return new SBox(map);
 	}
 	
 	public SBox invert()
@@ -60,14 +69,14 @@ public class SBox
 	 * Size in bits for input and output.
 	 * @return
 	 */
-	public int size() // inSize == outSize, all SPN S-Boxes are bijective
+	public int bitSize() // inSize == outSize, all SPN S-Boxes are bijective
 	{
-		return mapFwd.length;
+		return BitUtils.countSetBits(mapFwd.length-1);
 	}
 	
-	public int sub(int n)
+	public int sub(final int n)
 	{
-		if(n >= size() || n < 0)
+		if(n >= mapFwd.length || n < 0)
 			throw new IllegalArgumentException("Invalid index " + n);
 		else
 			return mapFwd[n];
@@ -87,14 +96,14 @@ public class SBox
 	
 	private int[][] constructLAT()
 	{
-		int[][] lat = new int[size()][size()];
-		for(int i=0; i<size(); i++)
-			for(int j=0; j<size(); j++)
+		int[][] lat = new int[mapFwd.length][mapFwd.length];
+		for(int i=0; i<mapFwd.length; i++)
+			for(int j=0; j<mapFwd.length; j++)
 				lat[i][j] = -8;
 		
-		for(int i=0; i<size(); i++)
-			for(int inMask=0; inMask<size(); inMask++)
-				for(int outMask=0; outMask<size(); outMask++)
+		for(int i=0; i<mapFwd.length; i++)
+			for(int inMask=0; inMask<mapFwd.length; inMask++)
+				for(int outMask=0; outMask<mapFwd.length; outMask++)
 					if((BitUtils.countSetBits(i&inMask)%2) == (BitUtils.countSetBits(sub(i)&outMask)%2))
 						lat[inMask][outMask]++;
 		
@@ -103,13 +112,13 @@ public class SBox
 	
 	private int[][] constructDDT()
 	{
-		int[][] ddt = new int[size()][size()];
+		int[][] ddt = new int[mapFwd.length][mapFwd.length];
 		
-		for(int input=0; input<size(); input++)
+		for(int input=0; input<mapFwd.length; input++)
 		{
 			int output1 = sub(input);
 			
-			for(int inDiff=0; inDiff<size(); inDiff++)
+			for(int inDiff=0; inDiff<mapFwd.length; inDiff++)
 			{
 				ddt[inDiff][output1^sub(input^inDiff)]++;
 			}

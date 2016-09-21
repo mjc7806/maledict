@@ -1,5 +1,6 @@
 package net.mjcarpenter.csci788.crypto.spn;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
@@ -71,12 +72,41 @@ public final class SBoxTests extends TestCase
 	}
 	
 	@Test
+	public void testSboxSubtitutions()
+	throws Exception
+	{
+		int start = 0xA;
+		int expected = 0x6;
+		
+		int fwdSub  = sbox.sub(start);
+		int backSub = sbox.invert().sub(expected);
+		
+		assertEquals(String.format("Forward SBox returned [%x] when expecting [%x]", fwdSub,  expected),
+				fwdSub, expected);
+		
+		assertEquals(String.format("Reverse SBox returned [%x] when expecting [%x]", backSub, start),
+				backSub, start);
+		
+		
+		boolean caughtException;
+		try
+		{
+			sbox.sub(100);
+			caughtException = false;
+		}
+		catch(IllegalArgumentException e)
+		{
+			caughtException = true;
+		}
+		
+		assertTrue("Did not catch exception when substituting out-of-range index.", caughtException);
+		
+	}
+	
+	@Test
 	public void testSBoxMakesCorrectLAT()
 	throws Exception
 	{
-		// System.out.println("CONTROL:\n\n" + printableLAT(SBOX_LAT));
-		// System.out.println("\n\n\nCONSTRUCTED:\n\n" + printableLAT(sbox.getLAT()));
-		
 		assertArrayEquals("Control LAT did not match constructed LAT for same SBox.",
 				sbox.getLAT(),
 				SBOX_LAT);
