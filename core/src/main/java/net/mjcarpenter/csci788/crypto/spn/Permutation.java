@@ -4,7 +4,7 @@ import java.util.BitSet;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-public final class Permutation
+public final class Permutation implements SPNComponent
 {
 	private static final String VALIDATION_INDICES = "All inputs must have corresponding output.";
 	

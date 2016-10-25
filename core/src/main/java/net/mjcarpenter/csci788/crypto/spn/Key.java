@@ -2,7 +2,7 @@ package net.mjcarpenter.csci788.crypto.spn;
 
 import java.util.BitSet;
 
-public final class Key
+public final class Key implements SPNComponent
 {
 	final byte[] key;
 	

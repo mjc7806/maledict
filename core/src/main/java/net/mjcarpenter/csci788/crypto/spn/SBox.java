@@ -4,13 +4,13 @@ import java.util.Arrays;
 
 import net.mjcarpenter.csci788.util.BitUtils;
 
-public final class SBox
+public final class SBox implements SPNComponent
 {
 	private static final String VALIDATION_INDICES = "All inputs must have corresponding output.";
 	
 	private final int[]   mapFwd;
-	private final int[][] lat;
-	private final int[][] ddt;
+	private transient int[][] lat;
+	private transient int[][] ddt;
 	
 	public SBox(final int... mapFwd)
 	{	
@@ -84,12 +84,24 @@ public final class SBox
 	
 	public int[][] getLAT()
 	{
+		// Since the LAT is transient, after deserialization we may need to reconstruct it.
+		if(lat == null)
+		{
+			lat = constructLAT();
+		}
+		
 		// Return a copy to maintain immutability.
 		return Arrays.copyOf(lat, lat.length);
 	}
 	
 	public int[][] getDDT()
 	{
+		// Since the DDT is transient, after deserialization we may need to reconstruct it.
+		if(ddt == null)
+		{
+			ddt = constructDDT();
+		}
+		
 		// Return a copy to maintain immutability.
 		return Arrays.copyOf(ddt, ddt.length);
 	}

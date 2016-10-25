@@ -2,7 +2,7 @@ package net.mjcarpenter.csci788.crypto.spn;
 
 import java.util.BitSet;
 
-public class Round
+public class Round implements SPNComponent
 {
 	private final int         bitLength;
 	private final SBox[]      roundBoxes;

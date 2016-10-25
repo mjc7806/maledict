@@ -30,6 +30,13 @@ public final class PermutationTests extends TestCase
 		super.tearDown();
 	}
 	
+	@Test(expected=IllegalArgumentException.class)
+	public void testInvalidConstructionParameters()
+	throws Exception
+	{
+		new Permutation(0,4,8,12,1,5,9,13,2,6,10,14,3,7,7,15);
+	}
+	
 	@Test
 	public void testPermutationsAccurate()
 	throws Exception

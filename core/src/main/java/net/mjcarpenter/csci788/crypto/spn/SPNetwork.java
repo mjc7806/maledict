@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import javax.xml.bind.DatatypeConverter;
 
-public final class SPNetwork
+public final class SPNetwork implements SPNComponent
 {	
 	private final int blockSize;
 	private final Round[] rounds;
