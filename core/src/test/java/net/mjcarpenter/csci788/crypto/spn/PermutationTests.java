@@ -8,9 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import junit.framework.TestCase;
-
-public final class PermutationTests extends TestCase
+public final class PermutationTests
 {
 	private Permutation perm;
 	
@@ -18,7 +16,6 @@ public final class PermutationTests extends TestCase
 	public void setUp()
 	throws Exception
 	{
-		super.setUp();
 		perm = new Permutation(0,4,8,12,1,5,9,13,2,6,10,14,3,7,11,15);
 	}
 	
@@ -27,7 +24,6 @@ public final class PermutationTests extends TestCase
 	throws Exception
 	{
 		perm = null;
-		super.tearDown();
 	}
 	
 	@Test(expected=IllegalArgumentException.class)

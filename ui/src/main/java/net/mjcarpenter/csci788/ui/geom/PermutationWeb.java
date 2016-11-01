@@ -1,8 +1,8 @@
 package net.mjcarpenter.csci788.ui.geom;
 
 import java.awt.BasicStroke;
-import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
@@ -13,6 +13,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 
 public class PermutationWeb extends JPanel
 {
@@ -40,10 +41,9 @@ public class PermutationWeb extends JPanel
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		widthMax  = (indices + 1)*2;
-		heightMax = (int)Math.round(widthMax*(3.0/17.0));
+		heightMax = 6;//(int)Math.round(widthMax*(3.0/17.0));
 		widthFactor  = 1;
 		heightFactor = 1;
-		//setBounds(0,0,widthMax, heightMax);
 		
 		endpoints    = new Point2D.Double[indices * 2];
 		drawingLines = new Line2D.Double[indices];
@@ -59,9 +59,12 @@ public class PermutationWeb extends JPanel
 		mainPanel = new WebMainPanel();
 		footer    = new WebEndPanel(EndPanelType.FOOTER);
 		
+		add(Box.createVerticalGlue());
 		add(header);
 		add(mainPanel);
 		add(footer);
+		add(Box.createVerticalGlue());
+		setBorder(new EmptyBorder(35,35,35,35));
 		
 		setEndPanelsOn(endPanelsOn);
 	}
@@ -80,7 +83,34 @@ public class PermutationWeb extends JPanel
 			drawingLines[i].setLine(endpoints[i], endpoints[indexMappings.length + indexMappings[i]]);
 		}
 		
-		//paint();
+		repaint();
+		revalidate();
+	}
+	
+	@Override
+	public void repaint()
+	{
+		super.repaint();
+		
+		if(mainPanel != null)
+			mainPanel.repaint();
+		if(header != null)
+			header.repaint();
+		if(footer != null)
+			footer.repaint();
+	}
+	
+	@Override
+	public void revalidate()
+	{
+		super.revalidate();
+		
+		if(mainPanel != null)
+			mainPanel.revalidate();
+		if(header != null)
+			header.revalidate();
+		if(footer != null)
+			footer.revalidate();
 	}
 	
 	public void setEndPanelsOn(boolean endPanelsOn)
@@ -89,21 +119,45 @@ public class PermutationWeb extends JPanel
 		footer.setVisible(endPanelsOn);
 	}
 	
+	@Override
+	public Dimension getMaximumSize()
+	{
+		int height = mainPanel.getPreferredSize().height;
+		if(header.isVisible())
+		{
+			height += (header.getPreferredSize().height * 2);
+		}
+		
+		int width = mainPanel.getPreferredSize().width;
+		
+		return new Dimension(width, height);
+	}
+	
+	@Override
+	public Dimension getPreferredSize()
+	{
+		return getMaximumSize();
+	}
+	
 	public static void main(String[] args)
 	{
 		JFrame jf = new JFrame();
 		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jf.setSize(800, 600);
-		jf.setLayout(new BorderLayout());
 		
 		int[] mappings = {0,4,8,12,1,5,9,13,2,6,10,14,3,7,11,15};
 		
 		PermutationWeb webTest = new PermutationWeb(16, true);
-		jf.add(webTest, BorderLayout.CENTER);
+		jf.add(webTest);
 		jf.setVisible(true);
 		webTest.setVisible(true);
 		
 		webTest.updateMappings(mappings);
+
+		System.out.printf("Header:    [%s]\nMainPanel: [%s]\nFooter:    [%s]\n",
+				webTest.header.getSize().toString(),
+				webTest.mainPanel.getSize().toString(),
+				webTest.footer.getSize().toString());
 	}
 	
 	
@@ -128,14 +182,9 @@ public class PermutationWeb extends JPanel
 		}
 		
 		@Override
-		public Dimension getMaximumSize()
+		public Dimension getPreferredSize()
 		{
-			return new Dimension(MAX_WIDTH_PX, (int)(MAX_WIDTH_PX*HEIGHT_RATIO));
-		}
-		
-		public double preferredHeight()
-		{
-			return heightMax;
+			return new Dimension(MAX_WIDTH_PX, (int)Math.round(6*widthFactor));//(int)(MAX_WIDTH_PX*HEIGHT_RATIO));
 		}
 	}
 	
@@ -143,9 +192,7 @@ public class PermutationWeb extends JPanel
 	{
 		private static final double HEIGHT_RATIO = 0.125;
 		private static final double PIN_RADIUS = 0.5;
-		
-		private double heightPreferred;
-		
+				
 		private final EndPanelType endType;
 		private Line2D.Double[]    edgeLines;
 		private Ellipse2D.Double[] pinHeads;
@@ -159,13 +206,13 @@ public class PermutationWeb extends JPanel
 			
 			for(int i=0; i<edgeLines.length; i++)
 			{
-				Point2D pointA;// = new Point2D.Double(i*2+2, 0);
-				Point2D pointB;// = new Point2D.Double(i*2+2, 2);
+				Point2D pointA;
+				Point2D pointB;
 				
 				
 				if(EndPanelType.HEADER.equals(this.endType))
 				{
-					pointA = new Point2D.Double(i*2+2, 4);
+					pointA = new Point2D.Double(i*2+2, 3);
 					pointB = new Point2D.Double(i*2+2, 2);
 					
 					pinHeads[i]  = new Ellipse2D.Double(
@@ -177,25 +224,23 @@ public class PermutationWeb extends JPanel
 				else // FOOTER
 				{
 					pointA = new Point2D.Double(i*2+2, 0);
-					pointB = new Point2D.Double(i*2+2, 2);
+					pointB = new Point2D.Double(i*2+2, 1);
 					
 					pinHeads[i]  = new Ellipse2D.Double(
 							pointB.getX()-PIN_RADIUS,
-							3-PIN_RADIUS*2,
+							2-PIN_RADIUS*2,
 							PIN_RADIUS*2,
 							PIN_RADIUS*2);
 				}
 				
 				edgeLines[i] = new Line2D.Double(pointA, pointB);
 			}
-			
-			heightPreferred = (2*heightMax)/3;
 		}
 		
 		@Override
-		public Dimension getMaximumSize()
+		public Dimension getPreferredSize()
 		{
-			return new Dimension(MAX_WIDTH_PX, (int)(MAX_WIDTH_PX*HEIGHT_RATIO));
+			return new Dimension(MAX_WIDTH_PX, (int)Math.round(3*widthFactor));//(int)(MAX_WIDTH_PX*HEIGHT_RATIO));
 		}
 		
 		@Override
@@ -204,7 +249,7 @@ public class PermutationWeb extends JPanel
 			Graphics2D g2 = (Graphics2D)g;
 			super.paintComponent(g2);
 			
-			//scaleTo(getSize());
+			scaleTo(getSize());
 			g2.scale(widthFactor, widthFactor);
 			g2.setStroke(new BasicStroke((float)(2.0/widthFactor)));
 			
@@ -224,6 +269,13 @@ public class PermutationWeb extends JPanel
 	{
 		protected static final int MAX_WIDTH_PX = 800;
 		
+		public WebSubPanel()
+		{
+			super();
+			setBorder(null);
+			setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
+		}
+		
 		public void scaleTo(Dimension d)
 		{
 			widthFactor  = d.getWidth()  / (double)widthMax;
@@ -231,9 +283,9 @@ public class PermutationWeb extends JPanel
 		}
 		
 		@Override
-		public Dimension getPreferredSize()
+		public Dimension getMaximumSize()
 		{
-			return getMaximumSize();
+			return new Dimension(Integer.MAX_VALUE, getPreferredSize().height);
 		}		
 	}
 }

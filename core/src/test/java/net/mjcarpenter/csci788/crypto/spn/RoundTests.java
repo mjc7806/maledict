@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import junit.framework.TestCase;
 
-public final class RoundTests extends TestCase
+public final class RoundTests
 {
 	private Round round;
 	
@@ -16,8 +16,6 @@ public final class RoundTests extends TestCase
 	public void setUp()
 	throws Exception
 	{
-		super.setUp();
-		
 		SBox[] sboxes = new SBox[4];
 		
 		SBox sbox = new SBox(0xE, 0x4, 0xD, 0x1, 0x2, 0xF, 0xB, 0x8, 0x3, 0xA, 0x6, 0xC, 0x5, 0x9, 0x0, 0x7);
@@ -38,8 +36,6 @@ public final class RoundTests extends TestCase
 	throws Exception
 	{
 		round = null;
-		
-		super.tearDown();
 	}
 	
 	@Test

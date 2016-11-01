@@ -11,6 +11,19 @@ public final class Key implements SPNComponent
 		this.key = key;
 	}
 	
+	public static Key noop(int length)
+	{
+		int mod = length % 8;
+		byte[] nullKey = new byte[(mod > 0) ? mod+1 : mod];
+		
+		for(int i=0; i<nullKey.length; i++)
+		{
+			nullKey[i] = 0x0;
+		}
+		
+		return new Key(nullKey);
+	}
+	
 	public byte[] xor(final byte[] in)
 	{
 		BitSet inSet = BitSet.valueOf(in);

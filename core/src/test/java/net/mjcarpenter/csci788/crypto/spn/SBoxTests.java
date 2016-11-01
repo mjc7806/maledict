@@ -7,9 +7,8 @@ import static org.junit.Assert.assertArrayEquals;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import junit.framework.TestCase;
 
-public final class SBoxTests extends TestCase
+public final class SBoxTests
 {
 	private static final int[][] SBOX_LAT =
 		{
@@ -59,7 +58,6 @@ public final class SBoxTests extends TestCase
 	public void setUp()
 	throws Exception
 	{
-		super.setUp();
 		sbox = new SBox(0xE, 0x4, 0xD, 0x1, 0x2, 0xF, 0xB, 0x8, 0x3, 0xA, 0x6, 0xC, 0x5, 0x9, 0x0, 0x7);
 	}
 	
@@ -68,7 +66,6 @@ public final class SBoxTests extends TestCase
 	throws Exception
 	{
 		sbox = null;
-		super.tearDown();
 	}
 	
 	@Test

@@ -51,6 +51,7 @@ subprojects {
         apply plugin: 'java'
         dependencies {
             // compile project(':common')
+			compile     project(':core')
             compile     'org.apache.commons:commons-lang3:3.4'
             compile     'com.fifesoft:rsyntaxtextarea:2.6.0'
             compile     'xstream:xstream:1.2.2'

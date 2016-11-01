@@ -8,8 +8,8 @@ public final class Permutation implements SPNComponent
 {
 	private static final String VALIDATION_INDICES = "All inputs must have corresponding output.";
 	
-	private final int[] mapping;
-	private final int[] reverse;
+	private final     int[] mapping;
+	private transient int[] reverse;
 	
 	public Permutation(final int... mapping)
 	{
@@ -49,6 +49,11 @@ public final class Permutation implements SPNComponent
 	public int length()
 	{
 		return mapping.length;
+	}
+	
+	public int[] getMapping()
+	{
+		return this.mapping;
 	}
 	
 	public byte[] permuteFwd(final byte[] in)
