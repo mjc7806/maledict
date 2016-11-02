@@ -6,6 +6,8 @@ import org.junit.Before;
 import org.junit.After;
 import org.junit.Test;
 
+import com.thoughtworks.xstream.XStream;
+
 public final class SPNetworkTests
 {
 	private SPNetwork spn;

@@ -2,13 +2,18 @@ package net.mjcarpenter.csci788.crypto.spn;
 
 import java.util.Arrays;
 
-import net.mjcarpenter.csci788.util.BitUtils;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+import net.mjcarpenter.csci788.util.BitUtils;
+@XStreamAlias("sbox")
 public final class SBox implements SPNComponent
 {
 	private static final String VALIDATION_INDICES = "All inputs must have corresponding output.";
 	
+	@XStreamAlias("map")
 	private final int[]   mapFwd;
+	
+	// Derived transient fields.
 	private transient int[][] lat;
 	private transient int[][] ddt;
 	
@@ -137,5 +142,14 @@ public final class SBox implements SPNComponent
 		}
 		
 		return ddt;
+	}
+	
+	private Object readResolve()
+	{
+		// Reconstruct derivable transient fields during deserialization.
+		this.lat = constructLAT();
+		this.ddt = constructDDT();
+		
+		return this;
 	}
 }

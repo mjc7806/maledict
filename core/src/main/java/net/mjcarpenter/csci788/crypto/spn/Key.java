@@ -2,8 +2,13 @@ package net.mjcarpenter.csci788.crypto.spn;
 
 import java.util.BitSet;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+@XStreamAlias("key")
 public final class Key implements SPNComponent
 {
+	@XStreamAsAttribute
+	@XStreamAlias("value")
 	final byte[] key;
 	
 	public Key(final byte[] key)

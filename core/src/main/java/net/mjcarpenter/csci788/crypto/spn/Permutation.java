@@ -4,38 +4,22 @@ import java.util.BitSet;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+@XStreamAlias("permutation")
 public final class Permutation implements SPNComponent
 {
 	private static final String VALIDATION_INDICES = "All inputs must have corresponding output.";
 	
+	@XStreamAlias("mapping")
 	private final     int[] mapping;
+	
+	// Derived transient fields.
 	private transient int[] reverse;
 	
 	public Permutation(final int... mapping)
 	{
-		int[] reverse = new int[mapping.length];
-		
-		for(int i=0; i<mapping.length; i++)
-		{
-			boolean contains = false;
-			
-			for(int j=0; j<mapping.length; j++)
-			{
-				if(mapping[j] == i)
-				{
-					reverse[i] = j;
-					contains = true;
-					break;
-				}
-			}
-			
-			if(!contains)
-				throw new IllegalArgumentException(VALIDATION_INDICES);
-		}
-		
-		
 		this.mapping = mapping;
-		this.reverse = reverse;
+		this.reverse = constructReverse();
 	}
 	
 	public static Permutation noop(final int length)
@@ -94,5 +78,37 @@ public final class Permutation implements SPNComponent
 	public int inPosition(final int outPosition)
 	{
 		return reverse[outPosition];
+	}
+	
+	private int[] constructReverse()
+	{
+		int[] revMap = new int[mapping.length];
+		
+		for(int i=0; i<mapping.length; i++)
+		{
+			boolean contains = false;
+			
+			for(int j=0; j<mapping.length; j++)
+			{
+				if(mapping[j] == i)
+				{
+					revMap[i] = j;
+					contains = true;
+					break;
+				}
+			}
+			
+			if(!contains)
+				throw new IllegalArgumentException(VALIDATION_INDICES);
+		}
+		
+		return revMap;
+	}
+	
+	private Object readResolve()
+	{
+		// Reconstruct derivable transient fields during deserialization.
+		this.reverse = constructReverse();
+		return this;
 	}
 }

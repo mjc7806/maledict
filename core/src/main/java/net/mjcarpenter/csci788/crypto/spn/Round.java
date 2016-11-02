@@ -2,11 +2,20 @@ package net.mjcarpenter.csci788.crypto.spn;
 
 import java.util.BitSet;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+
+@XStreamAlias("round")
 public class Round implements SPNComponent
 {
+	@XStreamAsAttribute
 	private final int         bitLength;
+	
+	@XStreamAlias("sboxes")
 	private final SBox[]      roundBoxes;
+	@XStreamAlias("subkey")
 	private final Key         subKey;
+	@XStreamAlias("perm")
 	private final Permutation perm;
 	
 	public Round(final int bitLength, final Key subKey, final Permutation perm, final SBox... roundBoxes)
@@ -37,6 +46,21 @@ public class Round implements SPNComponent
 	public int bitLength()
 	{
 		return bitLength;
+	}
+	
+	public SBox[] getSBoxes()
+	{
+		return roundBoxes;
+	}
+	
+	public Permutation getPermutation()
+	{
+		return perm;
+	}
+	
+	public Key getSubKey()
+	{
+		return subKey;
 	}
 	
 	public byte[] process(final byte[] in)

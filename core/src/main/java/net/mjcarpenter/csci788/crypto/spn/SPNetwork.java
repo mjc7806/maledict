@@ -4,9 +4,14 @@ import java.util.Arrays;
 
 import javax.xml.bind.DatatypeConverter;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+@XStreamAlias("spn")
 public final class SPNetwork implements SPNComponent
-{	
+{
+	@XStreamAsAttribute
 	private final int blockSize;
+	@XStreamAlias("rounds")
 	private final Round[] rounds;
 	
 	public SPNetwork(final int blockSize, final Round[] rounds)
@@ -50,5 +55,10 @@ public final class SPNetwork implements SPNComponent
 	public int getBlockSize()
 	{
 		return this.blockSize;
+	}
+	
+	public Round[] getRounds()
+	{
+		return rounds;
 	}
 }
