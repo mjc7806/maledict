@@ -52,6 +52,10 @@ public class PermutationDefinitionDialog extends ComponentDefinitionDialog<Permu
 		jbHelp = new JButton("Help");
 		jbHelp.setMnemonic('H');
 		
+		jbOK.addActionListener(this);
+		jbCancel.addActionListener(this);
+		jbHelp.addActionListener(this);
+		
 		JPanel buttonPanel   = new JPanel();
 		JPanel subPanelLeft  = new JPanel();
 		JPanel subPanelRight = new JPanel();
@@ -145,13 +149,15 @@ public class PermutationDefinitionDialog extends ComponentDefinitionDialog<Permu
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
-		
+		if(e.getSource().equals(jbOK))
+		{
+			System.exit(0);
+		}
 	}
 
 	@Override
 	public void focusGained(FocusEvent e)
 	{
-		// Do nothing.
 		if(e.getSource() instanceof JTextField)
 		{
 			JTextField field = (JTextField)e.getSource();
@@ -191,6 +197,8 @@ public class PermutationDefinitionDialog extends ComponentDefinitionDialog<Permu
 			{
 				field.setText(cachedEntry);
 			}
+			
+			cachedEntry = null;
 		}
 	}
 
