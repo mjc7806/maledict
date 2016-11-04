@@ -11,6 +11,7 @@ import net.mjcarpenter.csci788.crypto.spn.Round;
 import net.mjcarpenter.csci788.crypto.spn.SBox;
 import net.mjcarpenter.csci788.crypto.spn.SPNComponent;
 import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
+import net.mjcarpenter.csci788.ui.dialog.component.ComponentDefinitionDialog;
 
 public class RoundTreeNode implements ComponentTreeNode<Round>
 {
@@ -92,5 +93,11 @@ public class RoundTreeNode implements ComponentTreeNode<Round>
 	public String toString()
 	{
 		return String.format("Round[%d]", indexOnParent());
+	}
+	
+	public ComponentDefinitionDialog<Round> editWithDialog()
+	{
+		// Rounds don't have their own dialog.
+		throw new UnsupportedOperationException();
 	}
 }

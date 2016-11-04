@@ -2,6 +2,8 @@ package net.mjcarpenter.csci788.ui.model;
 
 import net.mjcarpenter.csci788.crypto.spn.Round;
 import net.mjcarpenter.csci788.crypto.spn.SBox;
+import net.mjcarpenter.csci788.ui.dialog.component.ComponentDefinitionDialog;
+import net.mjcarpenter.csci788.ui.dialog.component.SBoxDefinitionDialog;
 
 public class SBoxTreeNode extends ComponentLeafNode<SBox>
 {
@@ -17,5 +19,10 @@ public class SBoxTreeNode extends ComponentLeafNode<SBox>
 		return String.format("SBox[%d,%d]",
 				parent.indexOnParent(),
 				this.indexOnParent()-1);
+	}
+
+	public ComponentDefinitionDialog<SBox> editWithDialog()
+	{
+		return new SBoxDefinitionDialog(component);
 	}
 }

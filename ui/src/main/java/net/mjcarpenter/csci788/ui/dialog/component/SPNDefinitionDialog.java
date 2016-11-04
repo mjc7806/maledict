@@ -1,7 +1,14 @@
 package net.mjcarpenter.csci788.ui.dialog.component;
 
+import java.awt.Component;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 
 import net.mjcarpenter.csci788.crypto.spn.Key;
 import net.mjcarpenter.csci788.crypto.spn.Permutation;
@@ -10,10 +17,11 @@ import net.mjcarpenter.csci788.crypto.spn.SBox;
 import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
 import net.mjcarpenter.csci788.ui.model.SPNTreeModel;
 
-public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork>
+public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> implements MouseListener
 {
-	private SPNetwork component;
-	private JTree     spnTree;
+	private SPNetwork   component;
+	private JTree       spnTree;
+	private ContextMenu rightClickMenu;
 	
 	public SPNDefinitionDialog(SPNetwork component)
 	{
@@ -71,5 +79,59 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork>
 		Round round5 = new Round(16, key5, last2Rounds,  straightThru, straightThru, straightThru, straightThru);
 		
 		return new SPNetwork(16, new Round[]{round1, round2, round3, round4, round5});
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent arg0)
+	{
+		if(SwingUtilities.isRightMouseButton(arg0))
+		{
+			int row = spnTree.getClosestRowForLocation(arg0.getX(), arg0.getY());
+			spnTree.setSelectionRow(row);
+			rightClickMenu.show(arg0.getComponent(), arg0.getX(), arg0.getY());
+		}
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	private class ContextMenu extends JPopupMenu
+	{
+		private Component component;
+		private JMenuItem jmiEdit;
+		
+		public ContextMenu()
+		{
+			jmiEdit = new JMenuItem("Edit");
+			add(jmiEdit);
+		}
+		
+		public void display(Component c, int locX, int locY)
+		{
+			this.component = c;
+			setLocation(locX, locY);
+			setVisible(true);
+		}
 	}
 }

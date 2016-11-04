@@ -9,6 +9,7 @@ import javax.swing.tree.TreeNode;
 
 import net.mjcarpenter.csci788.crypto.spn.Round;
 import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
+import net.mjcarpenter.csci788.ui.dialog.component.ComponentDefinitionDialog;
 
 public class SPNTreeNode implements ComponentTreeNode<SPNetwork>
 {
@@ -85,5 +86,11 @@ public class SPNTreeNode implements ComponentTreeNode<SPNetwork>
 	public String toString()
 	{
 		return "SPN";
+	}
+
+	public ComponentDefinitionDialog<SPNetwork> editWithDialog()
+	{
+		// Only one dialog for SPNetwork, which should already exist.
+		throw new UnsupportedOperationException();
 	}
 }
