@@ -1,17 +1,21 @@
 package net.mjcarpenter.csci788.ui;
 
-import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
-import net.mjcarpenter.csci788.ui.text.XMLTextArea;
+import net.mjcarpenter.csci788.ui.dialog.NewOrLoadDialog;
 
 public final class Main
 {
 	public static void main(String[] args)
 	{
-		JFrame frame = new JFrame();
-		frame.add(new XMLTextArea(null));
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(800,600);
-		frame.setVisible(true);
+		SwingUtilities.invokeLater(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						new NewOrLoadDialog();
+					}
+			
+				});
 	}
 }

@@ -19,7 +19,7 @@ public final class Key implements SPNComponent
 	public static Key noop(int length)
 	{
 		int mod = length % 8;
-		byte[] nullKey = new byte[(mod > 0) ? mod+1 : mod];
+		byte[] nullKey = new byte[(mod > 0) ? (length/8)+1 : length/8];
 		
 		for(int i=0; i<nullKey.length; i++)
 		{

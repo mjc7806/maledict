@@ -24,6 +24,7 @@ public class MasterPropertiesDialog extends JDialog implements ActionListener
 	public MasterPropertiesDialog()
 	{
 		super();
+		setModal(true);
 		
 		jlBlockSize = new JLabel("Block Size: ");
 		jlNumRounds = new JLabel("Num. Rounds: ");

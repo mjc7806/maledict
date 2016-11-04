@@ -28,6 +28,33 @@ public final class SPNetwork implements SPNComponent
 		this.blockSize = blockSize;
 	}
 	
+	public static SPNetwork noop(final int blockSize, final int sBoxBitSize, final int numRounds)
+	{
+		if(blockSize % sBoxBitSize != 0)
+		{
+			throw new IllegalArgumentException();
+		}
+		
+		int sboxPerRound = blockSize/sBoxBitSize;
+		
+		Round[] rounds = new Round[numRounds];
+		for(int i=0; i<numRounds; i++)
+		{
+			SBox[] boxes = new SBox[sboxPerRound];
+			for(int j=0; j<sboxPerRound; j++)
+			{
+				boxes[j] = SBox.noop(sBoxBitSize);
+			}
+			
+			rounds[i] = new Round(blockSize,
+					Key.noop(blockSize),
+					Permutation.noop(blockSize),
+					boxes);
+		}
+		
+		return new SPNetwork(blockSize, rounds);
+	}
+	
 	public byte[] encrypt(final byte[] in)
 	{
 		byte[] out = Arrays.copyOf(in, in.length);

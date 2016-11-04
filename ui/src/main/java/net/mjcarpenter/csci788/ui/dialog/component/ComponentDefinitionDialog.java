@@ -15,6 +15,7 @@ public abstract class ComponentDefinitionDialog<T extends SPNComponent> extends 
 	
 	public ComponentDefinitionDialog(T component)
 	{
+		setModal(true);
 		this.component = component;
 	}
 	

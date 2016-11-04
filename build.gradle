@@ -36,8 +36,8 @@ subprojects {
         apply plugin: 'java'
         dependencies {
             // compile project(':common')
-            compile     'org.apache.commons:commons-lang3:3.4'
-            compile     'xstream:xstream:1.2.2'
+            compile     'org.apache.commons:commons-lang3:3.5'
+            compile     'com.thoughtworks.xstream:xstream:1.4.9'
             testCompile 'junit:junit:4.12'
         }
         jar {
@@ -52,7 +52,7 @@ subprojects {
         dependencies {
             // compile project(':common')
 			compile     project(':core')
-            compile     'org.apache.commons:commons-lang3:3.4'
+            compile     'org.apache.commons:commons-lang3:3.5'
             compile     'com.fifesoft:rsyntaxtextarea:2.6.0'
             compile     'com.thoughtworks.xstream:xstream:1.4.9'
             testCompile 'junit:junit:4.12'
