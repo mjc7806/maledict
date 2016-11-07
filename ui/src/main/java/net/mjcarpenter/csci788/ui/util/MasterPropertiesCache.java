@@ -87,6 +87,9 @@ public class MasterPropertiesCache
 	public void setSPN(SPNetwork inSpn)
 	{
 		spn = inSpn;
+		setBlockSize(spn.getBlockSize());
+		setNumRounds(spn.getRounds().length);
+		setSBoxSize(spn.getRounds()[0].getSBoxes()[0].bitSize());
 	}
 	
 	public SBox getNamedSBox(String name)

@@ -3,12 +3,23 @@ package net.mjcarpenter.csci788.ui.dialog;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import com.thoughtworks.xstream.XStream;
 
 import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
 import net.mjcarpenter.csci788.ui.dialog.component.SPNDefinitionDialog;
@@ -81,7 +92,56 @@ public class NewOrLoadDialog extends JFrame implements ActionListener
 		}
 		else if(e.getSource().equals(jbLoad))
 		{
+			SPNetwork spn = null;
 			
+			JFileChooser jfc = new JFileChooser();
+			jfc.setCurrentDirectory(new File(System.getProperty("user.home")));
+			jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			jfc.setFileFilter(new FileNameExtensionFilter("XML file", "xml"));
+			int res = jfc.showOpenDialog(this);
+			if(res == JFileChooser.APPROVE_OPTION)
+			{
+				XStream xs = SPNDefinitionDialog.getReadyXStream();
+				
+				try(ObjectInputStream ois = xs.createObjectInputStream(new FileInputStream(jfc.getSelectedFile())))
+				{
+					Object in = xs.fromXML(ois);
+					if(in instanceof SPNetwork)
+					{
+						spn = (SPNetwork)in;
+					}
+				}
+				catch (IOException ioe)
+				{
+					spn = null;
+				}
+			}
+			else if(res == JFileChooser.CANCEL_OPTION)
+			{
+				return;
+			}
+			
+			if(spn != null)
+			{
+				final SPNetwork spnRef = spn;
+				SwingUtilities.invokeLater(new Runnable()
+						{
+							@Override
+							public void run()
+							{
+								MasterPropertiesCache.getInstance().setSPN(spnRef);
+								
+								new SPNDefinitionDialog(MasterPropertiesCache.getInstance().getSPN());
+							}
+						});
+			}
+			else
+			{
+				JOptionPane.showMessageDialog(this,
+						"There was an error loading an SPN from this file.",
+						"ERROR",
+						JOptionPane.ERROR_MESSAGE);
+			}
 		}
 	}
 }

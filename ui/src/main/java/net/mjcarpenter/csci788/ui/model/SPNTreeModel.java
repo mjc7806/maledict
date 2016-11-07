@@ -11,4 +11,9 @@ public class SPNTreeModel extends DefaultTreeModel
 	{
 		super(new SPNTreeNode(spn));
 	}
+	
+	public SPNetwork getSPN()
+	{
+		return ((SPNTreeNode)getRoot()).getComponent();
+	}
 }

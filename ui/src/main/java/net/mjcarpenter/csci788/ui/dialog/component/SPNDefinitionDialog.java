@@ -1,24 +1,43 @@
 package net.mjcarpenter.csci788.ui.dialog.component;
 
-import java.awt.Component;
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 
+import javax.swing.JFileChooser;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.tree.TreeSelectionModel;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.Converter;
+import com.thoughtworks.xstream.converters.SingleValueConverter;
 
 import net.mjcarpenter.csci788.crypto.spn.Key;
 import net.mjcarpenter.csci788.crypto.spn.Permutation;
 import net.mjcarpenter.csci788.crypto.spn.Round;
 import net.mjcarpenter.csci788.crypto.spn.SBox;
+import net.mjcarpenter.csci788.crypto.spn.SPNComponent;
 import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
+import net.mjcarpenter.csci788.ui.model.ComponentLeafNode;
 import net.mjcarpenter.csci788.ui.model.SPNTreeModel;
+import net.mjcarpenter.csci788.util.HexByteConverter;
 
-public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> implements MouseListener
+public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> implements ActionListener, MouseListener
 {
+	private JMenu       jmFile;
+	private JMenuItem   jmiSave;
 	private SPNetwork   component;
 	private JTree       spnTree;
 	private ContextMenu rightClickMenu;
@@ -27,6 +46,17 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 	{
 		super(component);
 		setTitle("SPN");
+		setLayout(new BorderLayout());
+		
+		JMenuBar jmb = new JMenuBar();
+		jmFile  = new JMenu("File");
+		jmFile.setMnemonic('F');
+		jmiSave = new JMenuItem("Save");
+		jmiSave.setMnemonic('S');
+		jmiSave.addActionListener(this);
+		jmFile.add(jmiSave);
+		jmb.add(jmFile);
+		setJMenuBar(jmb);
 		
 		spnTree = new JTree();
 		spnTree.setModel(new SPNTreeModel(component));
@@ -34,11 +64,13 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 		{
 			spnTree.expandRow(i);
 		}
+		spnTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		spnTree.addMouseListener(this);
 		
-		//JScrollPane jsp = new JScrollPane();
-		//jsp.add(spnTree);
-		//add(jsp);
-		add(spnTree);
+		JScrollPane jsp = new JScrollPane();
+		jsp.add(spnTree);
+		add(jsp, BorderLayout.CENTER);
+		//add(spnTree);
 		pack();
 		setVisible(true);
 	}
@@ -80,6 +112,45 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 		
 		return new SPNetwork(16, new Round[]{round1, round2, round3, round4, round5});
 	}
+	
+	
+	public static XStream getReadyXStream()
+	{
+		XStream xs = new XStream();
+		xs.processAnnotations(Key.class);
+		xs.registerLocalConverter(Key.class, "key", (Converter)(new HexByteConverter()));
+		xs.processAnnotations(Permutation.class);
+		xs.processAnnotations(SBox.class);
+		xs.processAnnotations(Round.class);
+		xs.processAnnotations(SPNetwork.class);
+		return xs;
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent arg0)
+	{
+		if(arg0.getSource().equals(jmiSave))
+		{
+			JFileChooser jfc = new JFileChooser();
+			jfc.setCurrentDirectory(new File(System.getProperty("user.home")));
+			
+			int option = jfc.showSaveDialog(this);
+			if(option == JFileChooser.APPROVE_OPTION)
+			{
+				XStream xs = getReadyXStream();
+				SPNetwork spn = (component);
+				
+				try(PrintWriter pw = new PrintWriter(jfc.getSelectedFile()))
+				{
+					xs.toXML(spn, pw);
+				}
+				catch (FileNotFoundException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 
 	@Override
 	public void mouseClicked(MouseEvent arg0)
@@ -88,7 +159,13 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 		{
 			int row = spnTree.getClosestRowForLocation(arg0.getX(), arg0.getY());
 			spnTree.setSelectionRow(row);
-			rightClickMenu.show(arg0.getComponent(), arg0.getX(), arg0.getY());
+			Object selected = spnTree.getLastSelectedPathComponent();
+			
+			if(selected instanceof ComponentLeafNode<?>)
+			{
+				rightClickMenu = new ContextMenu((ComponentLeafNode<?>)selected);
+				rightClickMenu.show(arg0.getComponent(), arg0.getX(), arg0.getY());
+			}
 		}
 	}
 
@@ -116,22 +193,26 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 		
 	}
 	
+	@SuppressWarnings("serial")
 	private class ContextMenu extends JPopupMenu
 	{
-		private Component component;
+		private ComponentLeafNode<?> selectedComponent;
 		private JMenuItem jmiEdit;
 		
-		public ContextMenu()
+		public ContextMenu(ComponentLeafNode<?> sc)
 		{
+			this.selectedComponent = sc;
 			jmiEdit = new JMenuItem("Edit");
 			add(jmiEdit);
-		}
-		
-		public void display(Component c, int locX, int locY)
-		{
-			this.component = c;
-			setLocation(locX, locY);
-			setVisible(true);
+			
+			jmiEdit.addActionListener(new ActionListener()
+					{
+						@Override
+						public void actionPerformed(ActionEvent ae)
+						{
+							ComponentDefinitionDialog<?> selectedDialog = selectedComponent.editWithDialog();
+						}
+					});
 		}
 	}
 }

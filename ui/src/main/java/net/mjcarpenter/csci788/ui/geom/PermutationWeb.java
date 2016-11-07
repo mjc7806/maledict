@@ -55,6 +55,13 @@ public class PermutationWeb extends JPanel
 			drawingLines[i] = new Line2D.Double();
 		}
 		
+		int[] noopMappings = new int[indices];
+		for(int i=0; i<noopMappings.length; i++)
+		{
+			noopMappings[i] = i;
+		}
+		updateMappings(noopMappings);
+		
 		header    = new WebEndPanel(EndPanelType.HEADER);
 		mainPanel = new WebMainPanel();
 		footer    = new WebEndPanel(EndPanelType.FOOTER);
@@ -111,6 +118,16 @@ public class PermutationWeb extends JPanel
 			header.revalidate();
 		if(footer != null)
 			footer.revalidate();
+	}
+	
+	public void setHeaderOn(boolean headerOn)
+	{
+		header.setVisible(headerOn);
+	}
+	
+	public void setFooterOn(boolean footerOn)
+	{
+		footer.setVisible(footerOn);
 	}
 	
 	public void setEndPanelsOn(boolean endPanelsOn)

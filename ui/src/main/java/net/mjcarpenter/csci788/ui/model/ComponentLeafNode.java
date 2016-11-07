@@ -19,6 +19,11 @@ public abstract class ComponentLeafNode<T extends SPNComponent> implements Compo
 		this.parent = parent;
 	}
 	
+	public void replaceComponent(T component)
+	{
+		this.component = component;
+	}
+	
 	public T getComponent()
 	{
 		return this.component;
