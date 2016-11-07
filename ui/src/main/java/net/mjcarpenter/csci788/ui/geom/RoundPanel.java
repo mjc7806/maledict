@@ -1,5 +1,6 @@
 package net.mjcarpenter.csci788.ui.geom;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -43,9 +44,11 @@ public class RoundPanel extends JPanel
 	{
 		this.removeAll();
 		
+		add(Box.createVerticalGlue());
 		add(key);
 		add(srow);
 		add(perm);
+		add(Box.createVerticalGlue());
 		
 		setVisible(true);
 	}

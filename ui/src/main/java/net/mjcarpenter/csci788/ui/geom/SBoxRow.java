@@ -1,5 +1,6 @@
 package net.mjcarpenter.csci788.ui.geom;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
@@ -12,12 +13,16 @@ public class SBoxRow extends JPanel
 		super();
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		
+		add(Box.createHorizontalGlue());
+		
 		shapes = new SBoxShape[numBoxes];
 		for(int i=0; i<shapes.length; i++)
 		{
 			shapes[i] = new SBoxShape(bitWidth);
 			this.add(shapes[i]);
 		}
+		
+		add(Box.createHorizontalGlue());
 		
 		setVisible(true);
 	}
