@@ -32,6 +32,11 @@ public class SBoxRow extends JPanel
 		setVisible(true);
 	}
 	
+	public SBoxShape[] getShapes()
+	{
+		return this.shapes;
+	}
+	
 	@Override
 	public Dimension getPreferredSize()
 	{

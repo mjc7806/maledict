@@ -23,7 +23,8 @@ public class RoundPanel extends JPanel
 		this.key  = key;
 		this.srow = srow;
 		
-		setLayout(new GridBagLayout());
+		//setLayout(new GridBagLayout());
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		arrange();
 	}
@@ -64,6 +65,19 @@ public class RoundPanel extends JPanel
 	{
 		this.removeAll();
 		
+		add(Box.createVerticalGlue());
+		add(key);
+		//add(srow);
+		Box b = Box.createHorizontalBox();
+		for(SBoxShape shape: srow.getShapes())
+		{
+			b.add(shape);
+		}
+		add(b);
+		add(perm);
+		add(Box.createVerticalGlue());
+		
+		/*
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.gridx = 0;
@@ -78,6 +92,7 @@ public class RoundPanel extends JPanel
 		gbc.gridy = 2;
 		add(perm, gbc);
 		//add(Box.createVerticalGlue());
+		*/
 		
 		setVisible(true);
 	}
@@ -96,6 +111,7 @@ public class RoundPanel extends JPanel
 		testFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		testFrame.add(new RoundPanel(p,k,s));
 		testFrame.pack();
+		testFrame.setSize(300, 600);
 		testFrame.setVisible(true);
 	}
 }

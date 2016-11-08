@@ -43,6 +43,32 @@ public class Round implements SPNComponent
 		this.perm       = perm;
 	}
 	
+	public Round replaceKey(final Key k)
+	{
+		return new Round(this.bitLength, k, this.perm, this.roundBoxes);
+	}
+	
+	public Round replacePermutation(final Permutation p)
+	{
+		return new Round(this.bitLength, this.subKey, p, this.roundBoxes);
+	}
+	
+	public Round replaceSBox(final SBox s, final int idx)
+	{
+		SBox[] boxes = new SBox[roundBoxes.length];
+		for(int i=0; i<boxes.length; i++)
+		{
+			boxes[i] = (i == idx) ? s : roundBoxes[i];
+		}
+		
+		return replaceSBoxes(boxes);
+	}
+	
+	public Round replaceSBoxes(final SBox... boxes)
+	{
+		return new Round(this.bitLength, this.subKey, this.perm, boxes);
+	}
+	
 	public int bitLength()
 	{
 		return bitLength;
