@@ -1,11 +1,14 @@
 package net.mjcarpenter.csci788.ui.geom;
 
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class SBoxShape extends JPanel
@@ -13,6 +16,7 @@ public class SBoxShape extends JPanel
 	private static final int USR_HEIGHT = 3;
 	private static final int MAX_WIDTH_PX = 800;
 	
+	private final double ratioHeightByWidth;
 	private double widthScale;
 	
 	private int bitWidth;
@@ -26,6 +30,7 @@ public class SBoxShape extends JPanel
 		
 		this.bitWidth = bitWidth;
 		widthScale = bitWidth*2-1;
+		ratioHeightByWidth = bitWidth*2;
 
 		topLines = new Line2D.Double[bitWidth];
 		btmLines = new Line2D.Double[bitWidth];
@@ -45,6 +50,10 @@ public class SBoxShape extends JPanel
 		Graphics2D g2 = (Graphics2D)g;
 		super.paintComponent(g2);
 		
+		scaleTo(getSize());
+		g2.setStroke(new BasicStroke((float)(2.0/widthScale)));
+		g2.scale(widthScale, widthScale);
+		
 		for(Line2D line: topLines)
 		{
 			g2.draw(line);
@@ -60,18 +69,27 @@ public class SBoxShape extends JPanel
 	
 	public void scaleTo(Dimension d)
 	{
-		widthScale = USR_HEIGHT/d.getHeight();
+		widthScale = d.getWidth()/ratioHeightByWidth;
 	}
 	
 	@Override
 	public Dimension getMaximumSize()
 	{
-		return new Dimension(Integer.MAX_VALUE, getPreferredSize().height);
+		return new Dimension(Integer.MAX_VALUE, (int)Math.round(3*widthScale));//getPreferredSize().height);
 	}
 	
 	@Override
 	public Dimension getPreferredSize()
 	{
-		return new Dimension(MAX_WIDTH_PX, (int)Math.round(MAX_WIDTH_PX*widthScale));
+		return new Dimension(MAX_WIDTH_PX, (int)Math.round(MAX_WIDTH_PX/widthScale));
+	}
+	
+	public static void main(String[] args)
+	{
+		JFrame jf = new JFrame();
+		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		jf.setLayout(new BorderLayout());
+		jf.add(new SBoxShape(4), BorderLayout.CENTER);
+		jf.setVisible(true);
 	}
 }

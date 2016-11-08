@@ -1,5 +1,10 @@
 package net.mjcarpenter.csci788.ui.geom;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
@@ -18,7 +23,7 @@ public class RoundPanel extends JPanel
 		this.key  = key;
 		this.srow = srow;
 		
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setLayout(new GridBagLayout());
 		
 		arrange();
 	}
@@ -40,32 +45,55 @@ public class RoundPanel extends JPanel
 		this.srow = srow;
 	}
 	
+	@Override
+	public Dimension getPreferredSize()
+	{
+		return new Dimension(perm.getPreferredSize().width,
+				perm.getPreferredSize().height + srow.getPreferredSize().height + key.getPreferredSize().height);
+	}
+	
+	
+	@Override
+	public Dimension getMaximumSize()
+	{
+		return new Dimension(perm.getPreferredSize().width,
+				perm.getPreferredSize().height + srow.getPreferredSize().height + key.getPreferredSize().height);
+	}
+	
 	public void arrange()
 	{
 		this.removeAll();
 		
-		add(Box.createVerticalGlue());
-		add(key);
-		add(srow);
-		add(perm);
-		add(Box.createVerticalGlue());
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		//add(Box.createVerticalGlue());
+		add(key, gbc);
+		
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		add(srow, gbc);
+		
+		gbc.gridy = 2;
+		add(perm, gbc);
+		//add(Box.createVerticalGlue());
 		
 		setVisible(true);
 	}
 	
 	public static void main(String[] args)
 	{
-		PermutationWeb p = new PermutationWeb(4, true);
-		p.setHeaderOn(false);
-		p.setFooterOn(true);
+		PermutationWeb p = new PermutationWeb(16, false);
+		//p.setHeaderOn(false);
+		//p.setFooterOn(true);
 		
-		KeyShape k = new KeyShape(4);
+		KeyShape k = new KeyShape(16);
 		
-		SBoxRow s = new SBoxRow(4,1);
+		SBoxRow s = new SBoxRow(4,4);
 		
 		JFrame testFrame = new JFrame();
 		testFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
 		testFrame.add(new RoundPanel(p,k,s));
 		testFrame.pack();
 		testFrame.setVisible(true);

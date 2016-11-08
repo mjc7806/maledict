@@ -75,7 +75,7 @@ public class KeyShape extends JPanel
 	@Override
 	public Dimension getMaximumSize()
 	{
-		return new Dimension(Integer.MAX_VALUE, getPreferredSize().height);
+		return new Dimension(Integer.MAX_VALUE, (int)Math.round(2*widthScale));
 	}
 	
 	@Override
