@@ -67,8 +67,9 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 		spnTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		spnTree.addMouseListener(this);
 		
-		JScrollPane jsp = new JScrollPane();
-		jsp.add(spnTree);
+		JScrollPane jsp = new JScrollPane(spnTree,
+				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		add(jsp, BorderLayout.CENTER);
 		//add(spnTree);
 		pack();
