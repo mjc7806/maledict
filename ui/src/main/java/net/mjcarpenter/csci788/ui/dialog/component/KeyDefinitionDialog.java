@@ -2,16 +2,23 @@ package net.mjcarpenter.csci788.ui.dialog.component;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import javax.xml.bind.DatatypeConverter;
 
 import net.mjcarpenter.csci788.crypto.spn.Key;
+import net.mjcarpenter.csci788.crypto.spn.SBox;
 
-public class KeyDefinitionDialog extends ComponentDefinitionDialog<Key>
+public class KeyDefinitionDialog extends ComponentDefinitionDialog<Key> implements ActionListener
 {
 	private JButton jbOK;
 	private JButton jbCancel;
@@ -64,19 +71,49 @@ public class KeyDefinitionDialog extends ComponentDefinitionDialog<Key>
 		setMinimumSize(new Dimension(500,150));
 		setVisible(true);
 	}
-	
-	public static void main(String[] args)
-	{
-		new KeyDefinitionDialog(16);
-	}
 
 	@Override
 	public boolean validateComponent()
 	{
-		String fieldKey = jtfKey.getText();
+		String fieldKey = jtfKey.getText().trim();
+		int keyIntVal = Integer.MAX_VALUE;
 		
+		try
+		{
+			keyIntVal = Integer.parseInt(fieldKey, 16);
+		}
+		catch(NumberFormatException nfe)
+		{
+			return false;
+		}
 		
-		return false;
+		return keyIntVal < (1<<component.length());
 	}
-
+	
+	@Override
+	public void actionPerformed(ActionEvent e)
+	{
+		if(e.getSource().equals(jbOK))
+		{
+			if(validateComponent())
+			{
+				int keyIntVal = Integer.parseInt(jtfKey.getText().trim());
+				byte[] newKeyVal = ByteBuffer.allocate(component.length()/8).order(ByteOrder.LITTLE_ENDIAN).putInt(keyIntVal).array();
+				component = new Key(newKeyVal);
+				this.dispose();
+			}
+			else
+			{
+				JOptionPane.showMessageDialog(this,
+						"This is not a valid S-box.",
+						"Validation Error",
+						JOptionPane.ERROR_MESSAGE);
+			}
+		}
+		else if(e.getSource().equals(jbCancel))
+		{
+			component = originalComponent;
+			this.dispose();
+		}
+	}
 }

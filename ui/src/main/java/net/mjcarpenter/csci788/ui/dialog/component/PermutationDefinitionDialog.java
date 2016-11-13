@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -141,17 +142,28 @@ public class PermutationDefinitionDialog extends ComponentDefinitionDialog<Permu
 		return true;
 	}
 	
-	public static void main(String[] args)
-	{
-		new PermutationDefinitionDialog(16);
-	}
-
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		if(e.getSource().equals(jbOK))
 		{
-			System.exit(0);
+			if(validateComponent())
+			{
+				component = new Permutation(cachedMappings);
+				this.dispose();
+			}
+			else
+			{
+				JOptionPane.showMessageDialog(this,
+						"This is not a valid permutation.",
+						"Validation Error",
+						JOptionPane.ERROR_MESSAGE);
+			}
+		}
+		else if(e.getSource().equals(jbCancel))
+		{
+			component = originalComponent;
+			this.dispose();
 		}
 	}
 

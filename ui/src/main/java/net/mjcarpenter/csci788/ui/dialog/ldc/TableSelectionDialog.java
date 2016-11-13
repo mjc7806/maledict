@@ -16,7 +16,7 @@ import javax.swing.border.EmptyBorder;
 
 public abstract class TableSelectionDialog extends JDialog implements ActionListener
 {
-	private final Collection<JToggleButton> buttonReferences;
+	protected final Collection<JToggleButton> buttonReferences;
 	private JToggleButton selectedButtonReference;
 	private JToggleButton[][] buttons;
 	private JButton jbAccept, jbCancel, jbHelp;
@@ -51,6 +51,7 @@ public abstract class TableSelectionDialog extends JDialog implements ActionList
 			for(int j=0; j<table[i].length; j++)
 			{
 				buttons[i][j] = new JToggleButton(String.valueOf(table[i][j]));
+				buttons[i][j].setEnabled(table[i][j] != 0);
 				buttons[i][j].setSelected(false);
 				buttons[i][j].addActionListener(this);
 				tablePanel.add(buttons[i][j]);

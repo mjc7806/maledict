@@ -20,10 +20,16 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.Converter;
 
+import net.mjcarpenter.csci788.crypto.spn.Key;
+import net.mjcarpenter.csci788.crypto.spn.Permutation;
+import net.mjcarpenter.csci788.crypto.spn.Round;
+import net.mjcarpenter.csci788.crypto.spn.SBox;
 import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
 import net.mjcarpenter.csci788.ui.dialog.component.SPNDefinitionDialog;
 import net.mjcarpenter.csci788.ui.util.MasterPropertiesCache;
+import net.mjcarpenter.csci788.util.HexByteConverter;
 
 public class NewOrLoadDialog extends JFrame implements ActionListener
 {

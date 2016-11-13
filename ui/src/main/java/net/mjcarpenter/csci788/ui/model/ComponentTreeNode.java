@@ -9,6 +9,7 @@ public interface ComponentTreeNode<T extends SPNComponent> extends TreeNode
 	public T getComponent();
 	
 	public int indexOnParent();
+	public void refreshComponent();
 	
 	public ComponentDefinitionDialog<T> editWithDialog();
 }

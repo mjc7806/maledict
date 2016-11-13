@@ -6,12 +6,13 @@ import javax.xml.bind.DatatypeConverter;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 @XStreamAlias("spn")
 public final class SPNetwork implements SPNComponent
 {
 	@XStreamAsAttribute
 	private final int blockSize;
-	@XStreamAlias("rounds")
+	@XStreamImplicit
 	private final Round[] rounds;
 	
 	public SPNetwork(final int blockSize, final Round[] rounds)

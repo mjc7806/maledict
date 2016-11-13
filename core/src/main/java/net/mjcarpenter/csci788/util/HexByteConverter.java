@@ -17,5 +17,4 @@ public class HexByteConverter extends EncodedByteArrayConverter
 	{
 		return DatatypeConverter.parseHexBinary(str);
 	}
-
 }

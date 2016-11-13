@@ -4,6 +4,7 @@ import java.util.BitSet;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 @XStreamAlias("round")
 public class Round implements SPNComponent
@@ -11,7 +12,7 @@ public class Round implements SPNComponent
 	@XStreamAsAttribute
 	private final int         bitLength;
 	
-	@XStreamAlias("sboxes")
+	@XStreamImplicit
 	private final SBox[]      roundBoxes;
 	@XStreamAlias("subkey")
 	private final Key         subKey;

@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.swing.tree.TreeNode;
 
+import net.mjcarpenter.csci788.crypto.spn.Key;
+import net.mjcarpenter.csci788.crypto.spn.Permutation;
 import net.mjcarpenter.csci788.crypto.spn.Round;
 import net.mjcarpenter.csci788.crypto.spn.SBox;
 import net.mjcarpenter.csci788.crypto.spn.SPNComponent;
@@ -99,5 +101,39 @@ public class RoundTreeNode implements ComponentTreeNode<Round>
 	{
 		// Rounds don't have their own dialog.
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void refreshComponent()
+	{
+		List<SBox> newBoxes = new ArrayList<SBox>();//[component.getSBoxes().length];
+		Key newKey = null;
+		Permutation newPerm = null;
+		
+		for(ComponentLeafNode<?> child: children)
+		{
+			SPNComponent comp = child.getComponent();
+			
+			if(comp instanceof Key)
+			{
+				newKey = (Key)comp;
+			}
+			else if(comp instanceof Permutation)
+			{
+				newPerm = (Permutation)comp;
+			}
+			else if(comp instanceof SBox)
+			{
+				newBoxes.add((SBox)comp);
+			}
+		}
+		
+		component = new Round(
+				component.bitLength(),
+				newKey,
+				newPerm,
+				newBoxes.toArray(new SBox[component.getSBoxes().length]));
+		
+		parent.refreshComponent();
 	}
 }

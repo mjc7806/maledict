@@ -12,13 +12,15 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import net.mjcarpenter.csci788.crypto.spn.Permutation;
 import net.mjcarpenter.csci788.crypto.spn.SBox;
 
-public class SBoxDefinitionDialog extends ComponentDefinitionDialog<SBox> implements ActionListener, FocusListener
+public class SBoxDefinitionDialog extends ComponentDefinitionDialog<SBox> implements ActionListener
 {
 	private JButton jbOK;
 	private JButton jbCancel;
@@ -67,22 +69,33 @@ public class SBoxDefinitionDialog extends ComponentDefinitionDialog<SBox> implem
 		textFields = new ArrayList<JTextField>(numFields);
 		textLabels = new ArrayList<JLabel>(numFields);
 		
-		for(int i=0; i<numFields; i++)
+		for(int i=0; i<numFields+1; i++)
 		{
 			JPanel colPanel = new JPanel();
 			colPanel.setLayout(new GridLayout(2, 1, 5, 5));
 			
-			JLabel     iLabel = new JLabel(Integer.toHexString(i).toUpperCase());
-			iLabel.setHorizontalAlignment(JLabel.CENTER);
-			JTextField iField = new JTextField();
-			iField.setText(Integer.toHexString(this.component.sub(i)).toUpperCase());
-			iField.setHorizontalAlignment(JTextField.CENTER);
-						
-			textLabels.add(i, iLabel);
-			textFields.add(i, iField);
-			
-			colPanel.add(iLabel);
-			colPanel.add(iField);
+			if(i == 0)
+			{
+				JLabel inLabel = new JLabel("x");
+				JLabel outLabel = new JLabel("S(x)  ");
+				
+				colPanel.add(inLabel);
+				colPanel.add(outLabel);
+			}
+			else
+			{
+				JLabel iLabel = new JLabel(Integer.toHexString(i-1).toUpperCase());
+				iLabel.setHorizontalAlignment(JLabel.CENTER);
+				JTextField iField = new JTextField();
+				iField.setText(Integer.toHexString(this.component.sub(i-1)).toUpperCase());
+				iField.setHorizontalAlignment(JTextField.CENTER);
+							
+				textLabels.add(i-1, iLabel);
+				textFields.add(i-1, iField);
+				
+				colPanel.add(iLabel);
+				colPanel.add(iField);
+			}
 			
 			fieldPanel.add(colPanel);
 		}
@@ -102,33 +115,49 @@ public class SBoxDefinitionDialog extends ComponentDefinitionDialog<SBox> implem
 		textFields.get(0).requestFocusInWindow();
 	}
 	
-	public static void main(String[] args)
-	{
-		new SBoxDefinitionDialog(16);
-	}
-
 	@Override
 	public boolean validateComponent()
 	{
-		return false;
+		for(int i=0; i<cachedMappings.length; i++)
+		{
+			boolean contains = false;
+			
+			for(int j=0; j<cachedMappings.length; j++)
+			{
+				contains |= (cachedMappings[j] == i);
+				if(contains) break;
+			}
+			
+			if(!contains)
+				return false;
+		}
+		
+		return true;
 	}
 
 	@Override
-	public void focusGained(FocusEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void focusLost(FocusEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
+	public void actionPerformed(ActionEvent e)
+	{
+		if(e.getSource().equals(jbOK))
+		{
+			if(validateComponent())
+			{
+				component = new SBox(cachedMappings);
+				this.dispose();
+			}
+			else
+			{
+				JOptionPane.showMessageDialog(this,
+						"This is not a valid S-box.",
+						"Validation Error",
+						JOptionPane.ERROR_MESSAGE);
+			}
+		}
+		else if(e.getSource().equals(jbCancel))
+		{
+			component = originalComponent;
+			this.dispose();
+		}
 	}
 
 }

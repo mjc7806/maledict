@@ -93,4 +93,16 @@ public class SPNTreeNode implements ComponentTreeNode<SPNetwork>
 		// Only one dialog for SPNetwork, which should already exist.
 		throw new UnsupportedOperationException();
 	}
+
+	@Override
+	public void refreshComponent()
+	{
+		List<Round> newRounds = new ArrayList<Round>();
+		for(ComponentTreeNode<Round> child: children)
+		{
+			newRounds.add(child.getComponent());
+		}
+		
+		component = new SPNetwork(component.getBlockSize(), newRounds.toArray(new Round[component.getRounds().length]));
+	}
 }
