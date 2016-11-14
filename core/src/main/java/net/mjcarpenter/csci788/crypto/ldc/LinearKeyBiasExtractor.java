@@ -14,9 +14,9 @@ public final class LinearKeyBiasExtractor
 {
 	private Map<Integer, Double> biasMap;
 	private Round relevantRound;
-	private int sBoxIdx;
+	//private int sBoxIdx;
 	
-	public LinearKeyBiasExtractor(Round relevantRound, int sBoxIdx)
+	public LinearKeyBiasExtractor(Round relevantRound)//, int sBoxIdx)
 	{
 		this.relevantRound = relevantRound;
 		
