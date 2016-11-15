@@ -13,6 +13,7 @@ import net.mjcarpenter.csci788.crypto.spn.Round;
 public final class LinearKeyBiasExtractor
 {
 	private Map<Integer, Double> biasMap;
+	private int maxBiasKey;
 	private Round relevantRound;
 	//private int sBoxIdx;
 	
@@ -21,6 +22,7 @@ public final class LinearKeyBiasExtractor
 		this.relevantRound = relevantRound;
 		
 		biasMap = null;
+		maxBiasKey = -1;
 	}
 	
 	public void generateBiases(Map<KnownPair, byte[]> expecteds)
@@ -31,6 +33,9 @@ public final class LinearKeyBiasExtractor
 		int bits = relevantRound.bitLength();
 		int bytes = relevantRound.getSubKey().length()/8;
 		Key k = null;
+		
+		double maxBias = Double.MIN_VALUE;
+		int maxKey = -1;
 		
 		for(int i=0; i<1<<bits; i++)
 		{
@@ -50,13 +55,32 @@ public final class LinearKeyBiasExtractor
 				}
 			}
 			
-			biasMap.put(i, Math.abs((successes - (card/2.0)) / (card*1.0)));
+			double bias = Math.abs((successes - (card/2.0)) / (card*1.0));
+			biasMap.put(i, bias);
+			
+			if(bias > maxBias)
+			{
+				maxBias = bias;
+				maxKey = i;
+			}
 		}
+		
+		maxBiasKey = maxKey;
 	}
 	
 	public Map<Integer, Double> getBiasMap()
 	{
 		return this.biasMap;
+	}
+	
+	public int getMaxBiasKey()
+	{
+		return maxBiasKey;
+	}
+	
+	public double getMaxBiasValue()
+	{
+		return getBiasFor(maxBiasKey);
 	}
 	
 	public double getBiasFor(int subkeyVal)
