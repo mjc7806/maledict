@@ -116,7 +116,7 @@ public final class SBox implements SPNComponent
 		int[][] lat = new int[mapFwd.length][mapFwd.length];
 		for(int i=0; i<mapFwd.length; i++)
 			for(int j=0; j<mapFwd.length; j++)
-				lat[i][j] = -8;
+				lat[i][j] = -1*(mapFwd.length>>1);
 		
 		for(int i=0; i<mapFwd.length; i++)
 			for(int inMask=0; inMask<mapFwd.length; inMask++)

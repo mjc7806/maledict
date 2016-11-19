@@ -10,6 +10,7 @@ import javax.swing.tree.TreeNode;
 import net.mjcarpenter.csci788.crypto.spn.Round;
 import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
 import net.mjcarpenter.csci788.ui.dialog.component.ComponentDefinitionDialog;
+import net.mjcarpenter.csci788.ui.util.MasterPropertiesCache;
 
 public class SPNTreeNode implements ComponentTreeNode<SPNetwork>
 {
@@ -104,5 +105,6 @@ public class SPNTreeNode implements ComponentTreeNode<SPNetwork>
 		}
 		
 		component = new SPNetwork(component.getBlockSize(), newRounds.toArray(new Round[component.getRounds().length]));
+		MasterPropertiesCache.getInstance().setSPN(component);
 	}
 }
