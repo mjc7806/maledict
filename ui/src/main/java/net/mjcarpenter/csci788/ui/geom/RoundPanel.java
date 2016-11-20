@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -23,7 +24,6 @@ public class RoundPanel extends JPanel
 		this.key  = key;
 		this.srow = srow;
 		
-		//setLayout(new GridBagLayout());
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		arrange();
@@ -44,6 +44,7 @@ public class RoundPanel extends JPanel
 	public void setSboxRow(SBoxRow srow)
 	{
 		this.srow = srow;
+		arrange();
 	}
 	
 	@Override
@@ -65,17 +66,18 @@ public class RoundPanel extends JPanel
 	{
 		this.removeAll();
 		
-		add(Box.createVerticalGlue());
-		add(key);
-		//add(srow);
-		Box b = Box.createHorizontalBox();
-		for(SBoxShape shape: srow.getShapes())
-		{
-			b.add(shape);
-		}
-		add(b);
-		add(perm);
-		add(Box.createVerticalGlue());
+		Box containerBox = Box.createVerticalBox();
+		containerBox.add(Box.createVerticalGlue());
+		containerBox.add(key);
+		containerBox.add(srow);
+		//Box b = Box.createHorizontalBox();
+		//for(SBoxShape shape: srow.getShapes())
+		//{
+		//	b.add(shape);
+		//}
+		//add(b);
+		containerBox.add(perm);
+		containerBox.add(Box.createHorizontalGlue());
 		
 		/*
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -93,15 +95,15 @@ public class RoundPanel extends JPanel
 		add(perm, gbc);
 		//add(Box.createVerticalGlue());
 		*/
+		perm.setVisible(true);
 		
+		add(containerBox);
 		setVisible(true);
 	}
 	
 	public static void main(String[] args)
 	{
-		PermutationWeb p = new PermutationWeb(16, false);
-		//p.setHeaderOn(false);
-		//p.setFooterOn(true);
+		
 		
 		KeyShape k = new KeyShape(16);
 		
@@ -109,9 +111,24 @@ public class RoundPanel extends JPanel
 		
 		JFrame testFrame = new JFrame();
 		testFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//BoxLayout bl = new BoxLayout(testFrame, BoxLayout.Y_AXIS);
+		
+		PermutationWeb p = new PermutationWeb(16, false);
+		p.setVisible(true);
+		//p.setHeaderOn(false);
+		//p.setFooterOn(true);
+		p.updateMappings(new int[]{0,4,8,12,1,5,9,13,2,6,10,14,3,7,11,15});
+		
+		
+		//testFrame.setLayout(new GridLayout(0,1));
+		//testFrame.setLayout(bl);
+		//testFrame.add(k);
+		//testFrame.add(s);
+		//testFrame.add(p);
 		testFrame.add(new RoundPanel(p,k,s));
 		testFrame.pack();
 		testFrame.setSize(300, 600);
 		testFrame.setVisible(true);
+		testFrame.revalidate();
 	}
 }

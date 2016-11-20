@@ -7,6 +7,7 @@ import net.mjcarpenter.csci788.crypto.spn.Key;
 import net.mjcarpenter.csci788.crypto.spn.Permutation;
 import net.mjcarpenter.csci788.crypto.spn.SBox;
 import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
+import net.mjcarpenter.csci788.ui.dialog.component.SPNVisualizationFrame;
 
 public class MasterPropertiesCache
 {
@@ -17,6 +18,7 @@ public class MasterPropertiesCache
 	}
 	
 	private SPNetwork spn;
+	private SPNVisualizationFrame vis;
 	
 	private Map<String, SBox>        namedSboxes;
 	private Map<String, Permutation> namedPermutations;
@@ -31,6 +33,7 @@ public class MasterPropertiesCache
 		namedKeys = new HashMap<String, Key>();
 		
 		spn = null;
+		vis = null;
 		blockSize = 0;
 		sboxSize  = 0;
 		numRounds = 0;
@@ -79,6 +82,12 @@ public class MasterPropertiesCache
 	 * SPN COMPONENTS
 	 */
 	
+	public SPNVisualizationFrame getVisualizationFrame()
+	{
+		if(vis == null) vis = new SPNVisualizationFrame(spn);
+		return vis;
+	}
+	
 	public SPNetwork getSPN()
 	{
 		return spn;
@@ -87,6 +96,7 @@ public class MasterPropertiesCache
 	public void setSPN(SPNetwork inSpn)
 	{
 		spn = inSpn;
+		getVisualizationFrame().setSPN(spn);
 		setBlockSize(spn.getBlockSize());
 		setNumRounds(spn.getRounds().length);
 		setSBoxSize(spn.getRounds()[0].getSBoxes()[0].bitSize());

@@ -28,6 +28,9 @@ public class PermutationWeb extends JPanel
 		HEADER, FOOTER
 	}
 	
+	private static final int MAX_WIDTH_PX = 800;
+	private static final int USR_HEIGHT = 4;
+	
 	private final JPanel header;
 	private final JPanel mainPanel;
 	private final JPanel footer;
@@ -48,7 +51,7 @@ public class PermutationWeb extends JPanel
 		
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
-		widthMax  = (indices + 1)*2;
+		widthMax  = 2*indices;
 		heightMax = 6;//(int)Math.round(widthMax*(3.0/17.0));
 		widthFactor  = 1;
 		heightFactor = 1;
@@ -60,8 +63,8 @@ public class PermutationWeb extends JPanel
 		
 		for(int i=0; i<indices; i++)
 		{
-			endpoints[i]         = new Point2D.Double(i*2+2, 0);
-			endpoints[i+indices] = new Point2D.Double(i*2+2, heightMax);
+			endpoints[i]         = new Point2D.Double(i*2+1, 0);
+			endpoints[i+indices] = new Point2D.Double(i*2+1, heightMax);
 			drawingLines[i] = new Line2D.Double();
 		}
 		
@@ -81,7 +84,7 @@ public class PermutationWeb extends JPanel
 		add(mainPanel);
 		add(footer);
 		add(Box.createVerticalGlue());
-		setBorder(new EmptyBorder(35,35,35,35));
+		//setBorder(new EmptyBorder(35,35,35,35));
 		
 		setEndPanelsOn(endPanelsOn);
 	}
@@ -154,6 +157,19 @@ public class PermutationWeb extends JPanel
 	@Override
 	public Dimension getMaximumSize()
 	{
+		return new Dimension(Integer.MAX_VALUE, (int)Math.round(2*widthFactor));
+	}
+	
+	@Override
+	public Dimension getPreferredSize()
+	{
+		return new Dimension(MAX_WIDTH_PX, (int)Math.round(MAX_WIDTH_PX/widthFactor));
+	}
+	
+	/*
+	@Override
+	public Dimension getMaximumSize()
+	{
 		int height = mainPanel.getPreferredSize().height;
 		if(header.isVisible())
 		{
@@ -169,7 +185,7 @@ public class PermutationWeb extends JPanel
 	public Dimension getPreferredSize()
 	{
 		return getMaximumSize();
-	}
+	}*/
 	
 	public static void main(String[] args)
 	{
@@ -274,7 +290,7 @@ public class PermutationWeb extends JPanel
 		@Override
 		public Dimension getPreferredSize()
 		{
-			return new Dimension(MAX_WIDTH_PX, (int)Math.round(3*widthFactor));//(int)(MAX_WIDTH_PX*HEIGHT_RATIO));
+			return new Dimension(MAX_WIDTH_PX, (int)Math.round(USR_HEIGHT*widthFactor));//(int)(MAX_WIDTH_PX*HEIGHT_RATIO));
 		}
 		
 		@Override
