@@ -91,7 +91,7 @@ public class SBoxShape extends JPanel
 	@Override
 	public Dimension getMaximumSize()
 	{
-		return new Dimension(Integer.MAX_VALUE, (int)Math.round(3*widthScale));//getPreferredSize().height);
+		return new Dimension(Integer.MAX_VALUE, (int)Math.round(USR_HEIGHT*widthScale));//getPreferredSize().height);
 	}
 	
 	@Override

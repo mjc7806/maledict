@@ -20,7 +20,7 @@ import javax.swing.border.EmptyBorder;
 import net.mjcarpenter.csci788.crypto.spn.Permutation;
 import net.mjcarpenter.csci788.crypto.spn.SBox;
 
-public class SBoxDefinitionDialog extends ComponentDefinitionDialog<SBox> implements ActionListener
+public class SBoxDefinitionDialog extends ComponentDefinitionDialog<SBox> implements ActionListener, FocusListener
 {
 	private JButton jbOK;
 	private JButton jbCancel;
@@ -50,6 +50,10 @@ public class SBoxDefinitionDialog extends ComponentDefinitionDialog<SBox> implem
 		jbHelp = new JButton("Help");
 		jbHelp.setMnemonic('H');
 		
+		jbOK.addActionListener(this);
+		jbCancel.addActionListener(this);
+		jbHelp.addActionListener(this);
+		
 		JPanel buttonPanel   = new JPanel();
 		JPanel subPanelLeft  = new JPanel();
 		JPanel subPanelRight = new JPanel();
@@ -63,6 +67,7 @@ public class SBoxDefinitionDialog extends ComponentDefinitionDialog<SBox> implem
 		buttonPanel.add(subPanelRight, BorderLayout.EAST);
 		
 		int numFields = this.component.bitSize()<<2;
+		cachedMappings = new int[numFields];
 		JPanel fieldPanel = new JPanel();
 		fieldPanel.setLayout(new GridLayout(1, numFields));
 		fieldPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
@@ -89,12 +94,15 @@ public class SBoxDefinitionDialog extends ComponentDefinitionDialog<SBox> implem
 				JTextField iField = new JTextField();
 				iField.setText(Integer.toHexString(this.component.sub(i-1)).toUpperCase());
 				iField.setHorizontalAlignment(JTextField.CENTER);
-							
+				
+				cachedMappings[i-1] = this.component.sub(i-1);
+				
 				textLabels.add(i-1, iLabel);
 				textFields.add(i-1, iField);
 				
 				colPanel.add(iLabel);
 				colPanel.add(iField);
+				iField.addFocusListener(this);
 			}
 			
 			fieldPanel.add(colPanel);
@@ -157,6 +165,52 @@ public class SBoxDefinitionDialog extends ComponentDefinitionDialog<SBox> implem
 		{
 			component = originalComponent;
 			this.dispose();
+		}
+	}
+
+	@Override
+	public void focusGained(FocusEvent arg0)
+	{
+		if(arg0.getSource() instanceof JTextField)
+		{
+			JTextField field = (JTextField)arg0.getSource();
+			cachedEntry = field.getText();
+		}
+	}
+
+	@Override
+	public void focusLost(FocusEvent arg0)
+	{
+		if(arg0.getSource() instanceof JTextField)
+		{
+			JTextField field = (JTextField)arg0.getSource();
+			int index = textFields.indexOf(field);
+			int input;
+			
+			try
+			{
+				input = Integer.valueOf(field.getText(), 16);
+			}
+			catch(NumberFormatException nfe)
+			{
+				input = -1;
+			}
+			
+			if(input >= 0 && input < cachedMappings.length)
+			{
+				cachedMappings[index] = input;
+				
+				if(validateComponent())
+				{
+					component = new SBox(cachedMappings);
+				}
+			}
+			else
+			{
+				field.setText(cachedEntry);
+			}
+			
+			cachedEntry = null;
 		}
 	}
 
