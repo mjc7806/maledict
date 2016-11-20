@@ -9,7 +9,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -31,6 +33,7 @@ import net.mjcarpenter.csci788.crypto.spn.Round;
 import net.mjcarpenter.csci788.crypto.spn.SBox;
 import net.mjcarpenter.csci788.crypto.spn.SPNComponent;
 import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
+import net.mjcarpenter.csci788.ui.dialog.ldc.LinearApproximationDialog;
 import net.mjcarpenter.csci788.ui.model.ComponentLeafNode;
 import net.mjcarpenter.csci788.ui.model.SPNTreeModel;
 import net.mjcarpenter.csci788.ui.util.MasterPropertiesCache;
@@ -38,25 +41,43 @@ import net.mjcarpenter.csci788.util.HexByteConverter;
 
 public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> implements ActionListener, MouseListener
 {
-	private JMenu       jmFile;
-	private JMenuItem   jmiSave;
+	private JMenu       jmFile, jmAnalyze;
+	private JMenuItem   jmiSave, jmiLinear, jmiDiff;
 	private JTree       spnTree;
 	private ContextMenu<?> rightClickMenu;
 	
 	public SPNDefinitionDialog(SPNetwork component)
 	{
 		super(component);
+		setModal(false);
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setTitle("SPN");
 		setLayout(new BorderLayout());
 		
 		JMenuBar jmb = new JMenuBar();
 		jmFile  = new JMenu("File");
 		jmFile.setMnemonic('F');
+		jmAnalyze = new JMenu("Analyze");
+		jmAnalyze.setMnemonic('A');
+		
 		jmiSave = new JMenuItem("Save");
 		jmiSave.setMnemonic('S');
 		jmiSave.addActionListener(this);
+		jmiLinear = new JMenuItem("Linear");
+		jmiLinear.setMnemonic('L');
+		jmiLinear.addActionListener(this);
+		jmiDiff = new JMenuItem("Differential");
+		jmiDiff.setMnemonic('D');
+		jmiDiff.addActionListener(this);
+		
 		jmFile.add(jmiSave);
+		jmAnalyze.add(jmiLinear);
+		jmAnalyze.add(jmiDiff);
+		
 		jmb.add(jmFile);
+		jmb.add(jmAnalyze);
+		
+		
 		setJMenuBar(jmb);
 		
 		spnTree = new JTree();
@@ -119,6 +140,10 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 					e.printStackTrace();
 				}
 			}
+		}
+		else if(arg0.getSource().equals(jmiLinear))
+		{
+			LinearApproximationDialog linDlg = new LinearApproximationDialog(((SPNTreeModel)spnTree.getModel()).getSPN());
 		}
 	}
 

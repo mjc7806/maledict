@@ -5,6 +5,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import net.mjcarpenter.csci788.crypto.spn.SBox;
+import net.mjcarpenter.csci788.ui.component.CoordinateToggleButton;
 
 public final class DDTSelectionDialog extends TableSelectionDialog
 {
@@ -15,19 +16,22 @@ public final class DDTSelectionDialog extends TableSelectionDialog
 	}
 	
 	@Override
-	protected void handleAccept() {
+	protected void handleAccept(CoordinateToggleButton selectedButton)
+	{
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	protected void handleCancel() {
+	protected void handleCancel()
+	{
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	protected void handleHelp() {
+	protected void handleHelp()
+	{
 		// TODO Auto-generated method stub
 
 	}

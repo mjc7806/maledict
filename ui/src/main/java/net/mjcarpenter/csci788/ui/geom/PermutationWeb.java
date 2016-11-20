@@ -1,12 +1,18 @@
 package net.mjcarpenter.csci788.ui.geom;
 
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.awt.geom.Ellipse2D;
 
 import javax.swing.Box;
@@ -25,6 +31,8 @@ public class PermutationWeb extends JPanel
 	private final JPanel header;
 	private final JPanel mainPanel;
 	private final JPanel footer;
+	
+	private List<Integer> colors;
 	
 	private double  widthFactor;
 	private double  heightFactor;
@@ -47,6 +55,8 @@ public class PermutationWeb extends JPanel
 		
 		endpoints    = new Point2D.Double[indices * 2];
 		drawingLines = new Line2D.Double[indices];
+		
+		colors = Collections.emptyList();
 		
 		for(int i=0; i<indices; i++)
 		{
@@ -74,6 +84,11 @@ public class PermutationWeb extends JPanel
 		setBorder(new EmptyBorder(35,35,35,35));
 		
 		setEndPanelsOn(endPanelsOn);
+	}
+	
+	public void color(int[] indices)
+	{
+		this.colors = Arrays.stream(indices).boxed().collect(Collectors.toList());
 	}
 	
 	public Point2D getEndpoint(int index)
@@ -192,9 +207,11 @@ public class PermutationWeb extends JPanel
 			g2.scale(widthFactor, widthFactor);
 			g2.setStroke(new BasicStroke((float)(2.0/widthFactor)));
 			
-			for(Line2D line: drawingLines)
+			for(int i=0; i<drawingLines.length; i++)
 			{
-				g2.draw(line);
+				g2.setColor(colors.contains(i) ? Color.BLUE : Color.BLACK);
+				
+				g2.draw(drawingLines[i]);
 			}
 		}
 		
