@@ -7,6 +7,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -18,6 +22,9 @@ public class SBoxShape extends JPanel
 	
 	private final double ratioHeightByWidth;
 	private double widthScale;
+	
+	private List<Integer> colorsIn;
+	private List<Integer> colorsOut;
 	
 	private int bitWidth;
 	private Line2D.Double[]    topLines;
@@ -31,6 +38,9 @@ public class SBoxShape extends JPanel
 		this.bitWidth = bitWidth;
 		widthScale = bitWidth*2-1;
 		ratioHeightByWidth = bitWidth*2;
+		
+		colorsIn  = Collections.emptyList();
+		colorsOut = Collections.emptyList();
 
 		topLines = new Line2D.Double[bitWidth];
 		btmLines = new Line2D.Double[bitWidth];
@@ -42,6 +52,12 @@ public class SBoxShape extends JPanel
 		}
 		
 		rect = new Rectangle2D.Double(0.5, 0.5, bitWidth*2-1, 2);
+	}
+	
+	public void color(int[] colorIn, int[] colorOut)
+	{
+		colorsIn = Arrays.stream(colorIn).boxed().collect(Collectors.toList());
+		colorsOut = Arrays.stream(colorOut).boxed().collect(Collectors.toList());
 	}
 	
 	@Override

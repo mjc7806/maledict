@@ -1,5 +1,6 @@
 package net.mjcarpenter.csci788.crypto.spn;
 
+import java.util.Arrays;
 import java.util.BitSet;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -38,6 +39,42 @@ public final class Permutation implements SPNComponent
 	public int[] getMapping()
 	{
 		return this.mapping;
+	}
+	
+	public long permuteFwd(long in)
+	{
+		return permute(in, mapping);
+	}
+	
+	public long permuteRev(long in)
+	{
+		return permute(in, reverse);
+	}
+	
+	/*
+	 * Modified conversion code from:
+	 * http://stackoverflow.com/a/29132118/2250867
+	 */
+	private long permute(long in, final int[] map)
+	{
+		byte[] convertIn = new byte[Long.SIZE/Byte.SIZE];
+		for(int i=7; i>=0; i--)
+		{
+			convertIn[i] = (byte)(in&0xFF);
+			in >>= Byte.SIZE;
+		}
+		ArrayUtils.reverse(convertIn);
+		
+		byte[] convertOut = permute(Arrays.copyOfRange(convertIn, 0, mapping.length/Byte.SIZE), map);
+		ArrayUtils.reverse(convertOut);
+		long out = 0;
+		for(int i=0; i<convertOut.length; i++)
+		{
+			out <<= Byte.SIZE;
+			out |= (convertOut[i]&0xFF);
+		}
+		
+		return out;
 	}
 	
 	public byte[] permuteFwd(final byte[] in)
