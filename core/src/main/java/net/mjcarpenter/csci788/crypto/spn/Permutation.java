@@ -6,6 +6,8 @@ import java.util.BitSet;
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+
+import net.mjcarpenter.csci788.util.BitUtils;
 @XStreamAlias("permutation")
 public final class Permutation implements SPNComponent
 {	
@@ -65,40 +67,30 @@ public final class Permutation implements SPNComponent
 	 */
 	private long permute(long in, final int[] map)
 	{
-		byte[] convertIn = new byte[Long.SIZE/Byte.SIZE];
-		for(int i=7; i>=0; i--)
-		{
-			convertIn[i] = (byte)(in&0xFF);
-			in >>= Byte.SIZE;
-		}
-		ArrayUtils.reverse(convertIn);
+		byte[] convertIn  = BitUtils.longToByte(in, map.length/Byte.SIZE);
+		byte[] convertOut = permute(convertIn, map);
 		
-		byte[] convertOut = permute(Arrays.copyOfRange(convertIn, 0, mapping.length/Byte.SIZE), map);
-		ArrayUtils.reverse(convertOut);
-		long out = 0;
-		for(int i=0; i<convertOut.length; i++)
-		{
-			out <<= Byte.SIZE;
-			out |= (convertOut[i]&0xFF);
-		}
-		
-		return out;
+		return BitUtils.byteToLong(convertOut);
 	}
 	
 	public byte[] permuteFwd(final byte[] in)
 	{
-		return permute(in, mapping);
+		byte[] out = permute(in, mapping);
+		ArrayUtils.reverse(out);
+		return out;
 	}
 	
 	public byte[] permuteRev(final byte[] in)
 	{
-		return permute(in, reverse);
+		byte[] out = permute(in, reverse);
+		ArrayUtils.reverse(out);
+		return out;
 	}
 	
 	private byte[] permute(final byte[] in, final int[] map)
 	{
-		if(in.length*8 != map.length)
-			throw new IllegalArgumentException("Input length must match permutation size!");
+		if(in.length*Byte.SIZE != map.length)
+			throw new IllegalArgumentException("Input length must match permutation size! Found "+in.length*Byte.SIZE+" but expected "+map.length+"!");
 		
 		ArrayUtils.reverse(in);
 		BitSet set = BitSet.valueOf(in);
@@ -110,9 +102,7 @@ public final class Permutation implements SPNComponent
 				out.set(map[i]);
 		}
 		
-		byte[] outArray = out.toByteArray();
-		ArrayUtils.reverse(outArray);
-		return outArray;
+		return out.toByteArray();
 	}
 	
 	public int outPosition(final int inPosition)

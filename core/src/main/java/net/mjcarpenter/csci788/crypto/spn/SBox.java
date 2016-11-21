@@ -51,7 +51,7 @@ public final class SBox implements SPNComponent
 	
 	public static SBox noop(final int length)
 	{
-		int[] map = new int[1<<length];
+		int[] map = new int[length];
 		for(int i=0; i<map.length; i++)
 			map[i] = i;
 		
