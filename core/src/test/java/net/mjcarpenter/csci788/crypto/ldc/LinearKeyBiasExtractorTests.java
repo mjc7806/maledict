@@ -73,7 +73,9 @@ public class LinearKeyBiasExtractorTests
 			byte[] plain = new byte[2]; // 16 bits
 			r.nextBytes(plain);
 			
-			KnownPair pair = new KnownPair(plain, spn.encrypt(plain));
+			byte[] cipher = spn.encrypt(plain);
+			
+			KnownPair pair = new KnownPair(plain, cipher);
 			pairs.add(pair);
 		}
 	}

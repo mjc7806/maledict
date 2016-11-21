@@ -1,7 +1,7 @@
 package net.mjcarpenter.csci788.util;
 
-import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.BitSet;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -52,5 +52,25 @@ public final class BitUtils
 		}
 		
 		return out;
+	}
+	
+	/*
+	 * Code modified to suit this application based on the following SE answer:
+	 * http://stackoverflow.com/q/6197411/2250867
+	 */
+	public static byte[] convertBitSetToByte(BitSet inSet, int outLength)
+	{
+		byte[] bytes = new byte[outLength];
+	    for (int i=0; i<inSet.length(); i++)
+	    {
+	        if (inSet.get(i))
+	        {
+	        	bytes[bytes.length-i/Byte.SIZE-1]
+	        			|= 1<<(i%Byte.SIZE);
+	        }
+	    }
+	    ArrayUtils.reverse(bytes);
+	    
+	    return bytes;
 	}
 }
