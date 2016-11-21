@@ -12,12 +12,18 @@ public final class SBox implements SPNComponent
 	
 	@XStreamAlias("map")
 	private final int[]   mapFwd;
+	private final boolean noop;
 	
 	// Derived transient fields.
 	private transient int[][] lat;
 	private transient int[][] ddt;
 	
 	public SBox(final int... mapFwd)
+	{
+		this(false, mapFwd);
+	}
+	
+	private SBox(boolean noop, final int... mapFwd)
 	{	
 		if(BitUtils.countSetBits(mapFwd.length) != 1) // Only one bit set == power of two
 			throw new IllegalArgumentException("SBox size must be power of two!");
@@ -38,6 +44,7 @@ public final class SBox implements SPNComponent
 		
 		
 		this.mapFwd = mapFwd;
+		this.noop = noop;
 		this.lat = constructLAT();
 		this.ddt = constructDDT();
 	}
@@ -48,7 +55,7 @@ public final class SBox implements SPNComponent
 		for(int i=0; i<map.length; i++)
 			map[i] = i;
 		
-		return new SBox(map);
+		return new SBox(true, map);
 	}
 	
 	public SBox invert()
@@ -151,5 +158,11 @@ public final class SBox implements SPNComponent
 		this.ddt = constructDDT();
 		
 		return this;
+	}
+
+	@Override
+	public boolean isNoop()
+	{
+		return noop;
 	}
 }

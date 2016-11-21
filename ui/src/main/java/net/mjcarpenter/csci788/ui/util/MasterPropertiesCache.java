@@ -131,4 +131,9 @@ public class MasterPropertiesCache
 	{
 		namedKeys.put(name, key);
 	}
+
+	public void setVisualizationFrame(SPNVisualizationFrame frm)
+	{
+		vis = frm;	
+	}
 }

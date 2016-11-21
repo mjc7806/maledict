@@ -9,11 +9,18 @@ public final class Key implements SPNComponent
 {
 	@XStreamAsAttribute
 	@XStreamAlias("value")
-	final byte[] key;
+	private final byte[]  key;
+	private final boolean noop;
 	
 	public Key(final byte[] key)
 	{
-		this.key = key;
+		this(false, key);
+	}
+	
+	private Key(boolean noop, final byte[] key)
+	{
+		this.noop = noop;
+		this.key  = key;
 	}
 	
 	public static Key noop(int length)
@@ -26,7 +33,7 @@ public final class Key implements SPNComponent
 			nullKey[i] = 0x0;
 		}
 		
-		return new Key(nullKey);
+		return new Key(true, nullKey);
 	}
 	
 	public byte[] xor(final byte[] in)
@@ -41,5 +48,11 @@ public final class Key implements SPNComponent
 	public int length()
 	{
 		return key.length*8;
+	}
+
+	@Override
+	public boolean isNoop()
+	{
+		return noop;
 	}
 }

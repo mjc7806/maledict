@@ -3,6 +3,8 @@ package net.mjcarpenter.csci788.ui.geom;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -11,6 +13,8 @@ import javax.swing.JPanel;
 
 public class SBoxRow extends JPanel
 {
+	private static final int USR_HEIGHT = 3;
+	
 	public SBoxShape[] shapes;
 	
 	public SBoxRow(int bitWidth, int numBoxes)
@@ -29,6 +33,28 @@ public class SBoxRow extends JPanel
 		
 		//add(Box.createHorizontalGlue());
 		
+		/*addComponentListener(new ComponentAdapter()
+				{
+					@Override
+					public void componentResized(ComponentEvent e)
+					{
+						//int height = getHeight();
+						int width = getWidth();
+						
+						setSize(new Dimension(width, width*(USR_HEIGHT/numBoxes*bitWidth)));
+						
+						for(SBoxShape shape: shapes)
+						{
+							shape.setSize(new Dimension((width/numBoxes), getHeight()));
+							shape.revalidate();
+							shape.repaint();
+						}
+						
+						revalidate();
+						repaint();
+					}
+				});
+		*/
 		setVisible(true);
 	}
 	
@@ -37,6 +63,7 @@ public class SBoxRow extends JPanel
 		return this.shapes;
 	}
 	
+	/*
 	@Override
 	public Dimension getPreferredSize()
 	{
@@ -51,7 +78,7 @@ public class SBoxRow extends JPanel
 		return new Dimension(
 				shapes[0].getMaximumSize().height,
 				shapes[0].getMaximumSize().width);
-	}
+	}//*/
 	
 	public static void main(String[] args)
 	{

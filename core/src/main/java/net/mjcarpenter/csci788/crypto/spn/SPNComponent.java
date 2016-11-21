@@ -4,5 +4,5 @@ import java.io.Serializable;
 
 public interface SPNComponent extends Serializable
 {
-	
+	public boolean isNoop();
 }

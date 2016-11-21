@@ -14,9 +14,14 @@ public final class SPNetwork implements SPNComponent
 	private final int blockSize;
 	@XStreamImplicit
 	private final Round[] rounds;
+	private final boolean noop;
 	
 	public SPNetwork(final int blockSize, final Round[] rounds)
-	throws IllegalArgumentException
+	{
+		this(false, blockSize, rounds);
+	}
+	
+	private SPNetwork(boolean noop, final int blockSize, final Round[] rounds)
 	{
 		// Validate input
 		for(Round r: rounds)
@@ -25,6 +30,7 @@ public final class SPNetwork implements SPNComponent
 				throw new IllegalArgumentException("Each round's block size must match network's block size!");
 		}
 		
+		this.noop      = noop;
 		this.rounds    = rounds;
 		this.blockSize = blockSize;
 	}
@@ -53,7 +59,7 @@ public final class SPNetwork implements SPNComponent
 					boxes);
 		}
 		
-		return new SPNetwork(blockSize, rounds);
+		return new SPNetwork(true, blockSize, rounds);
 	}
 	
 	public byte[] encrypt(final byte[] in)
@@ -88,5 +94,11 @@ public final class SPNetwork implements SPNComponent
 	public Round[] getRounds()
 	{
 		return rounds;
+	}
+
+	@Override
+	public boolean isNoop()
+	{
+		return noop;
 	}
 }

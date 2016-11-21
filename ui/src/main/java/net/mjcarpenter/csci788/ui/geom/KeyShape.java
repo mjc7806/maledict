@@ -5,6 +5,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
@@ -14,7 +16,7 @@ import javax.swing.JPanel;
 public class KeyShape extends JPanel
 {
 	private static final int USR_HEIGHT = 2;
-	private static final int MAX_WIDTH_PX = 800;
+	//private static final int MAX_WIDTH_PX = 800;
 	
 	private final double ratioHeightByWidth;
 	private double widthScale;
@@ -42,6 +44,21 @@ public class KeyShape extends JPanel
 		}
 		
 		rect = new Rectangle2D.Double(0.5, 0.5, bitWidth*2-1, 1);
+		
+		/*addComponentListener(new ComponentAdapter()
+		{
+			@Override
+			public void componentResized(ComponentEvent e)
+			{
+				//int height = getHeight();
+				int width = getWidth();
+				
+				setSize(new Dimension(width, width*(USR_HEIGHT/bitWidth)));
+				
+				revalidate();
+				repaint();
+			}
+		});*/
 	}
 	
 	@Override
@@ -72,6 +89,7 @@ public class KeyShape extends JPanel
 		widthScale = d.getWidth()/ratioHeightByWidth;
 	}
 	
+	/*
 	@Override
 	public Dimension getMaximumSize()
 	{
@@ -83,6 +101,7 @@ public class KeyShape extends JPanel
 	{
 		return new Dimension(MAX_WIDTH_PX, (int)Math.round(MAX_WIDTH_PX/widthScale));
 	}
+	//*/
 	
 	public static void main(String[] args)
 	{

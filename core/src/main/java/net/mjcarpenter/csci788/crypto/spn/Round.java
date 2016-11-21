@@ -11,6 +11,7 @@ public class Round implements SPNComponent
 {
 	@XStreamAsAttribute
 	private final int         bitLength;
+	private final boolean     noop;
 	
 	@XStreamImplicit
 	private final SBox[]      roundBoxes;
@@ -20,6 +21,11 @@ public class Round implements SPNComponent
 	private final Permutation perm;
 	
 	public Round(final int bitLength, final Key subKey, final Permutation perm, final SBox... roundBoxes)
+	{
+		this(false, bitLength, subKey, perm, roundBoxes);
+	}
+	
+	private Round(boolean noop, final int bitLength, final Key subKey, final Permutation perm, final SBox... roundBoxes)
 	{
 		int boxLength = 0;
 		for(int i=0; i<roundBoxes.length; i++)
@@ -38,10 +44,25 @@ public class Round implements SPNComponent
 			throw new IllegalArgumentException("Subkey length must match bit length!");
 		
 		
+		this.noop       = noop;
 		this.bitLength  = bitLength;
 		this.roundBoxes = roundBoxes;
 		this.subKey     = subKey;
 		this.perm       = perm;
+	}
+	
+	public static Round noop(int bitLength, int numBoxes)
+	{
+		SBox noopBox = SBox.noop(bitLength/numBoxes);
+		SBox[] boxSet = new SBox[numBoxes];
+		for(int i=0; i<numBoxes; i++)
+		{
+			boxSet[i] = noopBox;
+		}
+		
+		Key k = Key.noop(bitLength);
+		Permutation p = Permutation.noop(bitLength);
+		return new Round(true, bitLength, k, p, boxSet);
 	}
 	
 	public Round replaceKey(final Key k)
@@ -122,5 +143,11 @@ public class Round implements SPNComponent
 		}
 		
 		return subKey.xor(outSet.toByteArray());
+	}
+
+	@Override
+	public boolean isNoop()
+	{
+		return noop;
 	}
 }
