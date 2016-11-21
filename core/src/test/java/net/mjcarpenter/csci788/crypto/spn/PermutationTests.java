@@ -1,12 +1,15 @@
 package net.mjcarpenter.csci788.crypto.spn;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 import javax.xml.bind.DatatypeConverter;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import net.mjcarpenter.csci788.util.BitUtils;
 
 public final class PermutationTests
 {
@@ -34,7 +37,39 @@ public final class PermutationTests
 	}
 	
 	@Test
-	public void testPermutationsAccurate()
+	public void testLongPermutationsAccurate()
+	{
+		long testA  = Long.parseLong("0000101100000000", 2);
+		long testB  = Long.parseLong("0000010100000101", 2);
+		long testC  = Long.parseLong("0000000011010000", 2);
+				
+		long expectedA = Long.parseLong("0100000001000100", 2);
+		long expectedB = Long.parseLong("0000010100000101", 2);
+		long expectedC = Long.parseLong("0010001000000010", 2);
+		
+		long outA = perm.permuteFwd(testA);
+		long outB = perm.permuteFwd(testB);
+		long outC = perm.permuteFwd(testC);
+		
+		assertEquals(String.format("Permutation of testA failed: Expected [%s] but got [%s]",
+				String.format("%16s", Long.toBinaryString(expectedA)).replace(' ', '0'),
+				String.format("%16s", Long.toBinaryString(outA)).replace(' ', '0')),
+				expectedA,
+				outA);
+		assertEquals(String.format("Permutation of testB failed: Expected [%s] but got [%s]",
+				String.format("%16s", Long.toBinaryString(expectedB)).replace(' ', '0'),
+				String.format("%16s", Long.toBinaryString(outB)).replace(' ', '0')),
+				expectedB,
+				outB);
+		assertEquals(String.format("Permutation of testC failed: Expected [%s] but got [%s]",
+				String.format("%16s", Long.toBinaryString(expectedC)).replace(' ', '0'),
+				String.format("%16s", Long.toBinaryString(outC)).replace(' ', '0')),
+				expectedC,
+				outC);
+	}
+	
+	@Test
+	public void testBytePermutationsAccurate()
 	throws Exception
 	{
 		byte[] testA = {(byte)0xab,(byte)0x6f};
