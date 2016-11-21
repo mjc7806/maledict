@@ -102,7 +102,8 @@ public final class Permutation implements SPNComponent
 				out.set(map[i]);
 		}
 		
-		return out.toByteArray();
+		//return out.toByteArray();
+		return BitUtils.convertBitSetToByte(out, in.length);
 	}
 	
 	public int outPosition(final int inPosition)
