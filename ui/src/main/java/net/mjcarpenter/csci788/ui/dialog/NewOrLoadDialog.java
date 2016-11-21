@@ -28,6 +28,7 @@ import net.mjcarpenter.csci788.crypto.spn.Round;
 import net.mjcarpenter.csci788.crypto.spn.SBox;
 import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
 import net.mjcarpenter.csci788.ui.dialog.component.SPNDefinitionDialog;
+import net.mjcarpenter.csci788.ui.dialog.component.SPNVisualizationFrame;
 import net.mjcarpenter.csci788.ui.util.MasterPropertiesCache;
 import net.mjcarpenter.csci788.util.HexByteConverter;
 
@@ -137,6 +138,8 @@ public class NewOrLoadDialog extends JFrame implements ActionListener
 							{
 								MasterPropertiesCache.getInstance().setSPN(spnRef);
 								
+								SPNVisualizationFrame frm = new SPNVisualizationFrame(MasterPropertiesCache.getInstance().getSPN());
+								MasterPropertiesCache.getInstance().setVisualizationFrame(frm);
 								new SPNDefinitionDialog(MasterPropertiesCache.getInstance().getSPN());
 							}
 						});

@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -24,7 +26,22 @@ public class RoundPanel extends JPanel
 		this.key  = key;
 		this.srow = srow;
 		
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
+		
+		/*addComponentListener(new ComponentAdapter()
+		{
+			@Override
+			public void componentResized(ComponentEvent e)
+			{
+				//int height = getHeight();
+				int width = getWidth();
+				
+				setSize(new Dimension(width, perm.getHeight()+key.getHeight()+srow.getHeight()));
+				
+				revalidate();
+				repaint();
+			}
+		});*/
 		
 		arrange();
 	}
@@ -66,18 +83,18 @@ public class RoundPanel extends JPanel
 	{
 		this.removeAll();
 		
-		Box containerBox = Box.createVerticalBox();
-		containerBox.add(Box.createVerticalGlue());
-		containerBox.add(key);
-		containerBox.add(srow);
+		//Box containerBox = Box.createVerticalBox();
+		add(Box.createVerticalGlue());
+		add(key);
+		add(srow);
 		//Box b = Box.createHorizontalBox();
 		//for(SBoxShape shape: srow.getShapes())
 		//{
 		//	b.add(shape);
 		//}
 		//add(b);
-		containerBox.add(perm);
-		containerBox.add(Box.createHorizontalGlue());
+		add(perm);
+		add(Box.createVerticalGlue());
 		
 		/*
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -97,7 +114,7 @@ public class RoundPanel extends JPanel
 		*/
 		perm.setVisible(true);
 		
-		add(containerBox);
+		//add(containerBox);
 		setVisible(true);
 	}
 	

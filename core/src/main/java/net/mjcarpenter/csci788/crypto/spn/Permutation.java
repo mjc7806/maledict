@@ -8,17 +8,25 @@ import org.apache.commons.lang3.ArrayUtils;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("permutation")
 public final class Permutation implements SPNComponent
-{
+{	
 	private static final String VALIDATION_INDICES = "All inputs must have corresponding output.";
 	
 	@XStreamAlias("mapping")
-	private final     int[] mapping;
+	private final int[] mapping;
+	
+	private final boolean noop;
 	
 	// Derived transient fields.
 	private transient int[] reverse;
 	
 	public Permutation(final int... mapping)
 	{
+		this(false, mapping);
+	}
+	
+	private Permutation(boolean noop, final int... mapping)
+	{
+		this.noop = noop;
 		this.mapping = mapping;
 		this.reverse = constructReverse();
 	}
@@ -28,7 +36,7 @@ public final class Permutation implements SPNComponent
 		int[] map = new int[length];
 		for(int i=0; i<map.length; i++)
 			map[i] = i;
-		return new Permutation(map);
+		return new Permutation(true, map);
 	}
 	
 	public int length()
@@ -147,5 +155,11 @@ public final class Permutation implements SPNComponent
 		// Reconstruct derivable transient fields during deserialization.
 		this.reverse = constructReverse();
 		return this;
+	}
+
+	@Override
+	public boolean isNoop()
+	{
+		return noop;
 	}
 }
