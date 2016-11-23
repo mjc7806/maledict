@@ -15,6 +15,9 @@ public class Round implements SPNComponent
 {
 	@XStreamAsAttribute
 	private final int         bitLength;
+	
+	@XStreamAsAttribute
+	@XStreamAlias("noop")
 	private final boolean     noop;
 	
 	@XStreamImplicit
@@ -57,7 +60,7 @@ public class Round implements SPNComponent
 	
 	public static Round noop(int bitLength, int numBoxes)
 	{
-		SBox noopBox = SBox.noop(bitLength/numBoxes);
+		SBox noopBox = SBox.noop(1<<(bitLength/numBoxes));
 		SBox[] boxSet = new SBox[numBoxes];
 		for(int i=0; i<numBoxes; i++)
 		{
@@ -136,7 +139,7 @@ public class Round implements SPNComponent
 	public byte[] invert(final byte[] in)
 	{
 		BitSet set = BitSet.valueOf(perm.permuteRev(in));
-		BitSet outSet = new BitSet(in.length*8);
+		BitSet outSet = new BitSet(in.length*Byte.SIZE);
 		
 		for(int i=0; i<roundBoxes.length; i++)
 		{
@@ -147,7 +150,8 @@ public class Round implements SPNComponent
 			outSet.or(subSet);
 		}
 		
-		return subKey.xor(outSet.toByteArray());
+		byte[] osbytes = BitUtils.convertBitSetToByte(outSet, in.length);
+		return subKey.xor(osbytes);
 	}
 
 	@Override

@@ -76,7 +76,7 @@ public class SPNVisualizationFrame extends JFrame
 				//int height = getHeight();
 				int width = getWidth();
 				
-				panel.setSize(new Dimension(width, rounds[0].getHeight()*rounds.length));
+				panel.setPreferredSize(new Dimension(width, rounds[0].getHeight()*rounds.length));
 				
 				panel.revalidate();
 				panel.repaint();
@@ -85,7 +85,7 @@ public class SPNVisualizationFrame extends JFrame
 			}
 		});
 		
-		add(new JButton("TEST"));
+		//add(new JButton("TEST"));
 		
 		//JScrollPane jsp = new JScrollPane(panel);
 		add(panel);

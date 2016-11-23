@@ -3,6 +3,7 @@ package net.mjcarpenter.csci788.crypto.spn;
 import java.util.Arrays;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 import net.mjcarpenter.csci788.util.BitUtils;
 @XStreamAlias("sbox")
@@ -12,6 +13,9 @@ public final class SBox implements SPNComponent
 	
 	@XStreamAlias("map")
 	private final int[]   mapFwd;
+	
+	@XStreamAsAttribute
+	@XStreamAlias("noop")
 	private final boolean noop;
 	
 	// Derived transient fields.

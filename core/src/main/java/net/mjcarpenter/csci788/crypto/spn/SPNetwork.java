@@ -7,14 +7,21 @@ import javax.xml.bind.DatatypeConverter;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+
+import net.mjcarpenter.csci788.util.BitUtils;
 @XStreamAlias("spn")
 public final class SPNetwork implements SPNComponent
 {
 	@XStreamAsAttribute
 	private final int blockSize;
+	
+	@XStreamAsAttribute
+	@XStreamAlias("noop")
+	private final boolean noop;
+	
 	@XStreamImplicit
 	private final Round[] rounds;
-	private final boolean noop;
+	
 	
 	public SPNetwork(final int blockSize, final Round[] rounds)
 	{
@@ -50,7 +57,7 @@ public final class SPNetwork implements SPNComponent
 			SBox[] boxes = new SBox[sboxPerRound];
 			for(int j=0; j<sboxPerRound; j++)
 			{
-				boxes[j] = SBox.noop(sBoxBitSize);
+				boxes[j] = SBox.noop(1<<sBoxBitSize);
 			}
 			
 			rounds[i] = new Round(blockSize,
@@ -84,6 +91,20 @@ public final class SPNetwork implements SPNComponent
 		}
 		
 		return out;
+	}
+	
+	public long encrypt(final long in)
+	{
+		byte[] inByte = BitUtils.longToByte(in, blockSize/Byte.SIZE);
+		byte[] res = encrypt(inByte);
+		return BitUtils.byteToLong(res);
+	}
+	
+	public long decrypt(final long in)
+	{
+		byte[] inByte = BitUtils.longToByte(in, blockSize/Byte.SIZE);
+		byte[] res = decrypt(inByte);
+		return BitUtils.byteToLong(res);
 	}
 	
 	public int getBlockSize()

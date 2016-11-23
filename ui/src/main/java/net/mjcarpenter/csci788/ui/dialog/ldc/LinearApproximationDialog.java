@@ -6,7 +6,8 @@ import java.util.BitSet;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import net.mjcarpenter.csci788.crypto.ldc.Approximation;
+import net.mjcarpenter.csci788.crypto.ldc.AbstractApproximation;
+import net.mjcarpenter.csci788.crypto.ldc.LinearApproximation;
 import net.mjcarpenter.csci788.crypto.spn.Round;
 import net.mjcarpenter.csci788.crypto.spn.SBox;
 import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
@@ -89,9 +90,9 @@ public final class LinearApproximationDialog extends ApproximationDialog
 		return res;
 	}
 	
-	public Approximation getCipherapproximation()
+	public LinearApproximation getCipherApproximation()
 	{
-		return new Approximation(getFullInMaskForRound(0), getFullOutMaskForRound(roundOutMasks.length-1));
+		return new LinearApproximation(getFullInMaskForRound(0), getFullOutMaskForRound(roundOutMasks.length-1));
 	}
 	
 	private long getFullInMaskForRound(int index)

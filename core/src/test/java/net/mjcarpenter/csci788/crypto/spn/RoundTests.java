@@ -6,8 +6,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import junit.framework.TestCase;
-
 public final class RoundTests
 {
 	private Round round;
@@ -39,7 +37,7 @@ public final class RoundTests
 	}
 	
 	@Test
-	public void testRound()
+	public void testRoundByte()
 	throws Exception
 	{
 		byte[] input = new byte[]{(byte)0xab,(byte)0x06};
@@ -47,7 +45,7 @@ public final class RoundTests
 		
 		byte[] output = round.process(input);
 		
-		assertArrayEquals("Output did not match expected input.",
+		assertArrayEquals("Output did not match expected value.",
 				output, expected);
 	}
 }

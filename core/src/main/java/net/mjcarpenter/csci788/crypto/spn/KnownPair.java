@@ -1,7 +1,5 @@
 package net.mjcarpenter.csci788.crypto.spn;
 
-import java.util.Arrays;
-
 public final class KnownPair
 {
 	private final byte[] plaintext;

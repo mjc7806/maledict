@@ -1,6 +1,7 @@
 package net.mjcarpenter.csci788.crypto.spn;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.After;
@@ -25,7 +26,7 @@ public final class SPNetworkTests
 	}
 	
 	@Test
-	public void testEncryption()
+	public void testEncryptionWithByteArray()
 	throws Exception
 	{
 		byte[] plaintext = new byte[]{(byte)0xab,(byte)0x06};
@@ -38,7 +39,20 @@ public final class SPNetworkTests
 	}
 	
 	@Test
-	public void testDecryption()
+	public void testEncryptionWithLong()
+	throws Exception
+	{
+		long plaintext  = Long.valueOf("ab06", 16);//new byte[]{(byte)0xab,(byte)0x06};
+		long expected   = Long.valueOf("8035", 16);//new byte[]{(byte)0x80,(byte)0x35};
+		
+		long ciphertext = spn.encrypt(plaintext);
+		
+		assertEquals("Ciphertext did not match expected result.",
+				expected, ciphertext);
+	}
+	
+	@Test
+	public void testDecryptionWithByteArray()
 	throws Exception
 	{
 		byte[] ciphertext = new byte[]{(byte)0x80,(byte)0x35};
@@ -47,6 +61,19 @@ public final class SPNetworkTests
 		byte[] plaintext = spn.decrypt(ciphertext);
 		
 		assertArrayEquals("Plaintext did not match expected result.",
+				expected, plaintext);
+	}
+	
+	@Test
+	public void testDecryptionWithLong()
+	throws Exception
+	{
+		long ciphertext  = Long.valueOf("8035", 16);
+		long expected    = Long.valueOf("ab06", 16);
+		
+		long plaintext   = spn.decrypt(ciphertext);
+		
+		assertEquals("Plaintext did not match expected result.",
 				expected, plaintext);
 	}
 	

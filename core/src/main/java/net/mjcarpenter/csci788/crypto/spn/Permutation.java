@@ -1,11 +1,11 @@
 package net.mjcarpenter.csci788.crypto.spn;
 
-import java.util.Arrays;
 import java.util.BitSet;
 
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 import net.mjcarpenter.csci788.util.BitUtils;
 @XStreamAlias("permutation")
@@ -16,6 +16,8 @@ public final class Permutation implements SPNComponent
 	@XStreamAlias("mapping")
 	private final int[] mapping;
 	
+	@XStreamAsAttribute
+	@XStreamAlias("noop")
 	private final boolean noop;
 	
 	// Derived transient fields.
@@ -61,14 +63,12 @@ public final class Permutation implements SPNComponent
 		return permute(in, reverse);
 	}
 	
-	/*
-	 * Modified conversion code from:
-	 * http://stackoverflow.com/a/29132118/2250867
-	 */
 	private long permute(long in, final int[] map)
 	{
 		byte[] convertIn  = BitUtils.longToByte(in, map.length/Byte.SIZE);
 		byte[] convertOut = permute(convertIn, map);
+		
+		ArrayUtils.reverse(convertOut);
 		
 		return BitUtils.byteToLong(convertOut);
 	}
@@ -102,7 +102,6 @@ public final class Permutation implements SPNComponent
 				out.set(map[i]);
 		}
 		
-		//return out.toByteArray();
 		return BitUtils.convertBitSetToByte(out, in.length);
 	}
 	

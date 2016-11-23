@@ -343,17 +343,22 @@ public class PermutationWeb extends JPanel
 			
 			g2.scale(widthScale, heightScale);
 			
-			//g2.scale(getWidth()/(2*indexMappings.length), getHeight()/USR_HEIGHT_END);
-			g2.setStroke(new BasicStroke((float)2.0/widthScale));
-			
-			for(Line2D line: edgeLines)
+			for(int i=0; i<edgeLines.length; i++)
 			{
-				g2.draw(line);
-			}
-			
-			for(Ellipse2D pin: pinHeads)
-			{
-				g2.draw(pin);
+				int idxToColor = (EndPanelType.HEADER.equals(this.endType)) ? i : indexMappings[i];
+				if(colors.contains(idxToColor))
+				{
+					g2.setStroke(new BasicStroke((float)3.0/widthScale));
+					g2.setColor(Color.BLUE);
+				}
+				else
+				{
+					g2.setStroke(new BasicStroke((float)2.0/widthScale));
+					g2.setColor(Color.BLACK);
+				}
+				
+				g2.draw(edgeLines[i]);
+				g2.draw(pinHeads[i]);
 			}
 		}
 	}
@@ -373,13 +378,6 @@ public class PermutationWeb extends JPanel
 		{
 			widthFactor  = d.getWidth()  / (double)widthMax;
 			heightFactor = d.getHeight() / (double)heightMax;
-		}
-		
-		/*@Override
-		public Dimension getMaximumSize()
-		{
-			return new Dimension(Integer.MAX_VALUE, getPreferredSize().height);
-		}
-		//*/		
+		}	
 	}
 }
