@@ -56,7 +56,7 @@ public abstract class TableSelectionDialog extends JDialog implements ActionList
 			for(int j=0; j<table[i].length; j++)
 			{
 				buttons[i][j] = new CoordinateToggleButton(String.valueOf(table[i][j]), i, j);
-				buttons[i][j].setEnabled(table[i][j] != 0);
+				buttons[i][j].setEnabled(i != 0 || j != 0 || table[i][j] != 0);
 				buttons[i][j].setSelected(false);
 				buttons[i][j].addActionListener(this);
 				tablePanel.add(buttons[i][j]);

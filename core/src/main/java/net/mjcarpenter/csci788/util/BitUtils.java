@@ -30,25 +30,33 @@ public final class BitUtils
 		return (((i + (i >>> 4)) & 0x0F0F0F0F) * 0x01010101) >>> 24;
 	}
 	
+	/*
+	 * Modified conversion code from:
+	 * http://stackoverflow.com/a/29132118/2250867
+	 */
 	public static byte[] longToByte(long in, int trimTo)
 	{
 		byte[] convertIn = new byte[Long.SIZE/Byte.SIZE];
-		for(int i=7; i>=0; i--)
+		for(int i=convertIn.length-1; i>=0; i--)
 		{
 			convertIn[i] = (byte)(in&0xFF);
 			in >>>= Byte.SIZE;
 		}
+				
 		return Arrays.copyOfRange(convertIn, convertIn.length-trimTo, convertIn.length);
 	}
 	
+	/*
+	 * Modified conversion code from:
+	 * http://stackoverflow.com/a/29132118/2250867
+	 */
 	public static long byteToLong(byte[] in)
 	{
-		ArrayUtils.reverse(in);
 		long out = 0;
 		for(int i=0; i<in.length; i++)
 		{
 			out <<= Byte.SIZE;
-			out |= (in[i]&0xFF);
+			out ^= (in[i]&0xFF);
 		}
 		
 		return out;

@@ -28,14 +28,9 @@ subprojects {
         jcenter()
     }
     
-    project(':common') {
-        apply plugin: 'java'
-    }
-
     project(':core') {
         apply plugin: 'java'
         dependencies {
-            // compile project(':common')
             compile     'org.apache.commons:commons-lang3:3.5'
             compile     'com.thoughtworks.xstream:xstream:1.4.9'
             testCompile 'junit:junit:4.12'
@@ -50,12 +45,10 @@ subprojects {
     project(':ui') {
         apply plugin: 'java'
         dependencies {
-            // compile project(':common')
-			compile     project(':core')
+            compile     project(':core')
             compile     'org.apache.commons:commons-lang3:3.5'
             compile     'com.fifesoft:rsyntaxtextarea:2.6.0'
             compile     'com.thoughtworks.xstream:xstream:1.4.9'
-            testCompile 'junit:junit:4.12'
         }
         jar {
             manifest {
