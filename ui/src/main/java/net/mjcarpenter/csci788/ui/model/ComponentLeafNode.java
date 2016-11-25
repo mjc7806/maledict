@@ -7,14 +7,13 @@ import javax.swing.tree.TreeNode;
 import net.mjcarpenter.csci788.crypto.spn.Round;
 import net.mjcarpenter.csci788.crypto.spn.SPNComponent;
 
-public abstract class ComponentLeafNode<T extends SPNComponent> implements ComponentTreeNode<T>
+public abstract class ComponentLeafNode<T extends SPNComponent> extends ComponentTreeNode<T>
 {
-	protected T component;
 	protected ComponentTreeNode<Round> parent;
 	
-	public ComponentLeafNode(T component, ComponentTreeNode<Round> parent)
+	public ComponentLeafNode(T component, ComponentTreeNode<Round> parent, Class<T> clazz)
 	{
-		this.component = component;
+		super(component, clazz);
 		this.parent = parent;
 	}
 	

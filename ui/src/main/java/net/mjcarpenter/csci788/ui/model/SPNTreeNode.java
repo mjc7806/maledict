@@ -12,14 +12,14 @@ import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
 import net.mjcarpenter.csci788.ui.dialog.component.ComponentDefinitionDialog;
 import net.mjcarpenter.csci788.ui.util.MasterPropertiesCache;
 
-public class SPNTreeNode implements ComponentTreeNode<SPNetwork>
+public class SPNTreeNode extends ComponentTreeNode<SPNetwork>
 {
-	private SPNetwork component;
 	private List<ComponentTreeNode<Round>> children;
 	
 	public SPNTreeNode(SPNetwork component)
 	{
-		this.component = component;
+		super(component, SPNetwork.class);
+		
 		List<ComponentTreeNode<Round>> children = new ArrayList<ComponentTreeNode<Round>>();
 		for(Round each: this.component.getRounds())
 		{
@@ -27,12 +27,6 @@ public class SPNTreeNode implements ComponentTreeNode<SPNetwork>
 		}
 		
 		this.children = Collections.unmodifiableList(children);
-	}
-	
-	@Override
-	public SPNetwork getComponent()
-	{
-		return component;
 	}
 	
 	@Override

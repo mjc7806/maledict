@@ -22,23 +22,19 @@ import javax.swing.SwingUtilities;
 import javax.swing.tree.TreeSelectionModel;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.Converter;
 
 import net.mjcarpenter.csci788.crypto.spn.Key;
 import net.mjcarpenter.csci788.crypto.spn.Permutation;
-import net.mjcarpenter.csci788.crypto.spn.Round;
 import net.mjcarpenter.csci788.crypto.spn.SBox;
 import net.mjcarpenter.csci788.crypto.spn.SPNComponent;
 import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
 import net.mjcarpenter.csci788.ui.component.DummyFrame;
 import net.mjcarpenter.csci788.ui.dialog.ldc.LinearApproximationDialog;
 import net.mjcarpenter.csci788.ui.model.ComponentLeafNode;
-import net.mjcarpenter.csci788.ui.model.KeyTreeNode;
 import net.mjcarpenter.csci788.ui.model.RoundTreeNode;
 import net.mjcarpenter.csci788.ui.model.SPNTreeModel;
 import net.mjcarpenter.csci788.ui.model.SPNTreeNode;
 import net.mjcarpenter.csci788.ui.util.MasterPropertiesCache;
-import net.mjcarpenter.csci788.util.HexByteConverter;
 
 @SuppressWarnings("serial")
 public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> implements ActionListener, MouseListener
@@ -136,7 +132,7 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 		}
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings("unchecked")
 	@Override
 	public void mouseClicked(MouseEvent arg0)
 	{
@@ -146,9 +142,9 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 			spnTree.setSelectionRow(row);
 			Object selected = spnTree.getLastSelectedPathComponent();
 			
-			if(selected instanceof ComponentLeafNode<?>)
+			if(selected instanceof ComponentLeafNode)
 			{
-				ComponentLeafNode<?> cln = (ComponentLeafNode<?>)selected;
+				ComponentLeafNode<SPNComponent> cln = (ComponentLeafNode<SPNComponent>)selected;
 				
 				boolean editAllowed = true;
 				
@@ -156,12 +152,12 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 				if(((RoundTreeNode)cln.getParent()).indexOnParent() ==
 						((SPNTreeNode)(((SPNTreeModel)spnTree.getModel()).getRoot())).getChildCount()-1)
 				{
-					editAllowed = (cln instanceof KeyTreeNode);
+					editAllowed = cln.getTypeClass().equals(Key.class);
 				}
 				
 				if(editAllowed)
 				{
-					rightClickMenu = new ContextMenu((ComponentLeafNode<?>)selected);
+					rightClickMenu = new ContextMenu<SPNComponent>(cln, cln.getTypeClass());
 					rightClickMenu.show(arg0.getComponent(), arg0.getX(), arg0.getY());
 				}
 			}
@@ -203,7 +199,6 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 		System.exit(0);
 	}
 	
-	@SuppressWarnings("serial")
 	private class ContextMenu<T extends SPNComponent> extends JPopupMenu
 	{
 		private ComponentLeafNode<T> selectedComponent;
@@ -211,130 +206,116 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 		private JMenuItem jmiStore;
 		private JMenuItem jmiRestore;
 		
-		public ContextMenu(ComponentLeafNode<T> sc)
+		public ContextMenu(ComponentLeafNode<T> sc, Class<T> clazz)
 		{
 			this.selectedComponent = sc;
 			jmiEdit = new JMenuItem("Edit");
 			add(jmiEdit);
 			
-			jmiEdit.addActionListener(new ActionListener()
+			jmiEdit.addActionListener(ae ->
 					{
-						@Override
-						public void actionPerformed(ActionEvent ae)
-						{
-							ComponentDefinitionDialog<T> selectedDialog = selectedComponent.editWithDialog();
-							selectedComponent.replaceComponent(selectedDialog.component);
-						}
+						ComponentDefinitionDialog<T> selectedDialog = selectedComponent.editWithDialog();
+						selectedComponent.replaceComponent(selectedDialog.component);
 					});
 			
 			jmiStore = new JMenuItem("Store Copy");
 			add(jmiStore);
 			
-			jmiStore.addActionListener(new ActionListener()
+			jmiStore.addActionListener(ae ->
 					{
-						@Override
-						public void actionPerformed(ActionEvent ae)
+						T componentToStore = selectedComponent.getComponent();
+						String response = JOptionPane.showInputDialog("Insert name to store under.");
+						response = (response == null) ? "" : response.trim();
+						
+						boolean storeSuccessful = false;
+						
+						if(componentToStore instanceof Key)
 						{
-							T componentToStore = selectedComponent.getComponent();
-							String response = JOptionPane.showInputDialog("Insert name to store under.");
-							response = (response == null) ? "" : response.trim();
+							Key k = MasterPropertiesCache.getInstance().getNamedKey(response);
 							
-							boolean storeSuccessful = false;
+							if(k == null || !response.isEmpty())
+							{
+								MasterPropertiesCache.getInstance().saveNamedKey(response, (Key)componentToStore);
+								storeSuccessful = true;
+							}
+						}
+						else if(componentToStore instanceof Permutation)
+						{
+							Permutation p = MasterPropertiesCache.getInstance().getNamedPermutation(response);
 							
-							if(componentToStore instanceof Key)
+							if(p == null || !response.isEmpty())
 							{
-								Key k = MasterPropertiesCache.getInstance().getNamedKey(response);
-								
-								if(k == null || !response.isEmpty())
-								{
-									MasterPropertiesCache.getInstance().saveNamedKey(response, (Key)componentToStore);
-									storeSuccessful = true;
-								}
+								MasterPropertiesCache.getInstance().saveNamedPermutation(response, (Permutation)componentToStore);
+								storeSuccessful = true;
 							}
-							else if(componentToStore instanceof Permutation)
-							{
-								Permutation p = MasterPropertiesCache.getInstance().getNamedPermutation(response);
-								
-								if(p == null || !response.isEmpty())
-								{
-									MasterPropertiesCache.getInstance().saveNamedPermutation(response, (Permutation)componentToStore);
-									storeSuccessful = true;
-								}
-							}
-							else if(componentToStore instanceof SBox)
-							{
-								SBox s = MasterPropertiesCache.getInstance().getNamedSBox(response);
-								
-								if(s == null || !response.isEmpty())
-								{
-									MasterPropertiesCache.getInstance().saveNamedSBox(response, (SBox)componentToStore);
-									storeSuccessful = true;
-								}
-							}
+						}
+						else if(componentToStore instanceof SBox)
+						{
+							SBox s = MasterPropertiesCache.getInstance().getNamedSBox(response);
 							
-							if(!storeSuccessful)
+							if(s == null || !response.isEmpty())
 							{
-								JOptionPane.showMessageDialog(null,
-										"Cannot store component under that name.",
-										"ERROR",
-										JOptionPane.ERROR_MESSAGE);
+								MasterPropertiesCache.getInstance().saveNamedSBox(response, (SBox)componentToStore);
+								storeSuccessful = true;
 							}
+						}
+						
+						if(!storeSuccessful)
+						{
+							JOptionPane.showMessageDialog(null,
+									"Cannot store component under that name.",
+									"ERROR",
+									JOptionPane.ERROR_MESSAGE);
 						}
 					});
 			
 			jmiRestore = new JMenuItem("Restore Named Copy");
 			add(jmiRestore);
 			
-			jmiRestore.addActionListener(new ActionListener()
+			jmiRestore.addActionListener(ae ->
 			{
-				@SuppressWarnings("unchecked")
-				@Override
-				public void actionPerformed(ActionEvent ae)
+				String response = JOptionPane.showInputDialog("Insert name to restore from.");
+				response = (response == null) ? "" : response.trim();
+				
+				boolean retoreSuccessful = false;
+				
+				if(clazz.equals(Key.class))
 				{
-					T componentToRestore = selectedComponent.getComponent();
-					String response = JOptionPane.showInputDialog("Insert name to restore from.");
-					response = (response == null) ? "" : response.trim();
+					Key k = MasterPropertiesCache.getInstance().getNamedKey(response);
 					
-					boolean retoreSuccessful = false;
+					if(k == null || !response.isEmpty())
+					{
+						selectedComponent.replaceComponent(clazz.cast(k));
+						retoreSuccessful = true;
+					}
+				}
+				else if(clazz.equals(Permutation.class))
+				{
+					Permutation p = MasterPropertiesCache.getInstance().getNamedPermutation(response);
 					
-					if(componentToRestore instanceof Key)
+					if(p == null || !response.isEmpty())
 					{
-						Key k = MasterPropertiesCache.getInstance().getNamedKey(response);
-						
-						if(k == null || !response.isEmpty())
-						{
-							selectedComponent.replaceComponent((T)k);
-							retoreSuccessful = true;
-						}
+						selectedComponent.replaceComponent(clazz.cast(p));
+						retoreSuccessful = true;
 					}
-					else if(componentToRestore instanceof Permutation)
-					{
-						Permutation p = MasterPropertiesCache.getInstance().getNamedPermutation(response);
-						
-						if(p == null || !response.isEmpty())
-						{
-							selectedComponent.replaceComponent((T)p);
-							retoreSuccessful = true;
-						}
-					}
-					else if(componentToRestore instanceof SBox)
-					{
-						SBox s = MasterPropertiesCache.getInstance().getNamedSBox(response);
-						
-						if(s == null || !response.isEmpty())
-						{
-							selectedComponent.replaceComponent((T)s);
-							retoreSuccessful = true;
-						}
-					}
+				}
+				else if(clazz.equals(SBox.class))
+				{
+					SBox s = MasterPropertiesCache.getInstance().getNamedSBox(response);
 					
-					if(!retoreSuccessful)
+					if(s == null || !response.isEmpty())
 					{
-						JOptionPane.showMessageDialog(null,
-								"Cannot restore component from that name.",
-								"ERROR",
-								JOptionPane.ERROR_MESSAGE);
+						selectedComponent.replaceComponent(clazz.cast(s));
+						retoreSuccessful = true;
 					}
+				}
+				
+				if(!retoreSuccessful)
+				{
+					JOptionPane.showMessageDialog(null,
+							"Cannot restore component from that name.",
+							"ERROR",
+							JOptionPane.ERROR_MESSAGE);
 				}
 			});
 		}

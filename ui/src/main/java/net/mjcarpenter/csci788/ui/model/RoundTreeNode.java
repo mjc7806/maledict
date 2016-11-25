@@ -15,15 +15,14 @@ import net.mjcarpenter.csci788.crypto.spn.SPNComponent;
 import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
 import net.mjcarpenter.csci788.ui.dialog.component.ComponentDefinitionDialog;
 
-public class RoundTreeNode implements ComponentTreeNode<Round>
+public class RoundTreeNode extends ComponentTreeNode<Round>
 {
-	private Round component;
 	private ComponentTreeNode<SPNetwork> parent;
 	List<ComponentLeafNode<? extends SPNComponent>> children;
 	
 	public RoundTreeNode(Round component, ComponentTreeNode<SPNetwork> parent)
 	{
-		this.component = component;
+		super(component, Round.class);
 		this.parent = parent;
 		
 		ArrayList<ComponentLeafNode<? extends SPNComponent>> children = new ArrayList<ComponentLeafNode<? extends SPNComponent>>();
@@ -37,12 +36,6 @@ public class RoundTreeNode implements ComponentTreeNode<Round>
 		children.add(new PermutationTreeNode(this.component.getPermutation(), this));
 		
 		this.children = Collections.unmodifiableList(children);
-	}
-	
-	@Override
-	public Round getComponent()
-	{
-		return component;
 	}
 	
 	@Override

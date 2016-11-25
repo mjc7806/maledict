@@ -4,12 +4,29 @@ import javax.swing.tree.TreeNode;
 import net.mjcarpenter.csci788.crypto.spn.SPNComponent;
 import net.mjcarpenter.csci788.ui.dialog.component.ComponentDefinitionDialog;
 
-public interface ComponentTreeNode<T extends SPNComponent> extends TreeNode
+public abstract class ComponentTreeNode<T extends SPNComponent> implements TreeNode
 {
-	public T getComponent();
+	protected T component;
+	private Class<T> clazz;
 	
-	public int indexOnParent();
-	public void refreshComponent();
+	public ComponentTreeNode(T component, Class<T> clazz)
+	{
+		this.component = component;
+		this.clazz = clazz;
+	}
 	
-	public ComponentDefinitionDialog<T> editWithDialog();
+	public Class<T> getTypeClass()
+	{
+		return clazz;
+	}
+	
+	public T getComponent()
+	{
+		return component;
+	}
+	
+	public abstract int indexOnParent();
+	public abstract void refreshComponent();
+	
+	public abstract ComponentDefinitionDialog<T> editWithDialog();
 }
