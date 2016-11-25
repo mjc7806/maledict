@@ -19,6 +19,8 @@ import javax.swing.border.EmptyBorder;
 
 import net.mjcarpenter.csci788.crypto.spn.Permutation;
 import net.mjcarpenter.csci788.ui.geom.PermutationWeb;
+import net.mjcarpenter.csci788.ui.message.help.HelpMessage;
+import net.mjcarpenter.csci788.ui.message.help.HelpMessageConstants;
 
 public class PermutationDefinitionDialog extends ComponentDefinitionDialog<Permutation> implements ActionListener, FocusListener
 {
@@ -164,6 +166,10 @@ public class PermutationDefinitionDialog extends ComponentDefinitionDialog<Permu
 		{
 			component = originalComponent;
 			this.dispose();
+		}
+		else if(e.getSource().equals(jbHelp))
+		{
+			openHelpMessage(new HelpMessage(HelpMessageConstants.HELP_DLG_PERMUTATION));
 		}
 	}
 

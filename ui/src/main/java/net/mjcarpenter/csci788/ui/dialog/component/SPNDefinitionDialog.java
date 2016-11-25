@@ -35,7 +35,10 @@ import net.mjcarpenter.csci788.crypto.spn.SPNComponent;
 import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
 import net.mjcarpenter.csci788.ui.dialog.ldc.LinearApproximationDialog;
 import net.mjcarpenter.csci788.ui.model.ComponentLeafNode;
+import net.mjcarpenter.csci788.ui.model.KeyTreeNode;
+import net.mjcarpenter.csci788.ui.model.RoundTreeNode;
 import net.mjcarpenter.csci788.ui.model.SPNTreeModel;
+import net.mjcarpenter.csci788.ui.model.SPNTreeNode;
 import net.mjcarpenter.csci788.ui.util.MasterPropertiesCache;
 import net.mjcarpenter.csci788.util.HexByteConverter;
 
@@ -159,8 +162,22 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 			
 			if(selected instanceof ComponentLeafNode<?>)
 			{
-				rightClickMenu = new ContextMenu((ComponentLeafNode<?>)selected);
-				rightClickMenu.show(arg0.getComponent(), arg0.getX(), arg0.getY());
+				ComponentLeafNode<?> cln = (ComponentLeafNode<?>)selected;
+				
+				boolean editAllowed = true;
+				
+				// The last round must be key-only, so only allow the subkey to be altered.
+				if(((RoundTreeNode)cln.getParent()).indexOnParent() ==
+						((SPNTreeNode)(((SPNTreeModel)spnTree.getModel()).getRoot())).getChildCount()-1)
+				{
+					editAllowed = (cln instanceof KeyTreeNode);
+				}
+				
+				if(editAllowed)
+				{
+					rightClickMenu = new ContextMenu((ComponentLeafNode<?>)selected);
+					rightClickMenu.show(arg0.getComponent(), arg0.getX(), arg0.getY());
+				}
 			}
 		}
 	}
