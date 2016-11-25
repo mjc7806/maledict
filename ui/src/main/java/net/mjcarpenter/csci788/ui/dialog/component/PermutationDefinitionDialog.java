@@ -22,6 +22,7 @@ import net.mjcarpenter.csci788.ui.geom.PermutationWeb;
 import net.mjcarpenter.csci788.ui.message.help.HelpMessage;
 import net.mjcarpenter.csci788.ui.message.help.HelpMessageConstants;
 
+@SuppressWarnings("serial")
 public class PermutationDefinitionDialog extends ComponentDefinitionDialog<Permutation> implements ActionListener, FocusListener
 {
 	private PermutationWeb visualWeb;
@@ -42,8 +43,7 @@ public class PermutationDefinitionDialog extends ComponentDefinitionDialog<Permu
 	
 	public PermutationDefinitionDialog(Permutation component)
 	{
-		super(component);
-		setTitle("New Permutation");
+		super("Edit Permutation", component);
 		setLayout(new BorderLayout());
 		
 		cachedMappings = this.component.getMapping();

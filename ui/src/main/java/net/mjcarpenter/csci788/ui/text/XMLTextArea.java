@@ -10,6 +10,7 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
+@SuppressWarnings("serial")
 public final class XMLTextArea extends RSyntaxTextArea
 {
 	private static final Font FONT = new Font(Font.MONOSPACED, Font.PLAIN, 12);

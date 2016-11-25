@@ -1,19 +1,15 @@
 package net.mjcarpenter.csci788.ui.geom;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class SBoxRow extends JPanel
 {
-	private static final int USR_HEIGHT = 3;
+	//private static final int USR_HEIGHT = 3;
 	
 	public SBoxShape[] shapes;
 	
@@ -22,8 +18,6 @@ public class SBoxRow extends JPanel
 		super();
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		
-		//add(Box.createHorizontalGlue());
-		
 		shapes = new SBoxShape[numBoxes];
 		for(int i=0; i<shapes.length; i++)
 		{
@@ -31,30 +25,6 @@ public class SBoxRow extends JPanel
 			this.add(shapes[i]);
 		}
 		
-		//add(Box.createHorizontalGlue());
-		
-		/*addComponentListener(new ComponentAdapter()
-				{
-					@Override
-					public void componentResized(ComponentEvent e)
-					{
-						//int height = getHeight();
-						int width = getWidth();
-						
-						setSize(new Dimension(width, width*(USR_HEIGHT/numBoxes*bitWidth)));
-						
-						for(SBoxShape shape: shapes)
-						{
-							shape.setSize(new Dimension((width/numBoxes), getHeight()));
-							shape.revalidate();
-							shape.repaint();
-						}
-						
-						revalidate();
-						repaint();
-					}
-				});
-		*/
 		setVisible(true);
 	}
 	

@@ -1,5 +1,6 @@
 package net.mjcarpenter.csci788.ui.dialog.component;
 
+import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.NotSerializableException;
@@ -19,12 +20,18 @@ public abstract class ComponentDefinitionDialog<T extends SPNComponent> extends 
 	protected T component;
 	protected T originalComponent;
 	
-	public ComponentDefinitionDialog(T component)
+	public ComponentDefinitionDialog(Frame owner, String title, T component)
 	{
+		super(owner, title);
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		this.component = component;
 		this.originalComponent = component;
 		this.helpDisplayed = null;
+	}
+	
+	public ComponentDefinitionDialog(String title, T component)
+	{
+		this(null, title, component);
 	}
 	
 	public T getComponent()

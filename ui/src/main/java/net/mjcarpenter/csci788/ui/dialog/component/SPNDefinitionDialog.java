@@ -11,7 +11,6 @@ import java.io.PrintWriter;
 
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -20,12 +19,10 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.tree.TreeSelectionModel;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.Converter;
-import com.thoughtworks.xstream.converters.SingleValueConverter;
 
 import net.mjcarpenter.csci788.crypto.spn.Key;
 import net.mjcarpenter.csci788.crypto.spn.Permutation;
@@ -33,6 +30,7 @@ import net.mjcarpenter.csci788.crypto.spn.Round;
 import net.mjcarpenter.csci788.crypto.spn.SBox;
 import net.mjcarpenter.csci788.crypto.spn.SPNComponent;
 import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
+import net.mjcarpenter.csci788.ui.component.DummyFrame;
 import net.mjcarpenter.csci788.ui.dialog.ldc.LinearApproximationDialog;
 import net.mjcarpenter.csci788.ui.model.ComponentLeafNode;
 import net.mjcarpenter.csci788.ui.model.KeyTreeNode;
@@ -42,6 +40,7 @@ import net.mjcarpenter.csci788.ui.model.SPNTreeNode;
 import net.mjcarpenter.csci788.ui.util.MasterPropertiesCache;
 import net.mjcarpenter.csci788.util.HexByteConverter;
 
+@SuppressWarnings("serial")
 public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> implements ActionListener, MouseListener
 {
 	private JMenu       jmFile, jmAnalyze;
@@ -51,10 +50,9 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 	
 	public SPNDefinitionDialog(SPNetwork component)
 	{
-		super(component);
+		super(new DummyFrame("SPN"), "SPN", component);
 		setModal(false);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		setTitle("SPN");
 		setLayout(new BorderLayout());
 		
 		JMenuBar jmb = new JMenuBar();
@@ -107,18 +105,6 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 		return false;
 	}
 	
-	public static XStream getReadyXStream()
-	{
-		XStream xs = new XStream();
-		xs.processAnnotations(SPNetwork.class);
-		xs.processAnnotations(Round.class);
-		xs.processAnnotations(Key.class);
-		xs.registerLocalConverter(Key.class, "key", (Converter)(new HexByteConverter()));
-		xs.processAnnotations(Permutation.class);
-		xs.processAnnotations(SBox.class);
-		return xs;
-	}
-	
 	@Override
 	public void actionPerformed(ActionEvent arg0)
 	{
@@ -130,7 +116,7 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 			int option = jfc.showSaveDialog(this);
 			if(option == JFileChooser.APPROVE_OPTION)
 			{
-				XStream xs = getReadyXStream();
+				XStream xs = MasterPropertiesCache.getReadyXStream();
 				SPNetwork spn = (component);
 				
 				try(PrintWriter pw = new PrintWriter(jfc.getSelectedFile()))
@@ -204,6 +190,17 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 	public void mouseReleased(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	public void dispose()
+	{
+		super.dispose();
+		
+		// JDialogs cannot be EXIT_ON_CLOSE, but since all ComponentDefinitionDialogs
+		// are JDialogs by definition, we need a way to ensure that the application
+		// closes when this particular window does.
+		System.exit(0);
 	}
 	
 	@SuppressWarnings("serial")

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>HELP: S-boxes</title>
+</head>
+<body>
+    <div id="helpbody">
+        <h1>Help With S-boxes</h1>
+        <img src="../img/help/sbox.png" alt="Illustration of an S-box" />
+        <p>
+            An S-box (<strong>substitution box</strong>) is a component to a cryptographic
+            cipher where input is <em>substituted</em> with another value upon output.
+            An ideal S-box seeks to minimize relationships between input and output that
+            could be used to break a cipher. S-boxes are the main component that keeps a
+            cipher from having a predictable input-output relationship, which is why both
+            linear and differential cryptanalysis attempt to exploit estimations for certain
+            relationships.
+        </p>
+        <p>
+            In linear cryptanalysis, an attacker seeks to simulate a linear relationship
+            between input and output, wherein a line can be drawn through the box from a
+            set of input bits to a set of output bits, considering them equivalent. This
+            is similar to estimating a permutative relationship, except the difference is
+            not one-to-one.
+        </p>
+        <p>
+            In differential cryptanalysis, an attacker seeks to discover some relationship
+            between input and output differentials--that is, differences in certain bits
+            between two inputs will produce a certain difference between outputs. Unlike
+            a linear relationship, exploiting a differential requires a set of chosen
+            plaintext values, rather than just known ones.
+        </p>
+        <p>
+            An S-box does not inherently have the same number of bits in its output as it
+            does for its input, although it must in order to be <strong>reversible</strong>.
+            In order to perform linear or differential cryptanalysis, an S-box must be
+            reversible, which is why such S-boxes are the only type supported by this tool.
+        </p>
+        <p>
+            S-boxes are also not necessarily fixed for a given cipher. For example, Twofish
+            generates S-boxes based on the key chosen for the cipher. This tool does not
+            support any sort of analysis on this variety of cipher.
+        </p>
+    </div>
+</body>
+</html>

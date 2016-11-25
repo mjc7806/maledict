@@ -12,11 +12,11 @@ import java.util.Collections;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.JToggleButton;
 import javax.swing.border.EmptyBorder;
 
 import net.mjcarpenter.csci788.ui.component.CoordinateToggleButton;
 
+@SuppressWarnings("serial")
 public abstract class TableSelectionDialog extends JDialog implements ActionListener
 {
 	protected final Collection<CoordinateToggleButton> buttonReferences;

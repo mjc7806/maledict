@@ -17,9 +17,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import net.mjcarpenter.csci788.crypto.spn.Permutation;
 import net.mjcarpenter.csci788.crypto.spn.SBox;
+import net.mjcarpenter.csci788.ui.message.help.HelpMessage;
+import net.mjcarpenter.csci788.ui.message.help.HelpMessageConstants;
 
+@SuppressWarnings("serial")
 public class SBoxDefinitionDialog extends ComponentDefinitionDialog<SBox> implements ActionListener, FocusListener
 {
 	private JButton jbOK;
@@ -40,7 +42,7 @@ public class SBoxDefinitionDialog extends ComponentDefinitionDialog<SBox> implem
 	
 	public SBoxDefinitionDialog(SBox component)
 	{
-		super(component);
+		super("Edit S-box", component);
 		
 		
 		jbOK = new JButton("OK");
@@ -165,6 +167,10 @@ public class SBoxDefinitionDialog extends ComponentDefinitionDialog<SBox> implem
 		{
 			component = originalComponent;
 			this.dispose();
+		}
+		else if(e.getSource().equals(jbHelp))
+		{
+			openHelpMessage(new HelpMessage(HelpMessageConstants.HELP_DLG_SBOX));
 		}
 	}
 

@@ -1,10 +1,9 @@
 package net.mjcarpenter.csci788.ui.dialog.ldc;
 
-import javax.swing.JDialog;
-
 import net.mjcarpenter.csci788.crypto.spn.SBox;
 import net.mjcarpenter.csci788.ui.component.CoordinateToggleButton;
 
+@SuppressWarnings("serial")
 public final class LATSelectionDialog extends TableSelectionDialog
 {
 	private SBox sbox;

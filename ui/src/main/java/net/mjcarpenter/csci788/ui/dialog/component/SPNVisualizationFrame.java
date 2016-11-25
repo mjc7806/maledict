@@ -5,19 +5,16 @@ import java.awt.GridLayout;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
 
 import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
 import net.mjcarpenter.csci788.ui.geom.KeyShape;
 import net.mjcarpenter.csci788.ui.geom.PermutationWeb;
 import net.mjcarpenter.csci788.ui.geom.RoundPanel;
 import net.mjcarpenter.csci788.ui.geom.SBoxRow;
-import net.mjcarpenter.csci788.ui.geom.SBoxShape;
 
+@SuppressWarnings("serial")
 public class SPNVisualizationFrame extends JFrame
 {
 	private SPNetwork spn;
