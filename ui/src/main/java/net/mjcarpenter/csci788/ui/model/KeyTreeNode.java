@@ -9,7 +9,7 @@ public class KeyTreeNode extends ComponentLeafNode<Key>
 {
 	public KeyTreeNode(Key component, ComponentTreeNode<Round> parent)
 	{
-		super(component, parent);
+		super(component, parent, Key.class);
 	}
 	
 	public String toString()

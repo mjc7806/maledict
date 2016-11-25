@@ -9,7 +9,7 @@ public class SBoxTreeNode extends ComponentLeafNode<SBox>
 {
 	public SBoxTreeNode(SBox component, ComponentTreeNode<Round> parent)
 	{
-		super(component, parent);
+		super(component, parent, SBox.class);
 	}
 	
 	public String toString()
