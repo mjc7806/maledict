@@ -13,11 +13,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import javax.xml.bind.DatatypeConverter;
 
 import net.mjcarpenter.csci788.crypto.spn.Key;
-import net.mjcarpenter.csci788.crypto.spn.SBox;
 
+@SuppressWarnings("serial")
 public class KeyDefinitionDialog extends ComponentDefinitionDialog<Key> implements ActionListener
 {
 	private JButton jbOK;
@@ -34,7 +33,7 @@ public class KeyDefinitionDialog extends ComponentDefinitionDialog<Key> implemen
 	
 	public KeyDefinitionDialog(Key component)
 	{
-		super(component);
+		super("Edit key", component);
 		
 		jbOK = new JButton("OK");
 		jbOK.setMnemonic('O');

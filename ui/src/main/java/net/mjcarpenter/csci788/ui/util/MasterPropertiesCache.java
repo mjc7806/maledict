@@ -3,11 +3,16 @@ package net.mjcarpenter.csci788.ui.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.Converter;
+
 import net.mjcarpenter.csci788.crypto.spn.Key;
 import net.mjcarpenter.csci788.crypto.spn.Permutation;
+import net.mjcarpenter.csci788.crypto.spn.Round;
 import net.mjcarpenter.csci788.crypto.spn.SBox;
 import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
 import net.mjcarpenter.csci788.ui.dialog.component.SPNVisualizationFrame;
+import net.mjcarpenter.csci788.util.HexByteConverter;
 
 public class MasterPropertiesCache
 {
@@ -42,6 +47,18 @@ public class MasterPropertiesCache
 	public static MasterPropertiesCache getInstance()
 	{
 		return instance;
+	}
+	
+	public static XStream getReadyXStream()
+	{
+		XStream xs = new XStream();
+		xs.processAnnotations(SPNetwork.class);
+		xs.processAnnotations(Round.class);
+		xs.processAnnotations(Key.class);
+		xs.registerLocalConverter(Key.class, "key", (Converter)(new HexByteConverter()));
+		xs.processAnnotations(Permutation.class);
+		xs.processAnnotations(SBox.class);
+		return xs;
 	}
 	
 	/*

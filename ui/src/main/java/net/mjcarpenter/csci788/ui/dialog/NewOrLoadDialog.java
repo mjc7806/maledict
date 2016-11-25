@@ -5,11 +5,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -20,21 +19,17 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.Converter;
 
-import net.mjcarpenter.csci788.crypto.spn.Key;
-import net.mjcarpenter.csci788.crypto.spn.Permutation;
-import net.mjcarpenter.csci788.crypto.spn.Round;
-import net.mjcarpenter.csci788.crypto.spn.SBox;
 import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
 import net.mjcarpenter.csci788.ui.dialog.component.SPNDefinitionDialog;
 import net.mjcarpenter.csci788.ui.dialog.component.SPNVisualizationFrame;
 import net.mjcarpenter.csci788.ui.util.MasterPropertiesCache;
-import net.mjcarpenter.csci788.util.HexByteConverter;
 
+@SuppressWarnings("serial")
 public class NewOrLoadDialog extends JFrame implements ActionListener
 {
 	private JLabel  jlMessage;
+	private JLabel  jlLogo;
 	private JButton jbLoad, jbNew;
 	
 	public NewOrLoadDialog()
@@ -44,6 +39,8 @@ public class NewOrLoadDialog extends JFrame implements ActionListener
 		setTitle("Save or Load");
 		setLayout(new BorderLayout());
 		
+		jlLogo = new JLabel(new ImageIcon(ClassLoader.getSystemClassLoader().getResource("resource/img/logo.png")));
+		
 		jlMessage = new JLabel("Create a new SPN or load a previous one?");
 		
 		jbLoad = new JButton("Load");
@@ -52,10 +49,11 @@ public class NewOrLoadDialog extends JFrame implements ActionListener
 		jbLoad.addActionListener(this);
 		jbNew.addActionListener(this);
 		
-		JPanel jpMessage = new JPanel();
+		JPanel jpMessage = new JPanel(new BorderLayout());
 		JPanel jpButtons = new JPanel();
 		
-		jpMessage.add(jlMessage);
+		jpMessage.add(jlLogo,    BorderLayout.CENTER);
+		jpMessage.add(jlMessage, BorderLayout.SOUTH);
 		
 		jpButtons.add(jbLoad);
 		jpButtons.add(jbNew);
@@ -108,7 +106,7 @@ public class NewOrLoadDialog extends JFrame implements ActionListener
 			int res = jfc.showOpenDialog(this);
 			if(res == JFileChooser.APPROVE_OPTION)
 			{
-				XStream xs = SPNDefinitionDialog.getReadyXStream();
+				XStream xs = MasterPropertiesCache.getReadyXStream();
 				
 				try(ObjectInputStream ois = xs.createObjectInputStream(new FileInputStream(jfc.getSelectedFile())))
 				{

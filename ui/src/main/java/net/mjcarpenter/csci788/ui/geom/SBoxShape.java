@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class SBoxShape extends JPanel
 {
 	private static final int USR_HEIGHT = 3;
@@ -86,6 +87,11 @@ public class SBoxShape extends JPanel
 	public void scaleTo(Dimension d)
 	{
 		widthScale = d.getWidth()/ratioHeightByWidth;
+	}
+	
+	public int getBitWidth()
+	{
+		return this.bitWidth;
 	}
 	
 	@Override

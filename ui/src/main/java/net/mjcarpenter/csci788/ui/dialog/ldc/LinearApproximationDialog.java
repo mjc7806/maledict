@@ -1,18 +1,14 @@
 package net.mjcarpenter.csci788.ui.dialog.ldc;
 
 import java.awt.event.ActionEvent;
-import java.util.Arrays;
-import java.util.BitSet;
 
-import org.apache.commons.lang3.ArrayUtils;
-
-import net.mjcarpenter.csci788.crypto.ldc.AbstractApproximation;
 import net.mjcarpenter.csci788.crypto.ldc.LinearApproximation;
 import net.mjcarpenter.csci788.crypto.spn.Round;
 import net.mjcarpenter.csci788.crypto.spn.SBox;
 import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
 import net.mjcarpenter.csci788.ui.component.CoordinateToggleButton;
 
+@SuppressWarnings("serial")
 public final class LinearApproximationDialog extends ApproximationDialog
 {
 	private int[][] roundInMasks;

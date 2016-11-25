@@ -2,11 +2,11 @@ package net.mjcarpenter.csci788.ui.dialog.ldc;
 
 import javax.swing.JDialog;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import net.mjcarpenter.csci788.crypto.spn.SBox;
 import net.mjcarpenter.csci788.ui.component.CoordinateToggleButton;
 
+@SuppressWarnings("serial")
 public final class DDTSelectionDialog extends TableSelectionDialog
 {
 	public DDTSelectionDialog(SBox sbox)

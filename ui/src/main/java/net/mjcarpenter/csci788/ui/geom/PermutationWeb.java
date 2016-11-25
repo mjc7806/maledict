@@ -2,16 +2,12 @@ package net.mjcarpenter.csci788.ui.geom;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -19,11 +15,10 @@ import java.util.stream.Collectors;
 import java.awt.geom.Ellipse2D;
 
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 
+@SuppressWarnings("serial")
 public class PermutationWeb extends JPanel
 {
 	private static enum EndPanelType
@@ -31,7 +26,7 @@ public class PermutationWeb extends JPanel
 		HEADER, FOOTER
 	}
 	
-	private static final int MAX_WIDTH_PX = 800;
+	//private static final int MAX_WIDTH_PX = 800;
 	private static final int USR_HEIGHT_MAIN = 3;
 	private static final int USR_HEIGHT_END = 2;
 	
@@ -41,10 +36,10 @@ public class PermutationWeb extends JPanel
 	
 	private List<Integer> colors;
 	
-	private double  widthFactor;
-	private double  heightFactor;
-	private int     widthMax;
-	private int     heightMax;
+	//private double  widthFactor;
+	//private double  heightFactor;
+	//private int     widthMax;
+	//private int     heightMax;
 	private int[]   indexMappings;
 	private Point2D.Double[] endpoints;
 	private Line2D.Double[]  drawingLines;
@@ -55,10 +50,10 @@ public class PermutationWeb extends JPanel
 		
 		setLayout(new GridLayout(0,1));
 		
-		widthMax  = 2*indices;
-		heightMax = 6;//(int)Math.round(widthMax*(3.0/17.0));
-		widthFactor  = 1;
-		heightFactor = 1;
+		//widthMax  = 2*indices;
+		//heightMax = 6;//(int)Math.round(widthMax*(3.0/17.0));
+		//widthFactor  = 1;
+		//heightFactor = 1;
 		
 		endpoints    = new Point2D.Double[indices * 2];
 		drawingLines = new Line2D.Double[indices];
@@ -365,7 +360,7 @@ public class PermutationWeb extends JPanel
 	
 	private abstract class WebSubPanel extends JPanel
 	{
-		protected static final int MAX_WIDTH_PX = 800;
+		//protected static final int MAX_WIDTH_PX = 800;
 		
 		public WebSubPanel()
 		{
@@ -374,10 +369,12 @@ public class PermutationWeb extends JPanel
 			setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
 		}
 		
+		/*
 		public void scaleTo(Dimension d)
 		{
 			widthFactor  = d.getWidth()  / (double)widthMax;
 			heightFactor = d.getHeight() / (double)heightMax;
-		}	
+		}
+		*/	
 	}
 }

@@ -15,6 +15,7 @@ import javax.swing.border.EmptyBorder;
 
 import net.mjcarpenter.csci788.ui.util.MasterPropertiesCache;
 
+@SuppressWarnings("serial")
 public class MasterPropertiesDialog extends JDialog implements ActionListener
 {
 	private JLabel     jlBlockSize, jlNumRounds, jlSboxSize;

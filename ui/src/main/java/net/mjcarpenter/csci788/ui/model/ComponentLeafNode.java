@@ -5,7 +5,6 @@ import java.util.Enumeration;
 import javax.swing.tree.TreeNode;
 
 import net.mjcarpenter.csci788.crypto.spn.Round;
-import net.mjcarpenter.csci788.crypto.spn.SBox;
 import net.mjcarpenter.csci788.crypto.spn.SPNComponent;
 
 public abstract class ComponentLeafNode<T extends SPNComponent> implements ComponentTreeNode<T>
