@@ -24,6 +24,8 @@ public class SPNVisualizationFrame extends JFrame
 	{
 		super("SPN Visualization");
 		this.spn = spn;
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		
 		setSize(400,900);
 		
 		createPanel();
