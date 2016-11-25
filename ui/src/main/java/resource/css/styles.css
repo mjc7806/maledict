@@ -1,0 +1,28 @@
+p
+{
+    font-size:12pt;
+    font-family:Verdana, Geneva, sans-serif;
+}
+
+table
+{
+    border-collapse:collapse;
+    margin:1em;
+}
+
+table, th, td
+{
+    vertical-align:center;
+    text-align:left;
+    border: 2px solid black;
+}
+
+th, td
+{
+    padding:3px;
+}
+
+th
+{
+    font-weight:bold;
+}
