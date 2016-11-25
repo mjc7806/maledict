@@ -3,6 +3,8 @@ package net.mjcarpenter.csci788.ui.dialog;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -13,19 +15,26 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import net.mjcarpenter.csci788.ui.message.help.HelpMessage;
+import net.mjcarpenter.csci788.ui.message.help.HelpMessageConstants;
 import net.mjcarpenter.csci788.ui.util.MasterPropertiesCache;
 
 @SuppressWarnings("serial")
 public class MasterPropertiesDialog extends JDialog implements ActionListener
 {
+	private boolean closedSuccessful;
+	
 	private JLabel     jlBlockSize, jlNumRounds, jlSboxSize;
 	private JTextField jtfBlockSize, jtfNumRounds, jtfSboxSize;
 	private JButton    jbHelp, jbOK, jbCancel;
+	private HelpMessage msg;
 	
 	public MasterPropertiesDialog()
 	{
 		super();
 		setModal(true);
+		msg = null;
+		closedSuccessful = false;
 		
 		jlBlockSize = new JLabel("Block Size: ");
 		jlNumRounds = new JLabel("Num. Rounds: ");
@@ -94,6 +103,22 @@ public class MasterPropertiesDialog extends JDialog implements ActionListener
 	{
 		new MasterPropertiesDialog();
 	}
+	
+	public boolean isClosedSuccessful()
+	{
+		return closedSuccessful;
+	}
+	
+	@Override
+	public void dispose()
+	{
+		if(msg != null)
+		{
+			msg.dispose();
+		}
+		
+		super.dispose();
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent ae)
@@ -142,9 +167,39 @@ public class MasterPropertiesDialog extends JDialog implements ActionListener
 				MasterPropertiesCache.getInstance().setSBoxSize(sboxSize);
 				MasterPropertiesCache.getInstance().setNumRounds(numRounds);
 				
+				closedSuccessful = true;
 				dispose();
 			}
 		}
-		
+		else if(ae.getSource().equals(jbHelp))
+		{
+			if(msg == null)
+			{
+				msg = new HelpMessage(HelpMessageConstants.HELP_DLG_MSTR_PROP);
+				if(msg.isLoadedSuccessfully())
+				{
+					msg.addWindowListener(new WindowAdapter()
+							{
+								@Override
+								public void windowClosed(WindowEvent we)
+								{
+									if(msg != null)
+									{
+										msg.dispose();
+									}
+									
+									msg = null;
+								}
+							});
+					
+					msg.setLocation(this.getLocation().x + this.getWidth() + 20, this.getLocation().y);
+					msg.setVisible(true);
+				}
+				else
+				{
+					msg = null;
+				}
+			}
+		}
 	}
 }

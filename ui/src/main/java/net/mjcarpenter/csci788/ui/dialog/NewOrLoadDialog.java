@@ -76,24 +76,27 @@ public class NewOrLoadDialog extends JFrame implements ActionListener
 	{
 		if(e.getSource().equals(jbNew))
 		{
-			new MasterPropertiesDialog();
+			MasterPropertiesDialog mpd = new MasterPropertiesDialog();
 			
-			SwingUtilities.invokeLater(new Runnable()
+			if(mpd.isClosedSuccessful())
 			{
-				@Override
-				public void run()
+				SwingUtilities.invokeLater(new Runnable()
 				{
-					MasterPropertiesCache.getInstance().setSPN(
-							SPNetwork.noop(
-									MasterPropertiesCache.getInstance().getBlockSize(),
-									MasterPropertiesCache.getInstance().getSBoxSize(),
-									MasterPropertiesCache.getInstance().getNumRounds()));
-					
-					new SPNDefinitionDialog(MasterPropertiesCache.getInstance().getSPN());
-				}
-			});
-			
-			dispose();
+					@Override
+					public void run()
+					{
+						MasterPropertiesCache.getInstance().setSPN(
+								SPNetwork.noop(
+										MasterPropertiesCache.getInstance().getBlockSize(),
+										MasterPropertiesCache.getInstance().getSBoxSize(),
+										MasterPropertiesCache.getInstance().getNumRounds()));
+						
+						new SPNDefinitionDialog(MasterPropertiesCache.getInstance().getSPN());
+					}
+				});
+				
+				dispose();
+			}
 		}
 		else if(e.getSource().equals(jbLoad))
 		{

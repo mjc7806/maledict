@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" type="text/css" href="../css/styles.css" />
+    <title>HELP: Master Properties</title>
+</head>
+<body>
+    <div id="helpbody">
+        <h1>Help With Master Properties</h1>
+        <p>
+            The <strong>Master Properties Dialog</strong> is used to set global variables
+            for use in the user-defined Substitution-Permutation Network (SPN). They are
+            as follows:
+            <br />
+            <br />
+        </p>
+        <hr />
+        <table>
+            <tr>
+                <th>Field</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>Block size</td>
+                <td>
+                    The number of bits going into each round of the SPN cipher.
+                </td>
+            </tr>
+            <tr>
+                <td>Num. rounds</td>
+                <td>
+                    The number of rounds through which the data will iterate during the
+                    encryption process. The final round consists only of a Key, and this
+                    tool will not allow other components.
+                </td>
+            </tr>
+            <tr>
+                <td>S-box size</td>
+                <td>
+                    The number of bits in each bijective S-box for the cipher. All S-boxes
+                    in the SPN will be of equal size, and each will have input size equal
+                    to their output size. This value must evenly divide the block size.
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>
