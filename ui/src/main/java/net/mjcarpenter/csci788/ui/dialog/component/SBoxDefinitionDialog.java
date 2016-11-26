@@ -170,7 +170,7 @@ public class SBoxDefinitionDialog extends ComponentDefinitionDialog<SBox> implem
 		}
 		else if(e.getSource().equals(jbHelp))
 		{
-			openHelpMessage(new HelpMessage(HelpMessageConstants.HELP_DLG_SBOX));
+			openHelpMessage(HelpMessageConstants.HELP_DLG_SBOX);
 		}
 	}
 

@@ -19,6 +19,12 @@ subprojects {
     
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
+	
+	clean {
+		doLast {
+			delete 'bin'
+		}
+	}
     
     eclipse {
         jdt {

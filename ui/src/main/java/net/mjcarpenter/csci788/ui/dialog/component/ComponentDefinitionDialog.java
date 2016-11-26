@@ -1,8 +1,6 @@
 package net.mjcarpenter.csci788.ui.dialog.component;
 
 import java.awt.Frame;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -51,31 +49,30 @@ public abstract class ComponentDefinitionDialog<T extends SPNComponent> extends 
 		super.dispose();
 	}
 	
-	protected void openHelpMessage(HelpMessage hm)
+	protected void openHelpMessage(String helpMessageType)
 	{
-		if(helpDisplayed == null && hm.isLoadedSuccessfully())
+		if(helpDisplayed == null)
 		{
-			helpDisplayed = hm;
-			helpDisplayed.addWindowListener(new WindowAdapter()
+			helpDisplayed = new HelpMessage(helpMessageType, this,
+					() ->
 					{
-						@Override
-						public void windowClosed(WindowEvent we)
+						if(helpDisplayed != null)
 						{
-							if(helpDisplayed != null)
-							{
-								helpDisplayed.dispose();
-							}
-							
-							helpDisplayed = null;
+							helpDisplayed.dispose();
 						}
+						
+						helpDisplayed = null;
 					});
 			
-			helpDisplayed.setLocation(this.getLocation().x + this.getWidth() + 20, this.getLocation().y);
-			helpDisplayed.setVisible(true);
-		}
-		else
-		{
-			hm.dispose();
+			if(helpDisplayed.isLoadedSuccessfully())
+			{
+				helpDisplayed.setVisible(true);
+			}
+			else
+			{
+				helpDisplayed.dispose();
+				helpDisplayed = null;
+			}
 		}
 	}
 	

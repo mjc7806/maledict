@@ -6,6 +6,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 import net.mjcarpenter.csci788.util.BitUtils;
+@SuppressWarnings("serial")
 @XStreamAlias("sbox")
 public final class SBox implements SPNComponent
 {

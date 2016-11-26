@@ -2,14 +2,13 @@ package net.mjcarpenter.csci788.crypto.spn;
 
 import java.util.BitSet;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 import net.mjcarpenter.csci788.util.BitUtils;
 
+@SuppressWarnings("serial")
 @XStreamAlias("round")
 public class Round implements SPNComponent
 {

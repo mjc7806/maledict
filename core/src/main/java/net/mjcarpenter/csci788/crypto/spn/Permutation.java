@@ -8,6 +8,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 import net.mjcarpenter.csci788.util.BitUtils;
+@SuppressWarnings("serial")
 @XStreamAlias("permutation")
 public final class Permutation implements SPNComponent
 {	

@@ -14,6 +14,7 @@ import javax.swing.border.EmptyBorder;
 import net.mjcarpenter.csci788.crypto.spn.SBox;
 import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
 import net.mjcarpenter.csci788.ui.component.CoordinateToggleButton;
+import net.mjcarpenter.csci788.ui.message.help.HelpMessage;
 
 @SuppressWarnings("serial")
 public abstract class ApproximationDialog extends JDialog implements ActionListener
@@ -23,11 +24,14 @@ public abstract class ApproximationDialog extends JDialog implements ActionListe
 	protected List<CoordinateToggleButton> allButtons;
 	protected JButton jbOK, jbCancel, jbHelp;
 	
+	private   HelpMessage msg;
+	
 	public ApproximationDialog(SPNetwork network)
 	{
 		super();
 		setModal(true);
 		
+		this.msg = null;
 		this.spn = network;
 		this.boxButtons = new CoordinateToggleButton[spn.getRounds().length][spn.getRounds()[0].getSBoxes().length];
 		
@@ -57,6 +61,8 @@ public abstract class ApproximationDialog extends JDialog implements ActionListe
 		jbCancel = new JButton("Cancel");
 		jbHelp = new JButton("Help");
 		
+		jbHelp.addActionListener(ae -> handleHelp());
+		
 		btnSubPanel.add(jbCancel);
 		btnSubPanel.add(jbOK);
 		buttonPanel.add(jbHelp, BorderLayout.WEST);
@@ -68,6 +74,34 @@ public abstract class ApproximationDialog extends JDialog implements ActionListe
 		add(buttonPanel, BorderLayout.SOUTH);
 		
 		pack();
+	}
+	
+	protected abstract void handleHelp();
+	
+	protected void handleHelp(String m)
+	{
+		if(msg == null)
+		{
+			msg = new HelpMessage(m, this,
+					() ->
+					{
+						if(msg != null)
+						{
+							msg.dispose();
+						}
+						msg = null;
+					});
+			
+			if(msg.isLoadedSuccessfully())
+			{
+				msg.setVisible(true);
+			}
+			else
+			{
+				msg.dispose();
+				msg = null;
+			}
+		}
 	}
 	
 	protected SBox getBoxForButton(CoordinateToggleButton btn)

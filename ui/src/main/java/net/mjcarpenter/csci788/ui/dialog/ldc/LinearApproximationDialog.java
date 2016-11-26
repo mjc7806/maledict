@@ -7,6 +7,7 @@ import net.mjcarpenter.csci788.crypto.spn.Round;
 import net.mjcarpenter.csci788.crypto.spn.SBox;
 import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
 import net.mjcarpenter.csci788.ui.component.CoordinateToggleButton;
+import net.mjcarpenter.csci788.ui.message.help.HelpMessageConstants;
 
 @SuppressWarnings("serial")
 public final class LinearApproximationDialog extends ApproximationDialog
@@ -70,6 +71,12 @@ public final class LinearApproximationDialog extends ApproximationDialog
 				each.setEnabled(each.row == 0 || roundInMasks[each.row][each.col] != 0);
 			}
 		}
+	}
+	
+	@Override
+	protected void handleHelp()
+	{
+		handleHelp(HelpMessageConstants.HELP_DLG_LDC_LINEAR);
 	}
 	
 	private int[] convertMaskToRowArray(int roundNum, long mask)
