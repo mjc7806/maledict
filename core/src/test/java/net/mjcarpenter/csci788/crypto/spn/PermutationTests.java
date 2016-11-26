@@ -9,8 +9,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import net.mjcarpenter.csci788.util.BitUtils;
-
 public final class PermutationTests
 {
 	private Permutation perm;

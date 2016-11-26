@@ -7,6 +7,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 import net.mjcarpenter.csci788.util.BitUtils;
+@SuppressWarnings("serial")
 @XStreamAlias("key")
 public final class Key implements SPNComponent, Comparable<Key>
 {

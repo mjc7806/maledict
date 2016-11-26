@@ -5,6 +5,7 @@ import javax.swing.UIManager;
 
 import net.mjcarpenter.csci788.crypto.spn.SBox;
 import net.mjcarpenter.csci788.ui.component.CoordinateToggleButton;
+import net.mjcarpenter.csci788.ui.message.help.HelpMessageConstants;
 
 @SuppressWarnings("serial")
 public final class DDTSelectionDialog extends TableSelectionDialog
@@ -32,8 +33,7 @@ public final class DDTSelectionDialog extends TableSelectionDialog
 	@Override
 	protected void handleHelp()
 	{
-		// TODO Auto-generated method stub
-
+		handleHelp(HelpMessageConstants.HELP_DLG_LDC_DDT);
 	}
 
 	public static void main(String[] args)

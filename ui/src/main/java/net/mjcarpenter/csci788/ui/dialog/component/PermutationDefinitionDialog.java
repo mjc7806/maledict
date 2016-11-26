@@ -19,7 +19,6 @@ import javax.swing.border.EmptyBorder;
 
 import net.mjcarpenter.csci788.crypto.spn.Permutation;
 import net.mjcarpenter.csci788.ui.geom.PermutationWeb;
-import net.mjcarpenter.csci788.ui.message.help.HelpMessage;
 import net.mjcarpenter.csci788.ui.message.help.HelpMessageConstants;
 
 @SuppressWarnings("serial")
@@ -169,7 +168,7 @@ public class PermutationDefinitionDialog extends ComponentDefinitionDialog<Permu
 		}
 		else if(e.getSource().equals(jbHelp))
 		{
-			openHelpMessage(new HelpMessage(HelpMessageConstants.HELP_DLG_PERMUTATION));
+			openHelpMessage(HelpMessageConstants.HELP_DLG_PERMUTATION);
 		}
 	}
 

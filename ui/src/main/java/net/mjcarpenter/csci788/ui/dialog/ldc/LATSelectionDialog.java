@@ -2,10 +2,11 @@ package net.mjcarpenter.csci788.ui.dialog.ldc;
 
 import net.mjcarpenter.csci788.crypto.spn.SBox;
 import net.mjcarpenter.csci788.ui.component.CoordinateToggleButton;
+import net.mjcarpenter.csci788.ui.message.help.HelpMessageConstants;
 
 @SuppressWarnings("serial")
 public final class LATSelectionDialog extends TableSelectionDialog
-{
+{	
 	private SBox sbox;
 	private int  selectedIn;
 	private int  selectedOut;
@@ -15,6 +16,7 @@ public final class LATSelectionDialog extends TableSelectionDialog
 	{
 		super(sbox.getLAT());
 		this.sbox = sbox;
+		
 		setTitle("Linear Approximation Table: Selection Dialog");
 		setModal(true);
 		setVisible(true);
@@ -54,6 +56,6 @@ public final class LATSelectionDialog extends TableSelectionDialog
 	@Override
 	protected void handleHelp()
 	{
-		// TODO Auto-generated method stub
+		handleHelp(HelpMessageConstants.HELP_DLG_LDC_LAT);
 	}
 }

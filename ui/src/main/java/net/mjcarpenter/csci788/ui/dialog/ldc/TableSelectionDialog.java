@@ -15,11 +15,14 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import net.mjcarpenter.csci788.ui.component.CoordinateToggleButton;
+import net.mjcarpenter.csci788.ui.message.help.HelpMessage;
 
 @SuppressWarnings("serial")
 public abstract class TableSelectionDialog extends JDialog implements ActionListener
 {
 	protected final Collection<CoordinateToggleButton> buttonReferences;
+	
+	private HelpMessage msg;
 	private CoordinateToggleButton selectedButtonReference;
 	private CoordinateToggleButton[][] buttons;
 	private JButton jbAccept, jbCancel, jbHelp;
@@ -29,6 +32,8 @@ public abstract class TableSelectionDialog extends JDialog implements ActionList
 		super();
 		setModal(true);
 		setLayout(new BorderLayout());
+		
+		msg = null;
 		
 		jbAccept = new JButton("Accept");
 		jbCancel = new JButton("Cancel");
@@ -88,6 +93,32 @@ public abstract class TableSelectionDialog extends JDialog implements ActionList
 	protected abstract void handleAccept(CoordinateToggleButton selectedButton);
 	protected abstract void handleCancel();
 	protected abstract void handleHelp();
+	
+	protected void handleHelp(String m)
+	{
+		if(msg == null)
+		{
+			msg = new HelpMessage(m, this,
+					() ->
+					{
+						if(msg != null)
+						{
+							msg.dispose();
+						}
+						msg = null;
+					});
+			
+			if(msg.isLoadedSuccessfully())
+			{
+				msg.setVisible(true);
+			}
+			else
+			{
+				msg.dispose();
+				msg = null;
+			}
+		}
+	}
 	
 	@Override
 	public void actionPerformed(ActionEvent ae)

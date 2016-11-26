@@ -3,8 +3,6 @@ package net.mjcarpenter.csci788.ui.dialog;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -175,28 +173,24 @@ public class MasterPropertiesDialog extends JDialog implements ActionListener
 		{
 			if(msg == null)
 			{
-				msg = new HelpMessage(HelpMessageConstants.HELP_DLG_MSTR_PROP);
+				msg = new HelpMessage(HelpMessageConstants.HELP_DLG_MSTR_PROP, this,
+						() ->
+						{
+							if(msg != null)
+							{
+								msg.dispose();
+							}
+							
+							msg = null;
+						});
+				
 				if(msg.isLoadedSuccessfully())
 				{
-					msg.addWindowListener(new WindowAdapter()
-							{
-								@Override
-								public void windowClosed(WindowEvent we)
-								{
-									if(msg != null)
-									{
-										msg.dispose();
-									}
-									
-									msg = null;
-								}
-							});
-					
-					msg.setLocation(this.getLocation().x + this.getWidth() + 20, this.getLocation().y);
 					msg.setVisible(true);
 				}
 				else
 				{
+					msg.dispose();
 					msg = null;
 				}
 			}

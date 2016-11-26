@@ -15,6 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import net.mjcarpenter.csci788.crypto.spn.Key;
+import net.mjcarpenter.csci788.ui.message.help.HelpMessageConstants;
 
 @SuppressWarnings("serial")
 public class KeyDefinitionDialog extends ComponentDefinitionDialog<Key> implements ActionListener
@@ -113,6 +114,10 @@ public class KeyDefinitionDialog extends ComponentDefinitionDialog<Key> implemen
 		{
 			component = originalComponent;
 			this.dispose();
+		}
+		else if(e.getSource().equals(jbHelp))
+		{
+			openHelpMessage(HelpMessageConstants.HELP_DLG_KEY);
 		}
 	}
 }
