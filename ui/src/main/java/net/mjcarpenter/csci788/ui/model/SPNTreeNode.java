@@ -1,6 +1,7 @@
 package net.mjcarpenter.csci788.ui.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -70,6 +71,11 @@ public class SPNTreeNode extends ComponentTreeNode<SPNetwork>
 	public Enumeration<ComponentTreeNode<Round>> children()
 	{
 		return Collections.enumeration(children);
+	}
+	
+	public Collection<ComponentTreeNode<Round>> childrenCollection()
+	{
+		return children;
 	}
 
 	@Override

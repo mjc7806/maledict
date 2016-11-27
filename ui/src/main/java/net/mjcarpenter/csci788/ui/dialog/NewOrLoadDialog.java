@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.InputStream;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -111,9 +111,9 @@ public class NewOrLoadDialog extends JFrame implements ActionListener
 			{
 				XStream xs = MasterPropertiesCache.getReadyXStream();
 				
-				try(ObjectInputStream ois = xs.createObjectInputStream(new FileInputStream(jfc.getSelectedFile())))
+				try(InputStream fs = new FileInputStream(jfc.getSelectedFile()))
 				{
-					Object in = xs.fromXML(ois);
+					Object in = xs.fromXML(fs);
 					if(in instanceof SPNetwork)
 					{
 						spn = (SPNetwork)in;
@@ -132,18 +132,16 @@ public class NewOrLoadDialog extends JFrame implements ActionListener
 			if(spn != null)
 			{
 				final SPNetwork spnRef = spn;
-				SwingUtilities.invokeLater(new Runnable()
+				SwingUtilities.invokeLater(
+						() ->
 						{
-							@Override
-							public void run()
-							{
-								MasterPropertiesCache.getInstance().setSPN(spnRef);
-								
-								SPNVisualizationFrame frm = new SPNVisualizationFrame(MasterPropertiesCache.getInstance().getSPN());
-								MasterPropertiesCache.getInstance().setVisualizationFrame(frm);
-								new SPNDefinitionDialog(MasterPropertiesCache.getInstance().getSPN());
-							}
+							MasterPropertiesCache.getInstance().setSPN(spnRef);
+							
+							SPNVisualizationFrame frm = new SPNVisualizationFrame(MasterPropertiesCache.getInstance().getSPN());
+							MasterPropertiesCache.getInstance().setVisualizationFrame(frm);
+							new SPNDefinitionDialog(MasterPropertiesCache.getInstance().getSPN());
 						});
+				this.dispose();
 			}
 			else
 			{

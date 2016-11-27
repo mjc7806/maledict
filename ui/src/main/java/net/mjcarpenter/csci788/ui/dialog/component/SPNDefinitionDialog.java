@@ -3,11 +3,13 @@ package net.mjcarpenter.csci788.ui.dialog.component;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.Enumeration;
 
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -19,6 +21,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.TreeSelectionModel;
 
 import com.thoughtworks.xstream.XStream;
@@ -31,13 +34,14 @@ import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
 import net.mjcarpenter.csci788.ui.component.DummyFrame;
 import net.mjcarpenter.csci788.ui.dialog.ldc.LinearApproximationDialog;
 import net.mjcarpenter.csci788.ui.model.ComponentLeafNode;
+import net.mjcarpenter.csci788.ui.model.ComponentTreeNode;
 import net.mjcarpenter.csci788.ui.model.RoundTreeNode;
 import net.mjcarpenter.csci788.ui.model.SPNTreeModel;
 import net.mjcarpenter.csci788.ui.model.SPNTreeNode;
 import net.mjcarpenter.csci788.ui.util.MasterPropertiesCache;
 
 @SuppressWarnings("serial")
-public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> implements ActionListener, MouseListener
+public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> implements ActionListener
 {
 	private JMenu       jmFile, jmAnalyze;
 	private JMenuItem   jmiSave, jmiLinear, jmiDiff;
@@ -84,21 +88,53 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 			spnTree.expandRow(i);
 		}
 		spnTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-		spnTree.addMouseListener(this);
+		spnTree.addMouseListener(new MouseAdapter()
+				{
+					@Override
+					public void mouseClicked(MouseEvent arg0)
+					{
+						if(SwingUtilities.isRightMouseButton(arg0))
+						{
+							int row = spnTree.getClosestRowForLocation(arg0.getX(), arg0.getY());
+							spnTree.setSelectionRow(row);
+							Object selected = spnTree.getLastSelectedPathComponent();
+							
+							if(selected instanceof ComponentLeafNode)
+							{
+								@SuppressWarnings("unchecked")
+								ComponentLeafNode<SPNComponent> cln = (ComponentLeafNode<SPNComponent>)selected;
+								
+								boolean editAllowed = true;
+								
+								// The last round must be key-only, so only allow the subkey to be altered.
+								if(((RoundTreeNode)cln.getParent()).indexOnParent() == getRootNode().getChildCount()-1)
+								{
+									editAllowed = cln.getTypeClass().equals(Key.class);
+								}
+								
+								if(editAllowed)
+								{
+									rightClickMenu = new ContextMenu<SPNComponent>(cln, cln.getTypeClass());
+									rightClickMenu.show(arg0.getComponent(), arg0.getX(), arg0.getY());
+								}
+							}
+						}
+					}
+				});
 		
 		JScrollPane jsp = new JScrollPane(spnTree,
 				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		add(jsp, BorderLayout.CENTER);
-		//add(spnTree);
+		
 		pack();
 		setVisible(true);
 	}
 
 	@Override
-	public boolean validateComponent() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean validateComponent()
+	{
+		return true;
 	}
 	
 	@Override
@@ -108,6 +144,8 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 		{
 			JFileChooser jfc = new JFileChooser();
 			jfc.setCurrentDirectory(new File(System.getProperty("user.home")));
+			jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			jfc.setFileFilter(new FileNameExtensionFilter("XML file", "xml"));
 			
 			int option = jfc.showSaveDialog(this);
 			if(option == JFileChooser.APPROVE_OPTION)
@@ -131,62 +169,6 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 			LinearApproximationDialog linDlg = new LinearApproximationDialog(((SPNTreeModel)spnTree.getModel()).getSPN());
 		}
 	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public void mouseClicked(MouseEvent arg0)
-	{
-		if(SwingUtilities.isRightMouseButton(arg0))
-		{
-			int row = spnTree.getClosestRowForLocation(arg0.getX(), arg0.getY());
-			spnTree.setSelectionRow(row);
-			Object selected = spnTree.getLastSelectedPathComponent();
-			
-			if(selected instanceof ComponentLeafNode)
-			{
-				ComponentLeafNode<SPNComponent> cln = (ComponentLeafNode<SPNComponent>)selected;
-				
-				boolean editAllowed = true;
-				
-				// The last round must be key-only, so only allow the subkey to be altered.
-				if(((RoundTreeNode)cln.getParent()).indexOnParent() ==
-						((SPNTreeNode)(((SPNTreeModel)spnTree.getModel()).getRoot())).getChildCount()-1)
-				{
-					editAllowed = cln.getTypeClass().equals(Key.class);
-				}
-				
-				if(editAllowed)
-				{
-					rightClickMenu = new ContextMenu<SPNComponent>(cln, cln.getTypeClass());
-					rightClickMenu.show(arg0.getComponent(), arg0.getX(), arg0.getY());
-				}
-			}
-		}
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	@Override
 	public void dispose()
@@ -197,6 +179,11 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 		// are JDialogs by definition, we need a way to ensure that the application
 		// closes when this particular window does.
 		System.exit(0);
+	}
+	
+	private SPNTreeNode getRootNode()
+	{
+		return (SPNTreeNode)(((SPNTreeModel)spnTree.getModel()).getRoot());
 	}
 	
 	private class ContextMenu<T extends SPNComponent> extends JPopupMenu
