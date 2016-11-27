@@ -8,14 +8,16 @@ import net.mjcarpenter.csci788.ui.message.help.HelpMessageConstants;
 public final class LATSelectionDialog extends TableSelectionDialog
 {	
 	private SBox sbox;
-	private int  selectedIn;
-	private int  selectedOut;
-	private int  selectedBias;
+	private boolean hasSelection;
+	private int     selectedIn;
+	private int     selectedOut;
+	private int     selectedBias;
 	
 	public LATSelectionDialog(SBox sbox)
 	{
 		super(sbox.getLAT());
 		this.sbox = sbox;
+		this.hasSelection = false;
 		
 		setTitle("Linear Approximation Table: Selection Dialog");
 		setModal(true);
@@ -37,6 +39,11 @@ public final class LATSelectionDialog extends TableSelectionDialog
 		return selectedBias;
 	}
 	
+	public boolean hasSelection()
+	{
+		return hasSelection;
+	}
+	
 	@Override
 	protected void handleAccept(CoordinateToggleButton selectedButton)
 	{
@@ -44,13 +51,15 @@ public final class LATSelectionDialog extends TableSelectionDialog
 		selectedOut  = selectedButton.col;
 		selectedBias = sbox.getLAT()[selectedIn][selectedOut];
 		
+		hasSelection = true;
 		setVisible(false);
 	}
 
 	@Override
 	protected void handleCancel()
 	{
-		// TODO Auto-generated method stub
+		hasSelection = false;
+		setVisible(false);
 	}
 
 	@Override

@@ -11,7 +11,9 @@ import java.util.Collections;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import net.mjcarpenter.csci788.ui.component.CoordinateToggleButton;
@@ -32,6 +34,7 @@ public abstract class TableSelectionDialog extends JDialog implements ActionList
 		super();
 		setModal(true);
 		setLayout(new BorderLayout());
+		setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		
 		msg = null;
 		
@@ -49,15 +52,26 @@ public abstract class TableSelectionDialog extends JDialog implements ActionList
 		
 		JPanel tablePanel = new JPanel();
 		JPanel btnPanel   = new JPanel();
-		tablePanel.setLayout(new GridLayout(table.length, table[0].length));
+		tablePanel.setLayout(new GridLayout(table.length+1, table[0].length+1));
 		btnPanel.setLayout(new BorderLayout());
 		tablePanel.setBorder(new EmptyBorder(20,20,20,20));
 		
 		buttons = new CoordinateToggleButton[table.length][table[0].length];
 		Collection<CoordinateToggleButton> butRefs = new ArrayList<CoordinateToggleButton>();
 		
+		// Empty label in top-left
+		tablePanel.add(new JLabel());
+		
+		for(int i=0; i<table[0].length; i++)
+		{
+			// Output labels
+			tablePanel.add(new JLabel(Integer.toHexString(i), SwingConstants.CENTER));
+		}
 		for(int i=0; i<table.length; i++)
 		{
+			// Input label
+			tablePanel.add(new JLabel(Integer.toHexString(i), SwingConstants.RIGHT));
+			
 			for(int j=0; j<table[i].length; j++)
 			{
 				buttons[i][j] = new CoordinateToggleButton(String.valueOf(table[i][j]), i, j);

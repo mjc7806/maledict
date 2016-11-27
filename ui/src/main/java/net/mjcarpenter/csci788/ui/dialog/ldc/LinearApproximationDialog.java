@@ -39,18 +39,21 @@ public final class LinearApproximationDialog extends ApproximationDialog
 				
 				LATSelectionDialog lsd = new LATSelectionDialog(relevantBox);
 				
-				int inMask = lsd.getSelectedIn();
-				int outMask = lsd.getSelectedOut();
-				int bias = lsd.getSelectedBias();
-				
-				System.out.printf("Selected: [%d, %d] --> %d\n", inMask, outMask, bias);
-				
-				if(btn.row == 0)
+				if(lsd.hasSelection())
 				{
-					roundInMasks[btn.row][btn.col] = inMask;
+					int inMask = lsd.getSelectedIn();
+					int outMask = lsd.getSelectedOut();
+					int bias = lsd.getSelectedBias();
+									
+					if(btn.row == 0)
+					{
+						roundInMasks[btn.row][btn.col] = inMask;
+					}
+					
+					roundOutMasks[btn.row][btn.col] = outMask;
 				}
 				
-				roundOutMasks[btn.row][btn.col] = outMask;
+				lsd.dispose();
 			}
 			else
 			{
