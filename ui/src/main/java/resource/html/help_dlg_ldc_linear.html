@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" type="text/css" href="../css/styles.css" />
+    <title>HELP: Linear Cryptanalysis</title>
+</head>
+<body>
+    <div id="helpbody">
+        <h1>Help With Linear Cryptanalysis</h1>
+        <p>
+            Linear Cryptanalysis is a method of cryptanalysis in which multiple linear
+			approximations of individual S-boxes (see the help page for the Linear
+			Approximation Table dialog) are chained together to form a general linear
+			approximation for the complete cipher.
+        </p>
+		<p>
+			The S-box approximations' outputs are traced through the remainder of the
+			cipher, and any other S-boxes that the bits travel through along the way must
+			also be approximated. 
+		</p>
+		<p>
+			Upon completion of the full-cipher approximation, a known plaintext-ciphertext
+			pair is analyzed against the approximation. This is done through partial
+			decryption of the ciphertext through the last round of S-boxes. By comparing
+			the results to the linear approximation, partial values for the last subkey
+			can be obtained.
+		</p>
+		<p>
+			A large number of known pairs are decrypted for every potential value of the
+			target partial subkey, and the one for which the greatest number of
+			decryptions hold for this pattern is assumed to be the key.
+		</p>
+    </div>
+</body>
+</html>

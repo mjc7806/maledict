@@ -44,11 +44,6 @@ subprojects {
             compile     'com.thoughtworks.xstream:xstream:1.4.9'
             testCompile 'junit:junit:4.12'
         }
-        jar {
-            manifest {
-                attributes 'Class-Path': 'common.jar'
-            }
-        }
     }
     
     project(':ui') {
@@ -62,7 +57,7 @@ subprojects {
         jar {
             manifest {
                 attributes 'Main-Class': 'net.mjcarpenter.csci788.ui.Main',
-                           'Class-Path': 'common.jar'
+                           'Class-Path': 'core.jar'
             }
         }
     }
