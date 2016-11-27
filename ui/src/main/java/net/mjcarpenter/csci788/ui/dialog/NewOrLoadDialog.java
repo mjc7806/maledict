@@ -80,20 +80,17 @@ public class NewOrLoadDialog extends JFrame implements ActionListener
 			
 			if(mpd.isClosedSuccessful())
 			{
-				SwingUtilities.invokeLater(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						MasterPropertiesCache.getInstance().setSPN(
-								SPNetwork.noop(
-										MasterPropertiesCache.getInstance().getBlockSize(),
-										MasterPropertiesCache.getInstance().getSBoxSize(),
-										MasterPropertiesCache.getInstance().getNumRounds()));
-						
-						new SPNDefinitionDialog(MasterPropertiesCache.getInstance().getSPN());
-					}
-				});
+				SwingUtilities.invokeLater(
+						() ->
+						{
+							MasterPropertiesCache.getInstance().setSPN(
+									SPNetwork.noop(
+											MasterPropertiesCache.getInstance().getBlockSize(),
+											MasterPropertiesCache.getInstance().getSBoxSize(),
+											MasterPropertiesCache.getInstance().getNumRounds()));
+							
+							new SPNDefinitionDialog(MasterPropertiesCache.getInstance().getSPN());
+						});
 				
 				dispose();
 			}
@@ -136,9 +133,6 @@ public class NewOrLoadDialog extends JFrame implements ActionListener
 						() ->
 						{
 							MasterPropertiesCache.getInstance().setSPN(spnRef);
-							
-							SPNVisualizationFrame frm = new SPNVisualizationFrame(MasterPropertiesCache.getInstance().getSPN());
-							MasterPropertiesCache.getInstance().setVisualizationFrame(frm);
 							new SPNDefinitionDialog(MasterPropertiesCache.getInstance().getSPN());
 						});
 				this.dispose();

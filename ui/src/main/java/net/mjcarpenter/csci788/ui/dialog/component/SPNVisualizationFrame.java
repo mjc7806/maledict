@@ -29,7 +29,6 @@ public class SPNVisualizationFrame extends JFrame
 		setSize(400,900);
 		
 		createPanel();
-		
 		setVisible(true);
 	}
 	
@@ -53,10 +52,8 @@ public class SPNVisualizationFrame extends JFrame
 		for(int i=0; i<rounds.length; i++)
 		{
 			PermutationWeb perm = new PermutationWeb(spn.getBlockSize(), false);
-			perm.setHeaderOn(i == 0);
-			perm.setFooterOn(i == rounds.length-1);
 			perm.updateMappings(spn.getRounds()[i].getPermutation().getMapping());
-			perm.setVisible(true);
+			perm.setVisible(!spn.getRounds()[i].getPermutation().isNoop());
 			
 			rounds[i] = new RoundPanel(
 					perm,
@@ -64,7 +61,7 @@ public class SPNVisualizationFrame extends JFrame
 					new SBoxRow(spn.getRounds()[i].getSBoxes().length, spn.getRounds()[i].getSBoxes()[0].bitSize()));
 			
 			panel.add(rounds[i]);
-			rounds[i].setVisible(true);
+			rounds[i].setVisible(!spn.getRounds()[i].isNoop());
 		}
 		
 		panel.addComponentListener(new ComponentAdapter()
@@ -72,7 +69,6 @@ public class SPNVisualizationFrame extends JFrame
 			@Override
 			public void componentResized(ComponentEvent e)
 			{
-				//int height = getHeight();
 				int width = getWidth();
 				
 				panel.setPreferredSize(new Dimension(width, rounds[0].getHeight()*rounds.length));
@@ -84,15 +80,7 @@ public class SPNVisualizationFrame extends JFrame
 			}
 		});
 		
-		//add(new JButton("TEST"));
-		
-		//JScrollPane jsp = new JScrollPane(panel);
 		add(panel);
 		this.pack();
-	}
-	
-	public static void main(String[] args)
-	{
-		new SPNVisualizationFrame(SPNetwork.noop(16, 4, 5));
 	}
 }
