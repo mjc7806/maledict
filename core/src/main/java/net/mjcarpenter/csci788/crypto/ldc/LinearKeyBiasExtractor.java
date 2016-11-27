@@ -15,7 +15,7 @@ public final class LinearKeyBiasExtractor extends AbstractKeyBiasExtractor<Linea
 		super(relevantRound, appx);
 	}
 	
-	public void generateBiases(List<KnownPair> pairs)
+	public void generateBiases(List<KnownPair> pairs, BiasExtractorProgressCallback callback)
 	{
 		biasMap = new TreeMap<Key, Double>();
 				
@@ -28,11 +28,14 @@ public final class LinearKeyBiasExtractor extends AbstractKeyBiasExtractor<Linea
 		// and we want to stop just short of that.
 		Round testRound = relevantRound.replaceKey(Key.noop(relevantRound.bitLength()));
 		
-		for(int i=0; i<1<<(boxLength*boxesToCheck); i++)
+		int keysToCheck = 1<<(boxLength*boxesToCheck);
+		
+		for(int i=0; i<keysToCheck; i++)
 		{
 			k = getKeyFor(i);
 			
 			int matches = 0;
+			int pairProg = 0;
 			
 			for(KnownPair pair: pairs)
 			{
@@ -48,6 +51,9 @@ public final class LinearKeyBiasExtractor extends AbstractKeyBiasExtractor<Linea
 				{
 					matches++;
 				}
+				
+				// Notify caller of progress
+				callback.progress(i+1, keysToCheck, ++pairProg, pairs.size());
 			}
 			
 			

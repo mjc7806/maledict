@@ -15,7 +15,7 @@ public final class DifferentialKeyBiasExtractor extends AbstractKeyBiasExtractor
 		super(relevantRound, appx);
 	}
 
-	public void generateBiases(List<ChosenPair> pairs)
+	public void generateBiases(List<ChosenPair> pairs, BiasExtractorProgressCallback callback)
 	{
 		biasMap = new TreeMap<Key, Double>();
 				
@@ -28,12 +28,14 @@ public final class DifferentialKeyBiasExtractor extends AbstractKeyBiasExtractor
 		// and we want to stop just short of that.
 		Round testRound = relevantRound.replaceKey(Key.noop(relevantRound.bitLength()));
 		
-		for(int i=0; i<1<<(boxLength*boxesToCheck); i++)
+		int keysToCheck = 1<<(boxLength*boxesToCheck);
+		
+		for(int i=0; i<keysToCheck; i++)
 		{
 			k = getKeyFor(i);
 			
 			int matches = 0;
-			//int dbgIdx = 0;
+			int pairProg = 0;
 			
 			for(ChosenPair pair: pairs)
 			{
@@ -55,7 +57,8 @@ public final class DifferentialKeyBiasExtractor extends AbstractKeyBiasExtractor
 					matches++;
 				}
 				
-				//System.out.printf("Key %d/%d Pair %d/%d\r", i+1, 1<<(boxLength*boxesToCheck), ++dbgIdx, pairs.size());
+				// Notify caller of progress.
+				callback.progress(i+1, keysToCheck, ++pairProg, pairs.size());
 			}
 			
 			
