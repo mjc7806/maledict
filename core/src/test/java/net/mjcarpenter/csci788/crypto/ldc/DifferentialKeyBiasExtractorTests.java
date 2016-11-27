@@ -104,7 +104,12 @@ public class DifferentialKeyBiasExtractorTests
 	public void testBiasTableActualCipher()
 	throws Exception
 	{
-		dkbe.generateBiases(pairs);
+		dkbe.generateBiases(pairs,
+				(mainProg, mainTot, subProg, subTot) ->
+				{
+					System.out.printf("Key %d/%d Pair %d/%d\r",
+							mainProg, mainTot, subProg, subTot);
+				});
 				
 		byte[] expected = new byte[]{(byte)0x02, (byte)0x04};
 		byte[] resultBytes = dkbe.getMaxBiasKey().getKeyValue();
@@ -161,7 +166,12 @@ public class DifferentialKeyBiasExtractorTests
 			pairs.add(pair);
 		}
 		
-		dkbe.generateBiases(pairs);
+		dkbe.generateBiases(pairs,
+				(mainProg, mainTot, subProg, subTot) ->
+				{
+					System.out.printf("Key %d/%d Pair %d/%d\r",
+							mainProg, mainTot, subProg, subTot);
+				});
 		
 		byte[] resultBytes = dkbe.getMaxBiasKey().getKeyValue();
 		byte[] expected    = new byte[]{(byte)0x02, (byte)0x04};
@@ -209,6 +219,6 @@ public class DifferentialKeyBiasExtractorTests
 				new KnownPair(plain1bytes, spn.encrypt(plain1bytes)),
 				new KnownPair(plain2bytes, spn.encrypt(plain2bytes))));
 		
-		dkbe.generateBiases(pairs);
+		dkbe.generateBiases(pairs, (mainProg, mainTot, subProg, subTot) -> {});
 	}
 }

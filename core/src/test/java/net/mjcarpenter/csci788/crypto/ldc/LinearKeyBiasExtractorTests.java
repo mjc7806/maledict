@@ -98,7 +98,12 @@ public class LinearKeyBiasExtractorTests
 	public void testBiasTableActualCipher()
 	throws Exception
 	{
-		lkbe.generateBiases(pairs);
+		lkbe.generateBiases(pairs,
+				(mainProg, mainTot, subProg, subTot) ->
+				{
+					System.out.printf("Key %d/%d Pair %d/%d\r",
+							mainProg, mainTot, subProg, subTot);
+				});
 				
 		byte[] expected = new byte[]{(byte)0x02, (byte)0x04};
 		byte[] resultBytes = lkbe.getMaxBiasKey().getKeyValue();
@@ -148,7 +153,12 @@ public class LinearKeyBiasExtractorTests
 			pairs.add(pair);
 		}
 		
-		lkbe.generateBiases(pairs);
+		lkbe.generateBiases(pairs,
+				(mainProg, mainTot, subProg, subTot) ->
+				{
+					System.out.printf("Key %d/%d Pair %d/%d\r",
+							mainProg, mainTot, subProg, subTot);
+				});
 		
 		byte[] resultBytes = lkbe.getMaxBiasKey().getKeyValue();
 		byte[] expected    = new byte[]{(byte)0x02, (byte)0x04};
