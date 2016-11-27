@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" type="text/css" href="../css/styles.css" />
+    <title>HELP: Subkeys</title>
+</head>
+<body>
+    <div id="helpbody">
+        <h1>Help With Subkeys</h1>
+        <table style="text-align:center;">
+			<caption>XOR Table</caption>
+			<tr>
+				<th colspan="2">Input</th>
+				<th rowspan="2">Output</th>
+			</tr>
+			<tr>
+				<th>A</th>
+				<th>B</th>
+			</tr>
+			<tr>
+				<td>0</td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+			<tr>
+				<td>0</td>
+				<td>1</td>
+				<td>1</td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td>0</td>
+				<td>1</td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td>1</td>
+				<td>0</td>
+			</tr>
+		</table>
+        <p id="citation" style="font-size:10pt;">
+            Table credit <em>wikipedia.org</em> &lt;https://en.wikipedia.org/wiki/Exclusive_or&#35;Truth_table&gt;
+        </p>
+        <p>
+            Each round of a Substitution-Permutation Network (SPN) includes a <strong>subkey</strong>.
+			A subkey is a string of bits equal in length to the block size of the round.
+			Each bit in the subkey is combined with the input bits to the round using some logical
+			operator. In this application, the subkeys are processed using <strong>exclusive-OR (XOR)</strong>.
+        </p>
+    </div>
+</body>
+</html>

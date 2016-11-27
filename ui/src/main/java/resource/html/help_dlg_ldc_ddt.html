@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" type="text/css" href="../css/styles.css" />
+    <title>HELP: Difference Distribution Table</title>
+</head>
+<body>
+    <div id="helpbody">
+        <h1>Help With Difference Distribution Tables</h1>
+        <p>
+            A <strong>difference distribution table (DDT)</strong> is a table designed to
+			summarize a predictable difference between pairs of input values and output
+			values. That is, two inputs XOR'd together would correspond predictably with
+			two outputs XOR'd together.
+        </p>
+		<p>
+			For a given S-box, a DDT denotes an input difference which, when applied to a
+			given input pair, will result in a certain difference between its outputs.
+			The row corresponds to the input difference to the S-box, and the column
+			corresponds to the output difference from the S-box.
+		</p>
+		<p>
+			For example, given an input difference of 1011, one would pass two applicable
+			input values, such as 0101 and 1110. For the row corresponding to 1011, the
+			cell in the column for the resultant difference in outputs (the value of the
+			outputs bitwise-XOR'd together) will be incremented.
+		</p>
+		<p>
+			The final value in each cell represents the number of times that a particular
+			combination of input/output masks produce a certain difference, in total.
+			A value of zero means that the difference does not occur at all, while higher
+			values indicate that the difference is more likely. There are no negative
+			values for a cell in a DDT, unlike in a LAT, as it only counts the total
+			occurrences of a given difference.
+		</p>
+    </div>
+</body>
+</html>

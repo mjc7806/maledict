@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" type="text/css" href="../css/styles.css" />
+    <title>HELP: Linear Approximation Table</title>
+</head>
+<body>
+    <div id="helpbody">
+        <h1>Help With Linear Approximation Tables</h1>
+        <p>
+            A <strong>linear approximation table (LAT)</strong> is a table designed to
+			summarize the degree of linearity for different input/output combinations with
+			regards to a particular S-box.
+        </p>
+		<p>
+			For a given S-box, an LAT denotes an input and an output mask which, when
+			applied to a given input/output pair, will result in an equal value when all
+			resultant bits are XOR'd together. The row corresponds to the input mask to
+			the S-box, and the column corresponds to the output mask from the S-box.
+		</p>
+		<p>
+			For example, given an input <em>mask</em> of 1011 and output mask of 1100, an
+			input <em>value</em> of 1101 would be masked to 1011&and;1101=1001, and an
+			output value of 1111 would be masked to 1100&and;1111=1100. This is tested via
+			1&oplus;0&oplus;0&oplus;1=1&oplus;1&oplus;0&oplus;0. Both sides evaluate to 0,
+			so it passes, and the cell in the table at position (B (1011), C (1100)).
+		</p>
+		<p>
+			However, an input of 1111 and output of 1101 would not evaluate to the same
+			value, and therefore the value would not increment.
+		</p>
+		<p>
+			The final value in each cell represents the number of times that a particular
+			combination of input/output masks produce a valid linear approximation, in
+			terms of variance from chance. A value of zero means that the approximation
+			holds exactly half the time. A positive value means that the approximation
+			holds more than half the time, a negative value less than half the time.
+		</p>
+    </div>
+</body>
+</html>
