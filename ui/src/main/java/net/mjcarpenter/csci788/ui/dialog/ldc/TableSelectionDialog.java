@@ -28,8 +28,9 @@ public abstract class TableSelectionDialog extends JDialog implements ActionList
 	private CoordinateToggleButton selectedButtonReference;
 	private CoordinateToggleButton[][] buttons;
 	private JButton jbAccept, jbCancel, jbHelp;
+	private int inFilter;
 	
-	public TableSelectionDialog(int[][] table)
+	public TableSelectionDialog(int[][] table, int inFilter)
 	{
 		super();
 		setModal(true);
@@ -37,6 +38,7 @@ public abstract class TableSelectionDialog extends JDialog implements ActionList
 		setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		
 		msg = null;
+		this.inFilter = inFilter;
 		
 		jbAccept = new JButton("Accept");
 		jbCancel = new JButton("Cancel");
@@ -75,7 +77,7 @@ public abstract class TableSelectionDialog extends JDialog implements ActionList
 			for(int j=0; j<table[i].length; j++)
 			{
 				buttons[i][j] = new CoordinateToggleButton(String.valueOf(table[i][j]), i, j);
-				buttons[i][j].setEnabled(i != 0 || j != 0 || table[i][j] != 0);
+				buttons[i][j].setEnabled(i != 0 && j != 0 && table[i][j] != 0 && (inFilter == 0 || i == inFilter));
 				buttons[i][j].setSelected(false);
 				buttons[i][j].addActionListener(this);
 				tablePanel.add(buttons[i][j]);

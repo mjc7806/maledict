@@ -13,9 +13,9 @@ public final class LATSelectionDialog extends TableSelectionDialog
 	private int     selectedOut;
 	private int     selectedBias;
 	
-	public LATSelectionDialog(SBox sbox)
+	public LATSelectionDialog(SBox sbox, int inFilter)
 	{
-		super(sbox.getLAT());
+		super(sbox.getLAT(), inFilter);
 		this.sbox = sbox;
 		this.hasSelection = false;
 		

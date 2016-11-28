@@ -37,7 +37,7 @@ public final class LinearApproximationDialog extends ApproximationDialog
 			{
 				SBox relevantBox = getBoxForButton(btn);
 				
-				LATSelectionDialog lsd = new LATSelectionDialog(relevantBox);
+				LATSelectionDialog lsd = new LATSelectionDialog(relevantBox, roundInMasks[btn.row][btn.col]);
 				
 				if(lsd.hasSelection())
 				{
