@@ -44,6 +44,9 @@ subprojects {
             compile     'com.thoughtworks.xstream:xstream:1.4.9'
             testCompile 'junit:junit:4.12'
         }
+        test {
+            testLogging.showStandardStreams = true
+        }
     }
     
     project(':ui') {
