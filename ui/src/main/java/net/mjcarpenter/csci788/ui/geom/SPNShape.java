@@ -1,50 +1,73 @@
 package net.mjcarpenter.csci788.ui.geom;
 
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
-import net.mjcarpenter.csci788.crypto.spn.SPNetworkTests;
 
 @SuppressWarnings("serial")
 public final class SPNShape extends JPanel
 {
-	private static final int HEIGHT_KEY  = 2;
-	private static final int HEIGHT_PERM = 5;
-	private static final int HEIGHT_SBOX = 3;
+	private static final double LENGTH_SEGMENT = 0.5;
+	private static final double HEIGHT_KEY     = 2.0;
+	private static final double HEIGHT_PERM    = 5.0;
+	private static final double HEIGHT_SBOX    = 3.0;
+	private static final double WIDTH_PER_BIT  = 2.0;
 	
-	private Collection<Point2D.Double>     points;
-	private Collection<Line2D.Double>      lines;
-	private Collection<Rectangle2D.Double> rects;
+	private long[] roundInMasks;
+	private long[] roundOutMasks;
+	
+	private Map<Shape, Color> colorMap;
+	private Collection<Line2D>      lines;
+	private Collection<Rectangle2D> rects;
 	
 	private SPNetwork spn;
 	private double scale;
 	private int    fullUsrHeight;
-	private int    fullScaledHeight;
 	
 	public SPNShape(SPNetwork spn)
 	{
 		this.spn = spn;
+		this.roundInMasks = new long[this.spn.getRounds().length];
+		this.roundInMasks = new long[this.spn.getRounds().length];
 		scaleTo(getSize());
 		build();
 		setVisible(true);
 	}
 	
+	public void clearRoundMasks()
+	{
+		this.roundInMasks  = new long[spn.getRounds().length];
+		this.roundOutMasks = new long[spn.getRounds().length];
+		
+		build();
+	}
+	
+	public void applyRoundMasks(long[] roundInMasks, long[] roundOutMasks)
+	{
+		this.roundInMasks  = roundInMasks;
+		this.roundOutMasks = roundOutMasks;
+		
+		build();
+	}
+	
 	public void build()
 	{
-		this.points = new ArrayList<Point2D.Double>();
-		this.lines = new ArrayList<Line2D.Double>();
-		this.rects = new ArrayList<Rectangle2D.Double>();
+		this.colorMap = new HashMap<Shape, Color>();
+		this.lines    = new ArrayList<Line2D>();
+		this.rects    = new ArrayList<Rectangle2D>();
 		
 		int bitWidth  = spn.getBlockSize();
 		int curHeight = 0;
@@ -56,12 +79,18 @@ public final class SPNShape extends JPanel
 			{
 				for(int j=0; j<bitWidth; j++)
 				{
-					double x = j*2+1;
-					lines.add(new Line2D.Double(x, curHeight, x, curHeight+HEIGHT_KEY/4.0));
-					lines.add(new Line2D.Double(x, curHeight+HEIGHT_KEY, x, curHeight+(HEIGHT_KEY*0.75)));
+					double x = j*WIDTH_PER_BIT+1;
+					Color bitColor = ((roundInMasks[i]>>j)&0x1) == 0 ? Color.BLACK : Color.BLUE;
+					
+					Line2D lineA = new Line2D.Double(x, curHeight, x, curHeight+LENGTH_SEGMENT);
+					Line2D lineB = new Line2D.Double(x, curHeight+HEIGHT_KEY, x, curHeight+(HEIGHT_KEY-LENGTH_SEGMENT));
+					lines.add(lineA);
+					lines.add(lineB);
+					colorMap.put(lineA, bitColor);
+					colorMap.put(lineB, bitColor);
 				}
 				
-				rects.add(new Rectangle2D.Double(0.5, curHeight+HEIGHT_KEY/4.0, bitWidth*2-1, HEIGHT_KEY/2.0));
+				rects.add(new Rectangle2D.Double(0.5, curHeight+LENGTH_SEGMENT, bitWidth*WIDTH_PER_BIT-1, HEIGHT_KEY-2*LENGTH_SEGMENT));
 				
 				curHeight += HEIGHT_KEY;
 			}
@@ -82,12 +111,20 @@ public final class SPNShape extends JPanel
 					int boxBitSize = spn.getRounds()[i].getSBoxes()[j].bitSize();
 					for(int k=0; k<boxBitSize; k++)
 					{
-						double x = (sbx+k)*2+1;
-						lines.add(new Line2D.Double(x, curHeight, x, curHeight+0.5));
-						lines.add(new Line2D.Double(x, curHeight+HEIGHT_SBOX, x, curHeight+(HEIGHT_SBOX-0.5)));
+						Color bitInColor  = ((roundInMasks[i]>>(j*sbx+k))&0x1)  == 0 ? Color.BLACK : Color.BLUE;
+						Color bitOutColor = ((roundOutMasks[i]>>(j*sbx+k))&0x1) == 0 ? Color.BLACK : Color.BLUE;
+						
+						double x = (sbx+k)*WIDTH_PER_BIT+1;
+						
+						Line2D lineA = new Line2D.Double(x, curHeight, x, curHeight+LENGTH_SEGMENT);
+						Line2D lineB = new Line2D.Double(x, curHeight+HEIGHT_SBOX, x, curHeight+(HEIGHT_SBOX-LENGTH_SEGMENT));
+						lines.add(lineA);
+						lines.add(lineB);
+						colorMap.put(lineA, bitInColor);
+						colorMap.put(lineB, bitOutColor);
 					}
 					
-					rects.add(new Rectangle2D.Double((sbx*2)+0.5, curHeight+0.5, boxBitSize*2-1, HEIGHT_SBOX-1));
+					rects.add(new Rectangle2D.Double((sbx*2)+0.5, curHeight+0.5, boxBitSize*WIDTH_PER_BIT-1, HEIGHT_SBOX-2*LENGTH_SEGMENT));
 					sbx += boxBitSize;
 				}
 				
@@ -99,9 +136,14 @@ public final class SPNShape extends JPanel
 			{
 				for(int j=0; j<bitWidth; j++)
 				{
-					double x1 = j*2+1;
-					double x2 = spn.getRounds()[i].getPermutation().outPosition(j)*2+1;
-					lines.add(new Line2D.Double(x1, curHeight, x2, curHeight+HEIGHT_PERM));
+					Color bitColor = ((roundOutMasks[i]>>j)&0x1) == 0 ? Color.BLACK : Color.BLUE;
+					
+					double x1 = j*WIDTH_PER_BIT+1;
+					double x2 = spn.getRounds()[i].getPermutation().outPosition(j)*WIDTH_PER_BIT+1;
+					
+					Line2D line = new Line2D.Double(x1, curHeight, x2, curHeight+HEIGHT_PERM);
+					lines.add(line);
+					colorMap.put(line, bitColor);
 				}
 				
 				curHeight += HEIGHT_PERM;
@@ -129,15 +171,6 @@ public final class SPNShape extends JPanel
 		return new Dimension(getWidth(), prefHeight);
 	}
 	
-	public static void main(String[] args)
-	{
-		JFrame jf = new JFrame();
-		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		jf.add(new SPNShape(SPNetworkTests.sampleNetwork()));
-		jf.setSize(800, 1000);
-		jf.setVisible(true);
-	}
-
 	@Override
 	public void paintComponent(Graphics g)
 	{
@@ -146,14 +179,21 @@ public final class SPNShape extends JPanel
 		super.paintComponent(g2);
 		
 		scaleTo(getSize());
-
-		g2.setStroke(new BasicStroke((int)Math.round(2/scale)));
 		g2.scale(scale, scale);
 		
 		for(Line2D each: lines)
 		{
+			Color thisColor = colorMap.get(each);
+			double lineWeight = (thisColor.equals(Color.BLACK)) ? 2.0 : 3.0;
+			g2.setStroke(new BasicStroke((int)Math.round(lineWeight/scale)));
+			g2.setColor(thisColor);
+			
 			g2.draw(each);
 		}
+		
+		g2.setStroke(new BasicStroke((int)Math.round(2/scale)));
+		g2.setColor(Color.BLACK);
+		
 		for(Rectangle2D each: rects)
 		{
 			g2.draw(each);

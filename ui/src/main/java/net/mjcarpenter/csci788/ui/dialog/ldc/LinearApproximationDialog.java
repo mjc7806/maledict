@@ -8,6 +8,7 @@ import net.mjcarpenter.csci788.crypto.spn.SBox;
 import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
 import net.mjcarpenter.csci788.ui.component.CoordinateToggleButton;
 import net.mjcarpenter.csci788.ui.message.help.HelpMessageConstants;
+import net.mjcarpenter.csci788.ui.util.MasterPropertiesCache;
 
 @SuppressWarnings("serial")
 public final class LinearApproximationDialog extends ApproximationDialog
@@ -51,6 +52,8 @@ public final class LinearApproximationDialog extends ApproximationDialog
 					}
 					
 					roundOutMasks[btn.row][btn.col] = outMask;
+					
+					//MasterPropertiesCache.getInstance().colorVisualization(roundInMasks, roundOutMasks);
 				}
 				
 				lsd.dispose();

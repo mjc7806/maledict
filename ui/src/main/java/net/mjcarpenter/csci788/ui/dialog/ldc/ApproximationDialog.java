@@ -19,6 +19,9 @@ import net.mjcarpenter.csci788.ui.message.help.HelpMessage;
 @SuppressWarnings("serial")
 public abstract class ApproximationDialog extends JDialog implements ActionListener
 {
+	protected long[] roundInMasks;
+	protected long[] roundOutMasks;
+	
 	protected SPNetwork   spn;
 	protected CoordinateToggleButton[][] boxButtons;
 	protected List<CoordinateToggleButton> allButtons;
@@ -33,6 +36,9 @@ public abstract class ApproximationDialog extends JDialog implements ActionListe
 		
 		this.msg = null;
 		this.spn = network;
+		this.roundInMasks  = new long[spn.getRounds().length];
+		this.roundOutMasks = new long[spn.getRounds().length];
+		
 		this.boxButtons = new CoordinateToggleButton[spn.getRounds().length][spn.getRounds()[0].getSBoxes().length];
 		
 		allButtons = new ArrayList<CoordinateToggleButton>();
