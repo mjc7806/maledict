@@ -10,9 +10,9 @@ import net.mjcarpenter.csci788.ui.message.help.HelpMessageConstants;
 @SuppressWarnings("serial")
 public final class DDTSelectionDialog extends TableSelectionDialog
 {
-	public DDTSelectionDialog(SBox sbox)
+	public DDTSelectionDialog(SBox sbox, int inFilter)
 	{
-		super(sbox.getDDT());
+		super(sbox.getDDT(), inFilter);
 		setTitle("Difference Distribution Table: Selection Dialog");
 	}
 	
@@ -34,14 +34,5 @@ public final class DDTSelectionDialog extends TableSelectionDialog
 	protected void handleHelp()
 	{
 		handleHelp(HelpMessageConstants.HELP_DLG_LDC_DDT);
-	}
-
-	public static void main(String[] args)
-	throws Exception
-	{
-		UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-		JDialog dlg = new DDTSelectionDialog(SBox.noop(6));
-		dlg.setModal(true);
-		dlg.setVisible(true);
 	}
 }
