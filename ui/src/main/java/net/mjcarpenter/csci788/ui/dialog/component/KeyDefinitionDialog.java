@@ -13,9 +13,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import javax.xml.bind.DatatypeConverter;
 
 import net.mjcarpenter.csci788.crypto.spn.Key;
 import net.mjcarpenter.csci788.ui.message.help.HelpMessageConstants;
+import net.mjcarpenter.csci788.util.BitUtils;
 
 @SuppressWarnings("serial")
 public class KeyDefinitionDialog extends ComponentDefinitionDialog<Key> implements ActionListener
@@ -43,6 +45,10 @@ public class KeyDefinitionDialog extends ComponentDefinitionDialog<Key> implemen
 		jbHelp = new JButton("Help");
 		jbHelp.setMnemonic('H');
 		
+		jbOK.addActionListener(this);
+		jbCancel.addActionListener(this);
+		jbHelp.addActionListener(this);
+		
 		jlKey  = new JLabel("Key: ");
 		jtfKey = new JTextField(25);
 		
@@ -67,6 +73,8 @@ public class KeyDefinitionDialog extends ComponentDefinitionDialog<Key> implemen
 		add(mainPanel, BorderLayout.CENTER);
 		add(buttonPanel, BorderLayout.SOUTH);
 		
+		jtfKey.setText(DatatypeConverter.printHexBinary(component.getKeyValue()));
+		
 		setSize(500, 150);
 		setMinimumSize(new Dimension(500,150));
 		setVisible(true);
@@ -76,18 +84,18 @@ public class KeyDefinitionDialog extends ComponentDefinitionDialog<Key> implemen
 	public boolean validateComponent()
 	{
 		String fieldKey = jtfKey.getText().trim();
-		int keyIntVal = Integer.MAX_VALUE;
+		long keyLongVal = Integer.MAX_VALUE;
 		
 		try
 		{
-			keyIntVal = Integer.parseInt(fieldKey, 16);
+			keyLongVal = Long.parseLong(fieldKey, 16);
 		}
 		catch(NumberFormatException nfe)
 		{
 			return false;
 		}
 		
-		return keyIntVal < (1<<component.length());
+		return keyLongVal < (1<<component.length());
 	}
 	
 	@Override
@@ -97,15 +105,15 @@ public class KeyDefinitionDialog extends ComponentDefinitionDialog<Key> implemen
 		{
 			if(validateComponent())
 			{
-				int keyIntVal = Integer.parseInt(jtfKey.getText().trim());
-				byte[] newKeyVal = ByteBuffer.allocate(component.length()/8).order(ByteOrder.LITTLE_ENDIAN).putInt(keyIntVal).array();
-				component = new Key(newKeyVal);
+				long keyLongVal = Long.parseLong(jtfKey.getText().trim(), 16);
+				
+				component = new Key(BitUtils.longToByte(keyLongVal, component.length()/Byte.SIZE));
 				this.dispose();
 			}
 			else
 			{
 				JOptionPane.showMessageDialog(this,
-						"This is not a valid S-box.",
+						"This is not a valid Key.",
 						"Validation Error",
 						JOptionPane.ERROR_MESSAGE);
 			}
