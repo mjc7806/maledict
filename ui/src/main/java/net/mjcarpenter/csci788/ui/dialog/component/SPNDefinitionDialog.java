@@ -30,6 +30,7 @@ import net.mjcarpenter.csci788.crypto.spn.SBox;
 import net.mjcarpenter.csci788.crypto.spn.SPNComponent;
 import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
 import net.mjcarpenter.csci788.ui.component.DummyFrame;
+import net.mjcarpenter.csci788.ui.dialog.ldc.DifferentialApproximationDialog;
 import net.mjcarpenter.csci788.ui.dialog.ldc.LinearApproximationDialog;
 import net.mjcarpenter.csci788.ui.model.ComponentLeafNode;
 import net.mjcarpenter.csci788.ui.model.RoundTreeNode;
@@ -163,7 +164,11 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 		}
 		else if(arg0.getSource().equals(jmiLinear))
 		{
-			LinearApproximationDialog linDlg = new LinearApproximationDialog(((SPNTreeModel)spnTree.getModel()).getSPN());
+			LinearApproximationDialog linDlg = new LinearApproximationDialog(getRootNode().getComponent());
+		}
+		else if(arg0.getSource().equals(jmiDiff))
+		{
+			DifferentialApproximationDialog diffDlg = new DifferentialApproximationDialog(getRootNode().getComponent());
 		}
 	}
 	

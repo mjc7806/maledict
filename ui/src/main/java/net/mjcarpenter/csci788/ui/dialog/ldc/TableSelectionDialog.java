@@ -24,6 +24,11 @@ public abstract class TableSelectionDialog extends JDialog implements ActionList
 {
 	protected final Collection<CoordinateToggleButton> buttonReferences;
 	
+	protected boolean hasSelection;
+	protected int     selectedIn;
+	protected int     selectedOut;
+	protected int     selectedBias;
+	
 	private HelpMessage msg;
 	private CoordinateToggleButton selectedButtonReference;
 	private CoordinateToggleButton[][] buttons;
@@ -39,6 +44,7 @@ public abstract class TableSelectionDialog extends JDialog implements ActionList
 		
 		msg = null;
 		this.inFilter = inFilter;
+		this.hasSelection = false;
 		
 		jbAccept = new JButton("Accept");
 		jbCancel = new JButton("Cancel");
@@ -104,6 +110,26 @@ public abstract class TableSelectionDialog extends JDialog implements ActionList
 	public CoordinateToggleButton getSelectedButton()
 	{
 		return selectedButtonReference;
+	}
+	
+	public boolean hasSelection()
+	{
+		return hasSelection;
+	}
+	
+	public int getSelectedIn()
+	{
+		return selectedIn;
+	}
+	
+	public int getSelectedOut()
+	{
+		return selectedOut;
+	}
+	
+	public int getSelectedBias()
+	{
+		return selectedBias;
 	}
 	
 	protected abstract void handleAccept(CoordinateToggleButton selectedButton);

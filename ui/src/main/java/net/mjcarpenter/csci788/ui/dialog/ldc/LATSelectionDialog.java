@@ -8,40 +8,15 @@ import net.mjcarpenter.csci788.ui.message.help.HelpMessageConstants;
 public final class LATSelectionDialog extends TableSelectionDialog
 {	
 	private SBox sbox;
-	private boolean hasSelection;
-	private int     selectedIn;
-	private int     selectedOut;
-	private int     selectedBias;
 	
 	public LATSelectionDialog(SBox sbox, int inFilter)
 	{
 		super(sbox.getLAT(), inFilter);
 		this.sbox = sbox;
-		this.hasSelection = false;
 		
 		setTitle("Linear Approximation Table: Selection Dialog");
 		setModal(true);
 		setVisible(true);
-	}
-	
-	public int getSelectedIn()
-	{
-		return selectedIn;
-	}
-	
-	public int getSelectedOut()
-	{
-		return selectedOut;
-	}
-	
-	public int getSelectedBias()
-	{
-		return selectedBias;
-	}
-	
-	public boolean hasSelection()
-	{
-		return hasSelection;
 	}
 	
 	@Override

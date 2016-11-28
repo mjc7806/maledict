@@ -1,6 +1,7 @@
 package net.mjcarpenter.csci788.ui.geom;
 
 import java.awt.BasicStroke;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
@@ -13,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
+import net.mjcarpenter.csci788.crypto.spn.SPNetworkTests;
 
 @SuppressWarnings("serial")
 public final class SPNShape extends JPanel
@@ -31,7 +33,8 @@ public final class SPNShape extends JPanel
 	public SPNShape(SPNetwork spn)
 	{
 		this.spn = spn;
-		this.scale = getWidth()*1.0/(2*this.spn.getBlockSize());
+		//this.scale = getWidth()*1.0/(2*this.spn.getBlockSize());
+		scaleTo(getSize());
 		build();
 		setVisible(true);
 	}
@@ -53,11 +56,11 @@ public final class SPNShape extends JPanel
 				for(int j=0; j<bitWidth; j++)
 				{
 					double x = j*2+1;
-					lines.add(new Line2D.Double(x, curHeight, x, curHeight+0.5));
-					lines.add(new Line2D.Double(x, curHeight+HEIGHT_KEY, x, curHeight+(HEIGHT_KEY-0.5)));
+					lines.add(new Line2D.Double(x, curHeight, x, curHeight+HEIGHT_KEY/4.0));
+					lines.add(new Line2D.Double(x, curHeight+HEIGHT_KEY, x, curHeight+(HEIGHT_KEY*0.75)));
 				}
 				
-				rects.add(new Rectangle2D.Double(0.5, curHeight+0.5, bitWidth*2-1, curHeight+1));
+				rects.add(new Rectangle2D.Double(0.5, curHeight+HEIGHT_KEY/4.0, bitWidth*2-1, curHeight+HEIGHT_KEY/2.0));
 				
 				curHeight += HEIGHT_KEY;
 			}
@@ -66,6 +69,7 @@ public final class SPNShape extends JPanel
 			boolean includeRow = true;
 			for(int j=0; j<spn.getRounds()[i].getSBoxes().length; j++)
 			{
+				// If at least one S-box in the row is non-noop then include it.
 				includeRow &= !spn.getRounds()[i].getSBoxes()[j].isNoop();
 			}
 			if(includeRow)
@@ -74,15 +78,16 @@ public final class SPNShape extends JPanel
 				
 				for(int j=0; j<spn.getRounds()[i].getSBoxes().length; j++)
 				{
-					for(int k=0; k<spn.getRounds()[i].getSBoxes()[j].bitSize(); k++)
+					int boxBitSize = spn.getRounds()[i].getSBoxes()[j].bitSize();
+					for(int k=0; k<boxBitSize; k++)
 					{
 						double x = sbx+k*2+1;
 						lines.add(new Line2D.Double(x, curHeight, x, curHeight+0.5));
 						lines.add(new Line2D.Double(x, curHeight+HEIGHT_SBOX, x, curHeight+(HEIGHT_SBOX-0.5)));
 					}
 					
-					rects.add(new Rectangle2D.Double(0.5, curHeight+0.5, bitWidth*2-1, curHeight+(HEIGHT_SBOX-1)));
-					sbx += spn.getRounds()[i].getSBoxes()[j].bitSize();
+					rects.add(new Rectangle2D.Double(j*(boxBitSize*2)+0.5, curHeight+0.5, boxBitSize*2-1, curHeight+(HEIGHT_SBOX-1)));
+					sbx += boxBitSize;
 				}
 				
 				curHeight += HEIGHT_SBOX;
@@ -93,19 +98,29 @@ public final class SPNShape extends JPanel
 			{
 				for(int j=0; j<bitWidth; j++)
 				{
-					double x = j*2+1;
-					lines.add(new Line2D.Double(x, curHeight, (spn.getRounds()[i].getPermutation().outPosition(j)*2+1), curHeight+HEIGHT_PERM));
+					double x1 = j*2+1;
+					double x2 = spn.getRounds()[i].getPermutation().outPosition(j)*2+1;
+					lines.add(new Line2D.Double(x1, curHeight, x2, curHeight+HEIGHT_PERM));
 				}
 				
-				curHeight += HEIGHT_SBOX;
+				curHeight += HEIGHT_PERM;
 			}
 		}
+		
+		revalidate();
+		repaint();
+	}
+	
+	public void scaleTo(Dimension d)
+	{
+		scale = (double)d.getWidth()/((double)spn.getBlockSize()*2.0);
 	}
 	
 	public static void main(String[] args)
 	{
 		JFrame jf = new JFrame();
 		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		jf.add(new SPNShape(SPNetworkTests.sampleNetwork()));
 		jf.setSize(800, 500);
 		jf.setVisible(true);
 	}
@@ -113,12 +128,14 @@ public final class SPNShape extends JPanel
 	@Override
 	public void paintComponent(Graphics g)
 	{
-		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D)g;
 		
+		super.paintComponent(g2);
 		
+		scaleTo(getSize());
+
+		g2.setStroke(new BasicStroke((int)Math.round(2/scale)));
 		g2.scale(scale, scale);
-		g2.setStroke(new BasicStroke(2));
 		
 		for(Line2D each: lines)
 		{
