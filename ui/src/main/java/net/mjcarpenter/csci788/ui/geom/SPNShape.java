@@ -29,11 +29,12 @@ public final class SPNShape extends JPanel
 	
 	private SPNetwork spn;
 	private double scale;
+	private int    fullUsrHeight;
+	private int    fullScaledHeight;
 	
 	public SPNShape(SPNetwork spn)
 	{
 		this.spn = spn;
-		//this.scale = getWidth()*1.0/(2*this.spn.getBlockSize());
 		scaleTo(getSize());
 		build();
 		setVisible(true);
@@ -60,7 +61,7 @@ public final class SPNShape extends JPanel
 					lines.add(new Line2D.Double(x, curHeight+HEIGHT_KEY, x, curHeight+(HEIGHT_KEY*0.75)));
 				}
 				
-				rects.add(new Rectangle2D.Double(0.5, curHeight+HEIGHT_KEY/4.0, bitWidth*2-1, curHeight+HEIGHT_KEY/2.0));
+				rects.add(new Rectangle2D.Double(0.5, curHeight+HEIGHT_KEY/4.0, bitWidth*2-1, HEIGHT_KEY/2.0));
 				
 				curHeight += HEIGHT_KEY;
 			}
@@ -81,12 +82,12 @@ public final class SPNShape extends JPanel
 					int boxBitSize = spn.getRounds()[i].getSBoxes()[j].bitSize();
 					for(int k=0; k<boxBitSize; k++)
 					{
-						double x = sbx+k*2+1;
+						double x = (sbx+k)*2+1;
 						lines.add(new Line2D.Double(x, curHeight, x, curHeight+0.5));
 						lines.add(new Line2D.Double(x, curHeight+HEIGHT_SBOX, x, curHeight+(HEIGHT_SBOX-0.5)));
 					}
 					
-					rects.add(new Rectangle2D.Double(j*(boxBitSize*2)+0.5, curHeight+0.5, boxBitSize*2-1, curHeight+(HEIGHT_SBOX-1)));
+					rects.add(new Rectangle2D.Double((sbx*2)+0.5, curHeight+0.5, boxBitSize*2-1, HEIGHT_SBOX-1));
 					sbx += boxBitSize;
 				}
 				
@@ -107,6 +108,9 @@ public final class SPNShape extends JPanel
 			}
 		}
 		
+		this.fullUsrHeight = curHeight;
+		scaleTo(getSize());
+		
 		revalidate();
 		repaint();
 	}
@@ -116,12 +120,21 @@ public final class SPNShape extends JPanel
 		scale = (double)d.getWidth()/((double)spn.getBlockSize()*2.0);
 	}
 	
+	@Override
+	public Dimension getMinimumSize()
+	{
+		scaleTo(getSize());
+		int prefHeight = Math.max(getHeight(), (int)Math.ceil(fullUsrHeight/scale));
+		
+		return new Dimension(getWidth(), prefHeight);
+	}
+	
 	public static void main(String[] args)
 	{
 		JFrame jf = new JFrame();
 		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jf.add(new SPNShape(SPNetworkTests.sampleNetwork()));
-		jf.setSize(800, 500);
+		jf.setSize(800, 1000);
 		jf.setVisible(true);
 	}
 

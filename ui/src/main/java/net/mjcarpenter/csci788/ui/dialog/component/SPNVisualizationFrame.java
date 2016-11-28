@@ -1,24 +1,14 @@
 package net.mjcarpenter.csci788.ui.dialog.component;
 
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
-import net.mjcarpenter.csci788.ui.geom.KeyShape;
-import net.mjcarpenter.csci788.ui.geom.PermutationWeb;
-import net.mjcarpenter.csci788.ui.geom.RoundPanel;
-import net.mjcarpenter.csci788.ui.geom.SBoxRow;
+import net.mjcarpenter.csci788.ui.geom.SPNShape;
 
 @SuppressWarnings("serial")
 public class SPNVisualizationFrame extends JFrame
 {
 	private SPNetwork spn;
-	private RoundPanel[] rounds;
 	
 	public SPNVisualizationFrame(SPNetwork spn)
 	{
@@ -42,45 +32,6 @@ public class SPNVisualizationFrame extends JFrame
 	
 	public void createPanel()
 	{
-		this.revalidate();
-		
-		this.rounds = new RoundPanel[spn.getRounds().length];
-		
-		JPanel panel = new JPanel();
-		panel.setLayout(new GridLayout(0,1));
-		
-		for(int i=0; i<rounds.length; i++)
-		{
-			PermutationWeb perm = new PermutationWeb(spn.getBlockSize(), false);
-			perm.updateMappings(spn.getRounds()[i].getPermutation().getMapping());
-			perm.setVisible(!spn.getRounds()[i].getPermutation().isNoop());
-			
-			rounds[i] = new RoundPanel(
-					perm,
-					new KeyShape(spn.getBlockSize()),
-					new SBoxRow(spn.getRounds()[i].getSBoxes().length, spn.getRounds()[i].getSBoxes()[0].bitSize()));
-			
-			panel.add(rounds[i]);
-			rounds[i].setVisible(!spn.getRounds()[i].isNoop());
-		}
-		
-		panel.addComponentListener(new ComponentAdapter()
-		{
-			@Override
-			public void componentResized(ComponentEvent e)
-			{
-				int width = getWidth();
-				
-				panel.setPreferredSize(new Dimension(width, rounds[0].getHeight()*rounds.length));
-				
-				panel.revalidate();
-				panel.repaint();
-				revalidate();
-				repaint();
-			}
-		});
-		
-		add(panel);
-		this.pack();
+		this.add(new SPNShape(spn));
 	}
 }
