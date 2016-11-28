@@ -99,12 +99,6 @@ public class MasterPropertiesCache
 	 * SPN COMPONENTS
 	 */
 	
-	public SPNVisualizationFrame getVisualizationFrame()
-	{
-		if(vis == null) vis = new SPNVisualizationFrame(spn);
-		return vis;
-	}
-	
 	public SPNetwork getSPN()
 	{
 		return spn;
@@ -152,5 +146,26 @@ public class MasterPropertiesCache
 	public void setVisualizationFrame(SPNVisualizationFrame frm)
 	{
 		vis = frm;	
+	}
+	
+	
+	/*
+	 * VISUALIZATION FRAME
+	 */
+	
+	public SPNVisualizationFrame getVisualizationFrame()
+	{
+		if(vis == null) vis = new SPNVisualizationFrame(spn);
+		return vis;
+	}
+	
+	public void colorVisualization(long[] inMask, long[] outMask)
+	{
+		vis.colorVisualization(inMask, outMask);
+	}
+	
+	public void clearVisualizationColoring()
+	{
+		vis.clearVisualizationColoring();
 	}
 }

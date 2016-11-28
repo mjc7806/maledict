@@ -158,6 +158,18 @@ public class MasterPropertiesDialog extends JDialog implements ActionListener
 						"ERROR",
 						JOptionPane.ERROR_MESSAGE);
 			}
+			else if(blockSize > Long.SIZE)
+			{
+				// We represent rounds using longs in some places, so the bit length
+				// of a long needs to be a hard size-limit on block size. Since this
+				// is usually 64 bits it's not a big deal, as trying to cryptanalyze
+				// a 64-bit cipher with this tool would be prohibitively cumbersome.
+				
+				JOptionPane.showMessageDialog(this,
+						"Block sizes greater than " + Long.SIZE + " are not supported.",
+						"ERROR",
+						JOptionPane.ERROR_MESSAGE);
+			}
 			else
 			{
 				// Everything is valid.

@@ -9,11 +9,13 @@ import net.mjcarpenter.csci788.ui.geom.SPNShape;
 public class SPNVisualizationFrame extends JFrame
 {
 	private SPNetwork spn;
+	private SPNShape  shape;
 	
 	public SPNVisualizationFrame(SPNetwork spn)
 	{
 		super("SPN Visualization");
-		this.spn = spn;
+		this.spn   = spn;
+		this.shape = null;
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		
 		setSize(400,900);
@@ -30,8 +32,24 @@ public class SPNVisualizationFrame extends JFrame
 		revalidate();
 	}
 	
+	public void colorVisualization(long[] inMask, long[] outMask)
+	{
+		shape.applyRoundMasks(inMask, outMask);
+	}
+	
+	public void clearVisualizationColoring()
+	{
+		shape.clearRoundMasks();
+	}
+	
 	public void createPanel()
 	{
-		this.add(new SPNShape(spn));
+		if(shape != null)
+		{
+			remove(shape);
+		}
+		
+		shape = new SPNShape(spn);
+		add(shape);
 	}
 }
