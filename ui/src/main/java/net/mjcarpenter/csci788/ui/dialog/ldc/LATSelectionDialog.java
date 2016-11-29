@@ -9,12 +9,12 @@ public final class LATSelectionDialog extends TableSelectionDialog
 {	
 	private SBox sbox;
 	
-	public LATSelectionDialog(SBox sbox, int inFilter)
+	public LATSelectionDialog(SBox sbox, long inFilter)
 	{
 		super(sbox.getLAT(), inFilter);
-		this.sbox = sbox;
-		
 		setTitle("Linear Approximation Table: Selection Dialog");
+		
+		this.sbox = sbox;
 		setModal(true);
 		setVisible(true);
 	}
@@ -27,13 +27,6 @@ public final class LATSelectionDialog extends TableSelectionDialog
 		selectedBias = sbox.getLAT()[selectedIn][selectedOut];
 		
 		hasSelection = true;
-		setVisible(false);
-	}
-
-	@Override
-	protected void handleCancel()
-	{
-		hasSelection = false;
 		setVisible(false);
 	}
 

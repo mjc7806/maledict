@@ -20,11 +20,13 @@ import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
 @SuppressWarnings("serial")
 public final class SPNShape extends JPanel
 {
-	private static final double LENGTH_SEGMENT = 0.5;
-	private static final double HEIGHT_KEY     = 2.0;
-	private static final double HEIGHT_PERM    = 5.0;
-	private static final double HEIGHT_SBOX    = 3.0;
-	private static final double WIDTH_PER_BIT  = 2.0;
+	private static final double LENGTH_SEGMENT     = 0.5;
+	private static final double HEIGHT_KEY         = 2.0;
+	private static final double HEIGHT_PERM        = 5.0;
+	private static final double HEIGHT_SBOX        = 3.0;
+	private static final double WIDTH_PER_BIT      = 2.0;
+	private static final float  LINE_WEIGHT_NORMAL = 2.0f;
+	private static final float  LINE_WEIGHT_HIGHLT = 3.0f;
 	
 	private long[] roundInMasks;
 	private long[] roundOutMasks;
@@ -41,7 +43,7 @@ public final class SPNShape extends JPanel
 	{
 		this.spn = spn;
 		this.roundInMasks = new long[this.spn.getRounds().length];
-		this.roundInMasks = new long[this.spn.getRounds().length];
+		this.roundOutMasks = new long[this.spn.getRounds().length];
 		scaleTo(getSize());
 		build();
 		setVisible(true);
@@ -80,7 +82,8 @@ public final class SPNShape extends JPanel
 				for(int j=0; j<bitWidth; j++)
 				{
 					double x = j*WIDTH_PER_BIT+1;
-					Color bitColor = ((roundInMasks[i]>>j)&0x1) == 0 ? Color.BLACK : Color.BLUE;
+					int maskShift = bitWidth-j-1;
+					Color bitColor = ((roundInMasks[i]>>>maskShift)&0x1) == 0 ? Color.BLACK : Color.BLUE;
 					
 					Line2D lineA = new Line2D.Double(x, curHeight, x, curHeight+LENGTH_SEGMENT);
 					Line2D lineB = new Line2D.Double(x, curHeight+HEIGHT_KEY, x, curHeight+(HEIGHT_KEY-LENGTH_SEGMENT));
@@ -90,7 +93,10 @@ public final class SPNShape extends JPanel
 					colorMap.put(lineB, bitColor);
 				}
 				
-				rects.add(new Rectangle2D.Double(0.5, curHeight+LENGTH_SEGMENT, bitWidth*WIDTH_PER_BIT-1, HEIGHT_KEY-2*LENGTH_SEGMENT));
+				Rectangle2D rect = new Rectangle2D.Double(0.5, curHeight+LENGTH_SEGMENT, bitWidth*WIDTH_PER_BIT-1, HEIGHT_KEY-2*LENGTH_SEGMENT);
+				rects.add(rect);
+				colorMap.put(rect, Color.BLACK);
+				
 				
 				curHeight += HEIGHT_KEY;
 			}
@@ -109,10 +115,20 @@ public final class SPNShape extends JPanel
 				for(int j=0; j<spn.getRounds()[i].getSBoxes().length; j++)
 				{
 					int boxBitSize = spn.getRounds()[i].getSBoxes()[j].bitSize();
+					
+					boolean isRectColor = false;
+					
 					for(int k=0; k<boxBitSize; k++)
 					{
-						Color bitInColor  = ((roundInMasks[i]>>(j*sbx+k))&0x1)  == 0 ? Color.BLACK : Color.BLUE;
-						Color bitOutColor = ((roundOutMasks[i]>>(j*sbx+k))&0x1) == 0 ? Color.BLACK : Color.BLUE;
+						int maskShift = bitWidth-(sbx + k)-1;
+						
+						boolean isInColor  = ((roundInMasks[i]>>maskShift)&0x1)  != 0;
+						boolean isOutColor = ((roundOutMasks[i]>>maskShift)&0x1) != 0;
+						
+						Color bitInColor  = isInColor  ? Color.BLUE : Color.BLACK;
+						Color bitOutColor = isOutColor ? Color.BLUE : Color.BLACK;
+						
+						isRectColor |= (isInColor || isOutColor);
 						
 						double x = (sbx+k)*WIDTH_PER_BIT+1;
 						
@@ -124,7 +140,9 @@ public final class SPNShape extends JPanel
 						colorMap.put(lineB, bitOutColor);
 					}
 					
-					rects.add(new Rectangle2D.Double((sbx*2)+0.5, curHeight+0.5, boxBitSize*WIDTH_PER_BIT-1, HEIGHT_SBOX-2*LENGTH_SEGMENT));
+					Rectangle2D rect = new Rectangle2D.Double((sbx*2)+0.5, curHeight+0.5, boxBitSize*WIDTH_PER_BIT-1, HEIGHT_SBOX-2*LENGTH_SEGMENT);
+					rects.add(rect);
+					colorMap.put(rect, isRectColor ? Color.BLUE : Color.BLACK);
 					sbx += boxBitSize;
 				}
 				
@@ -136,7 +154,8 @@ public final class SPNShape extends JPanel
 			{
 				for(int j=0; j<bitWidth; j++)
 				{
-					Color bitColor = ((roundOutMasks[i]>>j)&0x1) == 0 ? Color.BLACK : Color.BLUE;
+					int maskShift = bitWidth-j-1;
+					Color bitColor = ((roundOutMasks[i]>>maskShift)&0x1) == 0 ? Color.BLACK : Color.BLUE;
 					
 					double x1 = j*WIDTH_PER_BIT+1;
 					double x2 = spn.getRounds()[i].getPermutation().outPosition(j)*WIDTH_PER_BIT+1;
@@ -184,18 +203,20 @@ public final class SPNShape extends JPanel
 		for(Line2D each: lines)
 		{
 			Color thisColor = colorMap.get(each);
-			double lineWeight = (thisColor.equals(Color.BLACK)) ? 2.0 : 3.0;
-			g2.setStroke(new BasicStroke((int)Math.round(lineWeight/scale)));
+			double lineWeight = (thisColor.equals(Color.BLACK)) ? LINE_WEIGHT_NORMAL : LINE_WEIGHT_HIGHLT;
+			g2.setStroke(new BasicStroke((float)(lineWeight/scale)));
 			g2.setColor(thisColor);
 			
 			g2.draw(each);
 		}
 		
-		g2.setStroke(new BasicStroke((int)Math.round(2/scale)));
-		g2.setColor(Color.BLACK);
-		
 		for(Rectangle2D each: rects)
 		{
+			Color thisColor = colorMap.get(each);
+			double lineWeight = (thisColor.equals(Color.BLACK)) ? LINE_WEIGHT_NORMAL : LINE_WEIGHT_HIGHLT;
+			g2.setStroke(new BasicStroke((float)(lineWeight/scale)));
+			g2.setColor(thisColor);
+			
 			g2.draw(each);
 		}
 	}

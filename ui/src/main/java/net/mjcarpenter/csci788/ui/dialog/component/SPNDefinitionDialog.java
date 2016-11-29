@@ -8,6 +8,11 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -19,17 +24,26 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.TreeSelectionModel;
+import javax.xml.bind.DatatypeConverter;
 
 import com.thoughtworks.xstream.XStream;
 
+import net.mjcarpenter.csci788.crypto.ldc.DifferentialApproximation;
+import net.mjcarpenter.csci788.crypto.ldc.DifferentialKeyBiasExtractor;
+import net.mjcarpenter.csci788.crypto.ldc.LinearApproximation;
+import net.mjcarpenter.csci788.crypto.ldc.LinearKeyBiasExtractor;
+import net.mjcarpenter.csci788.crypto.spn.ChosenPair;
 import net.mjcarpenter.csci788.crypto.spn.Key;
+import net.mjcarpenter.csci788.crypto.spn.KnownPair;
 import net.mjcarpenter.csci788.crypto.spn.Permutation;
 import net.mjcarpenter.csci788.crypto.spn.SBox;
 import net.mjcarpenter.csci788.crypto.spn.SPNComponent;
 import net.mjcarpenter.csci788.crypto.spn.SPNetwork;
 import net.mjcarpenter.csci788.ui.component.DummyFrame;
+import net.mjcarpenter.csci788.ui.component.KeyExtractionProgressDialog;
 import net.mjcarpenter.csci788.ui.dialog.ldc.DifferentialApproximationDialog;
 import net.mjcarpenter.csci788.ui.dialog.ldc.LinearApproximationDialog;
 import net.mjcarpenter.csci788.ui.model.ComponentLeafNode;
@@ -37,6 +51,7 @@ import net.mjcarpenter.csci788.ui.model.RoundTreeNode;
 import net.mjcarpenter.csci788.ui.model.SPNTreeModel;
 import net.mjcarpenter.csci788.ui.model.SPNTreeNode;
 import net.mjcarpenter.csci788.ui.util.MasterPropertiesCache;
+import net.mjcarpenter.csci788.util.BitUtils;
 
 @SuppressWarnings("serial")
 public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> implements ActionListener
@@ -165,10 +180,119 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 		else if(arg0.getSource().equals(jmiLinear))
 		{
 			LinearApproximationDialog linDlg = new LinearApproximationDialog(getRootNode().getComponent());
+			
+			if(linDlg.isSuccessful())
+			{
+				LinearApproximation la = (LinearApproximation)linDlg.getCipherApproximation();
+				
+				LinearKeyBiasExtractor lkbe = new LinearKeyBiasExtractor(component.getRounds()[linDlg.getLastRow()+1], la);
+				List<KnownPair> k = new ArrayList<KnownPair>();
+				
+				Random r = new SecureRandom();
+				
+				int byteGenSize = component.getBlockSize()/Byte.SIZE + ((component.getBlockSize()%Byte.SIZE == 0) ? 0 : 1);
+				
+				for(int i=0; i<10000; i++)
+				{
+					byte[] plain = new byte[byteGenSize];
+					r.nextBytes(plain);
+					
+					byte[] cipher = component.encrypt(plain);
+					
+					KnownPair pair = new KnownPair(plain, cipher);
+					k.add(pair);
+				}
+				
+				KeyExtractionProgressDialog progDlg = new KeyExtractionProgressDialog(this);
+				
+				SwingWorker<Map<Key, Double>, Void> worker = new SwingWorker<Map<Key, Double>, Void>()
+				{
+					@Override
+					protected Map<Key, Double> doInBackground() throws Exception
+					{
+						lkbe.generateBiases(k,
+								(keyProg, keyMax, pairProg, pairMax) ->
+								{
+									progDlg.progress(keyProg, keyMax, pairProg, pairMax);
+								});
+						
+						return lkbe.getBiasMap();
+					}
+					
+				};
+				
+				worker.execute();
+				progDlg.setVisible(true);
+				
+				JOptionPane.showMessageDialog(this,
+						String.format("Found target partial subkey [%s] with bias [%.6f]",
+								DatatypeConverter.printHexBinary(lkbe.getMaxBiasKey().getKeyValue()),
+								lkbe.getMaxBiasValue()));
+				
+				MasterPropertiesCache.getInstance().clearVisualizationColoring();
+			}
 		}
 		else if(arg0.getSource().equals(jmiDiff))
 		{
 			DifferentialApproximationDialog diffDlg = new DifferentialApproximationDialog(getRootNode().getComponent());
+			
+			if(diffDlg.isSuccessful())
+			{
+				DifferentialApproximation da = (DifferentialApproximation)diffDlg.getCipherApproximation();
+				
+				DifferentialKeyBiasExtractor dkbe = new DifferentialKeyBiasExtractor(component.getRounds()[diffDlg.getLastRow()+1], da);
+				List<ChosenPair> k = new ArrayList<ChosenPair>();
+				
+				Random r = new SecureRandom();
+				
+				int byteGenSize = component.getBlockSize()/Byte.SIZE + ((component.getBlockSize()%Byte.SIZE == 0) ? 0 : 1);
+				
+				for(int i=0; i<5000; i++)
+				{
+					byte[] plainA = new byte[byteGenSize];
+					r.nextBytes(plainA);
+					
+					byte[] plainB = BitUtils.longToByte(da.getPlaintextMask()^BitUtils.byteToLong(plainA), plainA.length);
+					
+					
+					byte[] cipherA = component.encrypt(plainA);
+					byte[] cipherB = component.encrypt(plainB);
+					
+					ChosenPair pair = new ChosenPair(
+							new KnownPair(plainA, cipherA),
+							new KnownPair(plainB, cipherB));
+					
+					k.add(pair);
+				}
+				
+				KeyExtractionProgressDialog progDlg = new KeyExtractionProgressDialog(this);
+				
+				SwingWorker<Map<Key, Double>, Void> worker = new SwingWorker<Map<Key, Double>, Void>()
+				{
+					@Override
+					protected Map<Key, Double> doInBackground() throws Exception
+					{
+						dkbe.generateBiases(k,
+								(keyProg, keyMax, pairProg, pairMax) ->
+								{
+									progDlg.progress(keyProg, keyMax, pairProg, pairMax);
+								});
+						
+						return dkbe.getBiasMap();
+					}
+					
+				};
+				
+				worker.execute();
+				progDlg.setVisible(true);
+				
+				JOptionPane.showMessageDialog(this,
+						String.format("Found target partial subkey [%s] with bias [%.6f]",
+								DatatypeConverter.printHexBinary(dkbe.getMaxBiasKey().getKeyValue()),
+								dkbe.getMaxBiasValue()));
+				
+				MasterPropertiesCache.getInstance().clearVisualizationColoring();
+			}
 		}
 	}
 	

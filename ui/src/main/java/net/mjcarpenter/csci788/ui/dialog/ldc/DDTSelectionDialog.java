@@ -9,11 +9,14 @@ public final class DDTSelectionDialog extends TableSelectionDialog
 {
 	private SBox sbox;
 	
-	public DDTSelectionDialog(SBox sbox, int inFilter)
+	public DDTSelectionDialog(SBox sbox, long inFilter)
 	{
 		super(sbox.getDDT(), inFilter);
 		setTitle("Difference Distribution Table: Selection Dialog");
+
 		this.sbox = sbox;
+		setModal(true);
+		setVisible(true);
 	}
 	
 	@Override
@@ -24,13 +27,6 @@ public final class DDTSelectionDialog extends TableSelectionDialog
 		selectedBias = sbox.getDDT()[selectedIn][selectedOut];
 		
 		hasSelection = true;
-		setVisible(false);
-	}
-
-	@Override
-	protected void handleCancel()
-	{
-		hasSelection = false;
 		setVisible(false);
 	}
 

@@ -97,11 +97,6 @@ public class MasterPropertiesDialog extends JDialog implements ActionListener
 		setVisible(true);
 	}
 	
-	public static void main(String[] args)
-	{
-		new MasterPropertiesDialog();
-	}
-	
 	public boolean isClosedSuccessful()
 	{
 		return closedSuccessful;

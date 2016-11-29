@@ -54,7 +54,6 @@ subprojects {
         dependencies {
             compile     project(':core')
             compile     'org.apache.commons:commons-lang3:3.5'
-            compile     'com.fifesoft:rsyntaxtextarea:2.6.0'
             compile     'com.thoughtworks.xstream:xstream:1.4.9'
         }
         jar {
