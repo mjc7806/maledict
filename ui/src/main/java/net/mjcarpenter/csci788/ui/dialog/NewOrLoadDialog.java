@@ -65,11 +65,6 @@ public class NewOrLoadDialog extends JFrame implements ActionListener
 		setResizable(false); // No reason to resize this dialog.
 		setVisible(true);
 	}
-	
-	public static void main(String[] args)
-	{
-		new NewOrLoadDialog();
-	}
 
 	@Override
 	public void actionPerformed(ActionEvent e)

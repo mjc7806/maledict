@@ -26,7 +26,6 @@ public class PermutationWeb extends JPanel
 		HEADER, FOOTER
 	}
 	
-	//private static final int MAX_WIDTH_PX = 800;
 	private static final int USR_HEIGHT_MAIN = 3;
 	private static final int USR_HEIGHT_END = 2;
 	
@@ -36,10 +35,6 @@ public class PermutationWeb extends JPanel
 	
 	private List<Integer> colors;
 	
-	//private double  widthFactor;
-	//private double  heightFactor;
-	//private int     widthMax;
-	//private int     heightMax;
 	private int[]   indexMappings;
 	private Point2D.Double[] endpoints;
 	private Line2D.Double[]  drawingLines;
@@ -49,12 +44,7 @@ public class PermutationWeb extends JPanel
 		super();
 		
 		setLayout(new GridLayout(0,1));
-		
-		//widthMax  = 2*indices;
-		//heightMax = 6;//(int)Math.round(widthMax*(3.0/17.0));
-		//widthFactor  = 1;
-		//heightFactor = 1;
-		
+				
 		endpoints    = new Point2D.Double[indices * 2];
 		drawingLines = new Line2D.Double[indices];
 		
@@ -83,31 +73,8 @@ public class PermutationWeb extends JPanel
 		add(mainPanel);
 		add(footer);
 		add(Box.createVerticalGlue());
-		//setBorder(new EmptyBorder(35,35,35,35));
 		
 		setEndPanelsOn(endPanelsOn);
-		
-		/*addComponentListener(new ComponentAdapter()
-		{
-			@Override
-			public void componentResized(ComponentEvent e)
-			{
-				//int height = getHeight();
-				int width = getWidth();
-				
-				
-				header.setPreferredSize(new Dimension(width, (int)(width*(USR_HEIGHT_END*2.0/indices))));
-				mainPanel.setPreferredSize(new Dimension(width, (int)(width*(USR_HEIGHT_MAIN*2.0/indices))));
-				footer.setPreferredSize(new Dimension(width, (int)(width*(USR_HEIGHT_END*2.0/indices))));
-				
-				setPreferredSize(new Dimension(width, (int)(width*(2.0*(USR_HEIGHT_MAIN+2*USR_HEIGHT_END)/indices))));
-				
-				revalidate();
-				repaint();
-				
-				//System.out.println("\r"+getSize());
-			}
-		});*/
 	}
 	
 	public void color(int[] indices)
@@ -174,78 +141,15 @@ public class PermutationWeb extends JPanel
 		header.setVisible(endPanelsOn);
 		footer.setVisible(endPanelsOn);
 	}
-	
-	/*
-	@Override
-	public Dimension getMaximumSize()
-	{
-		return new Dimension(Integer.MAX_VALUE, (int)Math.round(2*widthFactor));
-	}
-	
-	@Override
-	public Dimension getPreferredSize()
-	{
-		return new Dimension(MAX_WIDTH_PX, (int)Math.round(MAX_WIDTH_PX/widthFactor));
-	}//*/
-	
-	/*
-	@Override
-	public Dimension getMaximumSize()
-	{
-		int height = mainPanel.getPreferredSize().height;
-		if(header.isVisible())
-		{
-			height += (header.getPreferredSize().height * 2);
-		}
 		
-		int width = mainPanel.getPreferredSize().width;
-		
-		return new Dimension(width, height);
-	}
-	
-	@Override
-	public Dimension getPreferredSize()
-	{
-		return getMaximumSize();
-	}//*/
-	
-	public static void main(String[] args)
-	{
-		JFrame jf = new JFrame();
-		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		jf.setSize(800, 600);
-		
-		int[] mappings = {0,4,8,12,1,5,9,13,2,6,10,14,3,7,11,15};
-		
-		PermutationWeb webTest = new PermutationWeb(16, true);
-		jf.add(webTest);
-		jf.setVisible(true);
-		webTest.setVisible(true);
-		
-		webTest.updateMappings(mappings);
-		webTest.color(new int[]{0, 4});
-		
-		
-		System.out.printf("Header:    [%s]\nMainPanel: [%s]\nFooter:    [%s]\n",
-				webTest.header.getSize().toString(),
-				webTest.mainPanel.getSize().toString(),
-				webTest.footer.getSize().toString());
-	}
-	
-	
 	private class WebMainPanel extends WebSubPanel
 	{
-		//private static final double HEIGHT_RATIO = 0.25;
-		
 		@Override
 		public void paintComponent(Graphics g)
 		{
 			Graphics2D g2 = (Graphics2D)g;
 			super.paintComponent(g2);
-			
-			//scaleTo(getSize());
-			//g2.scale(widthFactor, widthFactor);
-			
+						
 			float widthScale  = (float)getWidth()/(float)(2*indexMappings.length);
 			float heightScale = (float)getHeight()/(float)(2*USR_HEIGHT_MAIN);
 			
@@ -260,19 +164,10 @@ public class PermutationWeb extends JPanel
 				g2.draw(drawingLines[i]);
 			}
 		}
-		
-		/*
-		@Override
-		public Dimension getPreferredSize()
-		{
-			return new Dimension(MAX_WIDTH_PX, (int)Math.round(6*widthFactor));//(int)(MAX_WIDTH_PX*HEIGHT_RATIO));
-		}
-		//*/
 	}
 	
 	private class WebEndPanel extends WebSubPanel
 	{
-		//private static final double HEIGHT_RATIO = 0.125;
 		private static final double PIN_RADIUS = 0.5;
 				
 		private final EndPanelType endType;
@@ -318,12 +213,6 @@ public class PermutationWeb extends JPanel
 				edgeLines[i] = new Line2D.Double(pointA, pointB);
 			}
 		}
-		/*
-		@Override
-		public Dimension getPreferredSize()
-		{
-			return new Dimension(MAX_WIDTH_PX, (int)Math.round(USR_HEIGHT*widthFactor));//(int)(MAX_WIDTH_PX*HEIGHT_RATIO));
-		}//*/
 		
 		@Override
 		public void paintComponent(Graphics g)
@@ -331,8 +220,6 @@ public class PermutationWeb extends JPanel
 			Graphics2D g2 = (Graphics2D)g;
 			super.paintComponent(g2);
 			
-			//scaleTo(getSize());
-			//g2.scale(widthFactor, widthFactor);
 			float widthScale  = (float)getWidth()/(float)(2*indexMappings.length);
 			float heightScale = (float)getHeight()/(float)(2*USR_HEIGHT_END);
 			
@@ -359,22 +246,12 @@ public class PermutationWeb extends JPanel
 	}
 	
 	private abstract class WebSubPanel extends JPanel
-	{
-		//protected static final int MAX_WIDTH_PX = 800;
-		
+	{		
 		public WebSubPanel()
 		{
 			super();
 			setBorder(null);
 			setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
 		}
-		
-		/*
-		public void scaleTo(Dimension d)
-		{
-			widthFactor  = d.getWidth()  / (double)widthMax;
-			heightFactor = d.getHeight() / (double)heightMax;
-		}
-		*/	
 	}
 }
