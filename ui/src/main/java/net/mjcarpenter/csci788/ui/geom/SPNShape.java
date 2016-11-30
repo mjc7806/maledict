@@ -102,11 +102,11 @@ public final class SPNShape extends JPanel
 			}
 			
 			// HANDLE S-BOXES
-			boolean includeRow = true;
+			boolean includeRow = false;
 			for(int j=0; j<spn.getRounds()[i].getSBoxes().length; j++)
 			{
 				// If at least one S-box in the row is non-noop then include it.
-				includeRow &= !spn.getRounds()[i].getSBoxes()[j].isNoop();
+				includeRow |= !spn.getRounds()[i].getSBoxes()[j].isNoop();
 			}
 			if(includeRow)
 			{
