@@ -22,7 +22,6 @@ import com.thoughtworks.xstream.XStream;
 
 import net.mjcarpenter.maledict.crypto.spn.SPNetwork;
 import net.mjcarpenter.maledict.ui.dialog.component.SPNDefinitionDialog;
-import net.mjcarpenter.maledict.ui.dialog.component.SPNVisualizationFrame;
 import net.mjcarpenter.maledict.ui.util.MasterPropertiesCache;
 
 @SuppressWarnings("serial")
@@ -39,7 +38,7 @@ public class NewOrLoadDialog extends JFrame implements ActionListener
 		setTitle("Save or Load");
 		setLayout(new BorderLayout());
 		
-		jlLogo = new JLabel(new ImageIcon(ClassLoader.getSystemClassLoader().getResource("resource/img/logo.png")));
+		jlLogo = new JLabel(new ImageIcon(ClassLoader.getSystemClassLoader().getResource("img/logo.png")));
 		
 		jlMessage = new JLabel("Create a new SPN or load a previous one?");
 		

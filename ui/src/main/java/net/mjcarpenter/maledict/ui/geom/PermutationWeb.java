@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 import java.awt.geom.Ellipse2D;
 
 import javax.swing.Box;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
