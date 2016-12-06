@@ -6,7 +6,7 @@ import java.util.Set;
 
 public final class HelpMessageConstants
 {
-	private static final String HTML_DIRECTORY = "resource/html/";
+	private static final String HTML_DIRECTORY = "html/";
 	private static final Set<String> VALID_STRINGS;
 	
 	public static final String HELP_DLG_PERMUTATION = HTML_DIRECTORY + "help_dlg_permutation.html";
