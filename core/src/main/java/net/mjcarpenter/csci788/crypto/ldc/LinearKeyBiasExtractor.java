@@ -52,6 +52,15 @@ public final class LinearKeyBiasExtractor extends AbstractKeyBiasExtractor<Linea
 					matches++;
 				}
 				
+				// Check for cancellation
+				if(cancellation)
+				{
+					biasMap = null;
+					maxBiasKey = null;
+					maxBias = -1;
+					return;
+				}
+				
 				// Notify caller of progress
 				callback.progress(i+1, keysToCheck, ++pairProg, pairs.size());
 			}
