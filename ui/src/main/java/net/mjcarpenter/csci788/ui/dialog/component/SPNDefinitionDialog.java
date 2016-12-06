@@ -203,7 +203,7 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 					k.add(pair);
 				}
 				
-				KeyExtractionProgressDialog progDlg = new KeyExtractionProgressDialog(this);
+				KeyExtractionProgressDialog progDlg = new KeyExtractionProgressDialog(this, lkbe);
 				
 				SwingWorker<Map<Key, Double>, Void> worker = new SwingWorker<Map<Key, Double>, Void>()
 				{
@@ -224,10 +224,13 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 				worker.execute();
 				progDlg.setVisible(true);
 				
-				JOptionPane.showMessageDialog(this,
-						String.format("Found target partial subkey [%s] with bias [%.6f]",
-								DatatypeConverter.printHexBinary(lkbe.getMaxBiasKey().getKeyValue()),
-								lkbe.getMaxBiasValue()));
+				if(!lkbe.isCanceled())
+				{
+					JOptionPane.showMessageDialog(this,
+							String.format("Found target partial subkey [%s] with bias [%.6f]",
+									DatatypeConverter.printHexBinary(lkbe.getMaxBiasKey().getKeyValue()),
+									lkbe.getMaxBiasValue()));
+				}
 				
 				MasterPropertiesCache.getInstance().clearVisualizationColoring();
 			}
@@ -265,7 +268,7 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 					k.add(pair);
 				}
 				
-				KeyExtractionProgressDialog progDlg = new KeyExtractionProgressDialog(this);
+				KeyExtractionProgressDialog progDlg = new KeyExtractionProgressDialog(this, dkbe);
 				
 				SwingWorker<Map<Key, Double>, Void> worker = new SwingWorker<Map<Key, Double>, Void>()
 				{
@@ -286,10 +289,13 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 				worker.execute();
 				progDlg.setVisible(true);
 				
-				JOptionPane.showMessageDialog(this,
-						String.format("Found target partial subkey [%s] with bias [%.6f]",
-								DatatypeConverter.printHexBinary(dkbe.getMaxBiasKey().getKeyValue()),
-								dkbe.getMaxBiasValue()));
+				if(!dkbe.isCanceled())
+				{
+					JOptionPane.showMessageDialog(this,
+							String.format("Found target partial subkey [%s] with bias [%.6f]",
+									DatatypeConverter.printHexBinary(dkbe.getMaxBiasKey().getKeyValue()),
+									dkbe.getMaxBiasValue()));
+				}
 				
 				MasterPropertiesCache.getInstance().clearVisualizationColoring();
 			}

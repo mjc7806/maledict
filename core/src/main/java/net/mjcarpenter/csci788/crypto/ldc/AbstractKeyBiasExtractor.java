@@ -18,6 +18,8 @@ public abstract class AbstractKeyBiasExtractor<T extends AbstractApproximation>
 	protected int boxesToCheck;
 	protected int boxLength;
 	
+	protected boolean cancellation;
+	
 	private boolean[] boxIndexes;
 	
 	public AbstractKeyBiasExtractor(Round relevantRound, T appx)
@@ -42,6 +44,8 @@ public abstract class AbstractKeyBiasExtractor<T extends AbstractApproximation>
 			}
 		}
 		
+		this.cancellation = false;
+		
 		this.boxesToCheck = boxesToCheck;
 	}
 	
@@ -65,6 +69,16 @@ public abstract class AbstractKeyBiasExtractor<T extends AbstractApproximation>
 		byte[] conversion = BitUtils.longToByte(val, relevantRound.bitLength()/Byte.SIZE);
 		ArrayUtils.reverse(conversion);
 		return new Key(conversion);
+	}
+	
+	public void cancel()
+	{
+		this.cancellation = true;
+	}
+	
+	public boolean isCanceled()
+	{
+		return this.cancellation;
 	}
 	
 	public Map<Key, Double> getBiasMap()
