@@ -31,6 +31,8 @@ import javax.xml.bind.DatatypeConverter;
 
 import com.thoughtworks.xstream.XStream;
 
+import net.mjcarpenter.maledict.crypto.ldc.AbstractApproximation;
+import net.mjcarpenter.maledict.crypto.ldc.AbstractKeyBiasExtractor;
 import net.mjcarpenter.maledict.crypto.ldc.DifferentialApproximation;
 import net.mjcarpenter.maledict.crypto.ldc.DifferentialKeyBiasExtractor;
 import net.mjcarpenter.maledict.crypto.ldc.LinearApproximation;
@@ -44,6 +46,7 @@ import net.mjcarpenter.maledict.crypto.spn.SPNComponent;
 import net.mjcarpenter.maledict.crypto.spn.SPNetwork;
 import net.mjcarpenter.maledict.ui.component.DummyFrame;
 import net.mjcarpenter.maledict.ui.component.KeyExtractionProgressDialog;
+import net.mjcarpenter.maledict.ui.dialog.ldc.ApproximationDialog;
 import net.mjcarpenter.maledict.ui.dialog.ldc.DifferentialApproximationDialog;
 import net.mjcarpenter.maledict.ui.dialog.ldc.LinearApproximationDialog;
 import net.mjcarpenter.maledict.ui.model.ComponentLeafNode;
@@ -179,127 +182,107 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 		}
 		else if(arg0.getSource().equals(jmiLinear))
 		{
-			LinearApproximationDialog linDlg = new LinearApproximationDialog(getRootNode().getComponent());
-			
-			if(linDlg.isSuccessful())
+			processKeyBiasExtraction(LinearApproximation.class);
+		}
+		else if(arg0.getSource().equals(jmiDiff))
+		{
+			processKeyBiasExtraction(DifferentialApproximation.class);
+		}
+	}
+	
+	private void processKeyBiasExtraction(Class<? extends AbstractApproximation> clz)
+	{
+		AbstractApproximation appx                 = null;
+		ApproximationDialog appxDlg                = null;
+		AbstractKeyBiasExtractor<?> kbe            = null;
+		KeyExtractionProgressDialog progDlg        = null;
+		SwingWorker<Map<Key, Double>, Void> worker = null;
+		
+		if(LinearApproximation.class.equals(clz))
+		{
+			appxDlg = new LinearApproximationDialog(component);
+			if(appxDlg.isSuccessful())
 			{
-				LinearApproximation la = (LinearApproximation)linDlg.getCipherApproximation();
+				appx = appxDlg.getCipherApproximation();
+				kbe  = new LinearKeyBiasExtractor(component.getRounds()[appxDlg.getLastRow()+1], (LinearApproximation)appx);
+				progDlg = new KeyExtractionProgressDialog(this, kbe);
 				
-				LinearKeyBiasExtractor lkbe = new LinearKeyBiasExtractor(component.getRounds()[linDlg.getLastRow()+1], la);
-				List<KnownPair> k = new ArrayList<KnownPair>();
-				
-				Random r = new SecureRandom();
-				
-				int byteGenSize = component.getBlockSize()/Byte.SIZE + ((component.getBlockSize()%Byte.SIZE == 0) ? 0 : 1);
-				
-				for(int i=0; i<10000; i++)
-				{
-					byte[] plain = new byte[byteGenSize];
-					r.nextBytes(plain);
-					
-					byte[] cipher = component.encrypt(plain);
-					
-					KnownPair pair = new KnownPair(plain, cipher);
-					k.add(pair);
-				}
-				
-				KeyExtractionProgressDialog progDlg = new KeyExtractionProgressDialog(this, lkbe);
-				
-				SwingWorker<Map<Key, Double>, Void> worker = new SwingWorker<Map<Key, Double>, Void>()
+				final KeyExtractionProgressDialog finProg = progDlg;
+				final LinearKeyBiasExtractor lkbe = (LinearKeyBiasExtractor)kbe;
+				worker = new SwingWorker<Map<Key, Double>, Void>()
 				{
 					@Override
 					protected Map<Key, Double> doInBackground() throws Exception
 					{
-						lkbe.generateBiases(k,
+						lkbe.generateBiases(
+								KnownPair.generatePairs(10000, component),
 								(keyProg, keyMax, pairProg, pairMax) ->
 								{
-									progDlg.progress(keyProg, keyMax, pairProg, pairMax);
+									finProg.progress(keyProg, keyMax, pairProg, pairMax);
 								});
 						
 						return lkbe.getBiasMap();
 					}
-					
 				};
-				
-				worker.execute();
-				progDlg.setVisible(true);
-				
-				if(!lkbe.isCanceled())
-				{
-					JOptionPane.showMessageDialog(this,
-							String.format("Found target partial subkey [%s] with bias [%.6f]",
-									DatatypeConverter.printHexBinary(lkbe.getMaxBiasKey().getKeyValue()),
-									lkbe.getMaxBiasValue()));
-				}
-				
-				MasterPropertiesCache.getInstance().clearVisualizationColoring();
 			}
 		}
-		else if(arg0.getSource().equals(jmiDiff))
+		else if(DifferentialApproximation.class.equals(clz))
 		{
-			DifferentialApproximationDialog diffDlg = new DifferentialApproximationDialog(getRootNode().getComponent());
-			
-			if(diffDlg.isSuccessful())
+			appxDlg = new DifferentialApproximationDialog(component);
+			if(appxDlg.isSuccessful())
 			{
-				DifferentialApproximation da = (DifferentialApproximation)diffDlg.getCipherApproximation();
+				appx = appxDlg.getCipherApproximation();
+				kbe  = new DifferentialKeyBiasExtractor(component.getRounds()[appxDlg.getLastRow()+1], (DifferentialApproximation)appx);
+				progDlg = new KeyExtractionProgressDialog(this, kbe);
 				
-				DifferentialKeyBiasExtractor dkbe = new DifferentialKeyBiasExtractor(component.getRounds()[diffDlg.getLastRow()+1], da);
-				List<ChosenPair> k = new ArrayList<ChosenPair>();
-				
-				Random r = new SecureRandom();
-				
-				int byteGenSize = component.getBlockSize()/Byte.SIZE + ((component.getBlockSize()%Byte.SIZE == 0) ? 0 : 1);
-				
-				for(int i=0; i<5000; i++)
-				{
-					byte[] plainA = new byte[byteGenSize];
-					r.nextBytes(plainA);
-					
-					byte[] plainB = BitUtils.longToByte(da.getPlaintextMask()^BitUtils.byteToLong(plainA), plainA.length);
-					
-					
-					byte[] cipherA = component.encrypt(plainA);
-					byte[] cipherB = component.encrypt(plainB);
-					
-					ChosenPair pair = new ChosenPair(
-							new KnownPair(plainA, cipherA),
-							new KnownPair(plainB, cipherB));
-					
-					k.add(pair);
-				}
-				
-				KeyExtractionProgressDialog progDlg = new KeyExtractionProgressDialog(this, dkbe);
-				
-				SwingWorker<Map<Key, Double>, Void> worker = new SwingWorker<Map<Key, Double>, Void>()
+				final KeyExtractionProgressDialog finProg = progDlg;
+				final DifferentialApproximation dappx   = (DifferentialApproximation)appx;
+				final DifferentialKeyBiasExtractor dkbe = (DifferentialKeyBiasExtractor)kbe;
+				worker = new SwingWorker<Map<Key, Double>, Void>()
 				{
 					@Override
 					protected Map<Key, Double> doInBackground() throws Exception
 					{
-						dkbe.generateBiases(k,
+						dkbe.generateBiases(ChosenPair.generatePairs(5000, dappx.getPlaintextMask(), component),
 								(keyProg, keyMax, pairProg, pairMax) ->
 								{
-									progDlg.progress(keyProg, keyMax, pairProg, pairMax);
+									finProg.progress(keyProg, keyMax, pairProg, pairMax);
 								});
 						
 						return dkbe.getBiasMap();
 					}
-					
 				};
-				
-				worker.execute();
-				progDlg.setVisible(true);
-				
-				if(!dkbe.isCanceled())
-				{
-					JOptionPane.showMessageDialog(this,
-							String.format("Found target partial subkey [%s] with bias [%.6f]",
-									DatatypeConverter.printHexBinary(dkbe.getMaxBiasKey().getKeyValue()),
-									dkbe.getMaxBiasValue()));
-				}
-				
-				MasterPropertiesCache.getInstance().clearVisualizationColoring();
 			}
 		}
+		else
+		{
+			return;
+		}
+		
+		
+		if(appxDlg.isSuccessful())
+		{
+			worker.execute();
+			progDlg.setVisible(true);
+			
+			if(!kbe.isCanceled())
+			{
+				int ans = JOptionPane.showConfirmDialog(this,
+						String.format("Found target partial subkey [%s] with bias [%.6f]\n\nSave full report?",
+								DatatypeConverter.printHexBinary(kbe.getMaxBiasKey().getKeyValue()),
+								kbe.getMaxBiasValue()),
+						"Results Available",
+						JOptionPane.YES_NO_OPTION);
+				
+				
+				if(ans == JOptionPane.YES_OPTION)
+				{
+					
+				}
+			}
+		}
+		
+		MasterPropertiesCache.getInstance().clearVisualizationColoring();
 	}
 	
 	@Override
