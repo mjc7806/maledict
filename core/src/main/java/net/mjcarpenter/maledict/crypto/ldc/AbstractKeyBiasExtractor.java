@@ -70,7 +70,7 @@ public abstract class AbstractKeyBiasExtractor<T extends AbstractApproximation>
 		ArrayUtils.reverse(conversion);
 		return new Key(conversion);
 	}
-	
+		
 	public void cancel()
 	{
 		this.cancellation = true;

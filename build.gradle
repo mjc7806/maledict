@@ -14,8 +14,11 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'eclipse'
     apply plugin: 'jacoco'
+    apply plugin: 'application'
     
     libsDirName = '../../lib'
+    
+    mainClassName = "net.mjcarpenter.maledict.ui.Main"
     
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -58,7 +61,7 @@ subprojects {
         }
         jar {
             manifest {
-                attributes 'Main-Class': 'net.mjcarpenter.csci788.ui.Main',
+                attributes 'Main-Class': 'net.mjcarpenter.maledict.ui.Main',
                            'Class-Path': 'core.jar'
             }
         }

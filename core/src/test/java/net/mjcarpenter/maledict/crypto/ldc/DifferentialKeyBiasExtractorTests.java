@@ -107,12 +107,15 @@ public class DifferentialKeyBiasExtractorTests
 		dkbe.generateBiases(pairs,
 				(mainProg, mainTot, subProg, subTot) ->
 				{
-					System.out.printf("Key %d/%d Pair %d/%d\r",
+					System.out.printf("Key %d/%d Pair %d/%d\n",
 							mainProg, mainTot, subProg, subTot);
 				});
-				
+		
 		byte[] expected = new byte[]{(byte)0x02, (byte)0x04};
 		byte[] resultBytes = dkbe.getMaxBiasKey().getKeyValue();
+		
+		System.out.printf("Found target partial subkey [%s]\n",
+				DatatypeConverter.printHexBinary(resultBytes));
 		
 		assertArrayEquals(String.format("Expected target partial subkey [%s] but got [%s] (bias %.06f)",
 				DatatypeConverter.printHexBinary(expected),

@@ -93,6 +93,7 @@ public abstract class ApproximationDialog extends JDialog implements ActionListe
 				{
 					boxButtons[i][j] = new CoordinateToggleButton(String.format("S-box (%d, %d)", i, j), i, j);
 					boxButtons[i][j].addActionListener(this);
+					boxButtons[i][j].setEnabled(i == 0); // Only first row active at start.
 					
 					gridPanel.add(boxButtons[i][j]);
 					allButtons.add(boxButtons[i][j]);
@@ -227,6 +228,7 @@ public abstract class ApproximationDialog extends JDialog implements ActionListe
 				else
 				{
 					btn.setSelected(false);
+					if(btn.row == 0) roundInMasks[0] &= (~boxMask);
 					roundOutMasks[btn.row] &= (~boxMask);
 				}
 				
@@ -234,6 +236,7 @@ public abstract class ApproximationDialog extends JDialog implements ActionListe
 			}
 			else
 			{
+				if(btn.row == 0) roundInMasks[0] &= (~boxMask);
 				roundOutMasks[btn.row] &= (~boxMask);
 			}
 			
