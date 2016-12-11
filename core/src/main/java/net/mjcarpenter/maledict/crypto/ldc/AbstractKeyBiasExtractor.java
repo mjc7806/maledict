@@ -1,6 +1,10 @@
 package net.mjcarpenter.maledict.crypto.ldc;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -10,7 +14,7 @@ import net.mjcarpenter.maledict.util.BitUtils;
 
 public abstract class AbstractKeyBiasExtractor<T extends AbstractApproximation>
 {
-	protected Map<Key, Double> biasMap;
+	protected TreeMap<Key, Double> biasMap;
 	protected Key maxBiasKey;
 	protected Round relevantRound;
 	protected T appx;
@@ -99,5 +103,17 @@ public abstract class AbstractKeyBiasExtractor<T extends AbstractApproximation>
 	public double getBiasFor(Key subkeyVal)
 	{
 		return biasMap != null && subkeyVal != null ? biasMap.get(subkeyVal) : -1;
+	}
+	
+	public List<Map.Entry<Key, Double>> getTopValues(int numVals)
+	{
+	    @SuppressWarnings("unchecked")
+		Map.Entry<Key, Double>[] topEntries = biasMap.entrySet()
+	              .stream()
+	              .sorted(Map.Entry.comparingByValue(Collections.reverseOrder()))
+	              .limit(numVals)
+	              .toArray(Map.Entry[]::new);
+	    
+	    return Arrays.asList(topEntries);
 	}
 }

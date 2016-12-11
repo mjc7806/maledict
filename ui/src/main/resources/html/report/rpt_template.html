@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cryptanalysis Report</title>
+    <style>
+        body
+        {
+            font-family:monospace;
+        }
+        table
+        {
+            text-align:center;
+            border:2px solid black;
+            border-collapse:collapse;
+            margin:1em;
+        }
+        td
+        {
+            padding:5px;
+        }
+        td.active
+        {
+            background-color:blue;
+            color:white;
+        }
+        div.appxtab:hover
+        {
+            display:block;
+        }
+    </style>
+</head>
+<body>
+    <div id="title">
+        <h1>Cryptanalysis Report</h1>
+    </div>
+    <div id="masks">
+        <table>
+            <tr>
+                <th>${masktype}</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Plaintext</td>
+                <td>${ptval}</td>
+            </tr>
+            <tr>
+                <td>Last-Round</td>
+                <td>${lrval}</td>
+            </tr>
+        </table>
+    </div>
+    <div id="keybiases">
+        <table>
+            <tr>
+                <th colspan="2">Top Biases</th>
+            </tr>
+            <tr>
+                <th>Key</th>
+                <th>Bias</th>
+            </tr>
+            <#list keybiases as kb>
+            <tr>
+                <td <#if kb.isactive>class="active"</#if>>${kb.key}</td>
+                <td <#if kb.isactive>class="active"</#if>>${kb.bias}</td>
+            </tr>
+            </#list>
+        </table>
+    </div>
+    <div id="ciphervis">
+        <img src="cipher_vis.png" title="Cipher Visualization" alt="Cipher Visualization" />
+    </div>
+    <#if sboxrows??>
+    <div id="sboxes">
+        <table>
+            <tr colspan="${sboxrows?size}">
+                <th>S-boxes</th>
+            </tr>
+            <#list sboxrows as sboxrow>
+            <tr>
+                <#list sboxrow.sboxes as sbox>
+                 <td <#if sbox.isactive>class="active"</#if>>S-box (${sbox.row}, ${sbox.col})</td>
+                </#list>
+            </tr>
+            </#list>
+        </table>
+    </div>
+    </#if>
+    <#if sboxrows>
+    <div id="appx_tables">
+        <#list sboxrows as sboxrow>
+        <#list sboxrow.sboxes as sbox>
+        <#if sbox.isactive>
+        <div class="appxtab">
+            <table>
+                <tr>
+                    <td>A</td>
+                    <td>B</td>
+                </tr>
+                <tr>
+                    <td>C</td>
+                    <td>D</td>
+                </tr>
+            </table>
+        </div>
+        </#if>
+        </#list>
+        </#list>
+    </div>
+    </#if>
+</body>
+</html>

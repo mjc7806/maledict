@@ -7,6 +7,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import javax.imageio.ImageIO;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
@@ -44,6 +46,8 @@ import net.mjcarpenter.maledict.crypto.spn.Permutation;
 import net.mjcarpenter.maledict.crypto.spn.SBox;
 import net.mjcarpenter.maledict.crypto.spn.SPNComponent;
 import net.mjcarpenter.maledict.crypto.spn.SPNetwork;
+import net.mjcarpenter.maledict.reports.CryptanalysisReport;
+import net.mjcarpenter.maledict.reports.SBoxReport;
 import net.mjcarpenter.maledict.ui.component.DummyFrame;
 import net.mjcarpenter.maledict.ui.component.KeyExtractionProgressDialog;
 import net.mjcarpenter.maledict.ui.dialog.ldc.ApproximationDialog;
@@ -277,7 +281,13 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 				
 				if(ans == JOptionPane.YES_OPTION)
 				{
+					SBoxReport rptBox01 = new SBoxReport(component.getRounds()[0].getSBoxes()[1].getLAT(),
+							3, 2, 0, 1, true);
 					
+					CryptanalysisReport cryptRpt = new CryptanalysisReport(appx, kbe);
+					
+					//System.out.println(rptBox01.constructApproximationTable());
+					System.out.println(cryptRpt.constructBiasSection());
 				}
 			}
 		}
