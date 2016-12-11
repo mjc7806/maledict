@@ -101,25 +101,21 @@ public final class SBox implements SPNComponent
 	
 	public int[][] getLAT()
 	{
-		// Since the LAT is transient, after deserialization we may need to reconstruct it.
 		if(lat == null)
 		{
 			lat = constructLAT();
 		}
 		
-		// Return a copy to maintain immutability.
 		return Arrays.copyOf(lat, lat.length);
 	}
 	
 	public int[][] getDDT()
 	{
-		// Since the DDT is transient, after deserialization we may need to reconstruct it.
 		if(ddt == null)
 		{
 			ddt = constructDDT();
 		}
 		
-		// Return a copy to maintain immutability.
 		return Arrays.copyOf(ddt, ddt.length);
 	}
 	

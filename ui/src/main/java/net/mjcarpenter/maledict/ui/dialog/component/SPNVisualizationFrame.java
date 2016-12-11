@@ -1,5 +1,7 @@
 package net.mjcarpenter.maledict.ui.dialog.component;
 
+import java.awt.image.BufferedImage;
+
 import javax.swing.JFrame;
 
 import net.mjcarpenter.maledict.crypto.spn.SPNetwork;
@@ -18,9 +20,8 @@ public class SPNVisualizationFrame extends JFrame
 		this.shape = null;
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		
-		setSize(400,900);
-		
 		createPanel();
+		setSize(500, 620);
 		setVisible(true);
 	}
 	
@@ -40,6 +41,11 @@ public class SPNVisualizationFrame extends JFrame
 	public void clearVisualizationColoring()
 	{
 		shape.clearRoundMasks();
+	}
+	
+	public BufferedImage visualizationImage()
+	{
+		return shape.captureAsImage();
 	}
 	
 	public void createPanel()

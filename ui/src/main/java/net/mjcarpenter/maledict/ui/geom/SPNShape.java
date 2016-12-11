@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -219,5 +220,12 @@ public final class SPNShape extends JPanel
 			
 			g2.draw(each);
 		}
+	}
+	
+	public BufferedImage captureAsImage()
+	{
+		BufferedImage img = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+		paint(img.getGraphics());
+		return img;
 	}
 }
