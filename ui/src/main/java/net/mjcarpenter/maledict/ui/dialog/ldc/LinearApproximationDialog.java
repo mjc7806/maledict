@@ -31,4 +31,10 @@ public final class LinearApproximationDialog extends ApproximationDialog
 	{
 		handleHelp(HelpMessageConstants.HELP_DLG_LDC_LINEAR);
 	}
+
+	@Override
+	protected int[][] getTableFor(SBox sb)
+	{
+		return sb.getLAT();
+	}
 }

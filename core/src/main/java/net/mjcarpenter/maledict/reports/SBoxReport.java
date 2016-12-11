@@ -58,7 +58,12 @@ public class SBoxReport
 	{
 		StringBuilder res = new StringBuilder();
 		
-		res.append("<table>\n")
+		res.append("<h4>S-box (")
+		   .append(boxRow)
+		   .append(", ")
+		   .append(boxCol)
+		   .append(")</h4>\n")
+		   .append("<table>\n")
 		   .append("\t<tr>\n\t\t<th colspan=\"")
 		   .append(table.length)
 		   .append("\">Approximation Table</th>\n\t</tr>\n");

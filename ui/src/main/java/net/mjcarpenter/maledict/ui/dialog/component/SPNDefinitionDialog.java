@@ -280,14 +280,41 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 				
 				
 				if(ans == JOptionPane.YES_OPTION)
-				{
-					SBoxReport rptBox01 = new SBoxReport(component.getRounds()[0].getSBoxes()[1].getLAT(),
-							3, 2, 0, 1, true);
+				{					
+					CryptanalysisReport cryptRpt = new CryptanalysisReport(appx, kbe, appxDlg.reportActiveSBoxes());
 					
-					CryptanalysisReport cryptRpt = new CryptanalysisReport(appx, kbe);
+					JFileChooser choose = new JFileChooser(System.getProperty("user.home"));
+					choose.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+					int select = choose.showSaveDialog(this);
 					
-					//System.out.println(rptBox01.constructApproximationTable());
-					System.out.println(cryptRpt.constructBiasSection());
+					if(select == JFileChooser.APPROVE_OPTION)
+					{
+						File chosen = choose.getSelectedFile();
+						if(chosen.isDirectory())
+						{
+							try
+							{
+								File imgFile = new File(chosen.getPath() + File.separator + "spnImg.png");
+										
+								ImageIO.write(MasterPropertiesCache.getInstance().getVisualizationFrame().visualizationImage(),
+										"png", imgFile);
+							}
+							catch(IOException ioe)
+							{
+								
+							}
+							
+							try(PrintWriter pw = new PrintWriter(chosen.getPath() + File.separator + "cryptRpt.html"))
+							{
+								pw.print(cryptRpt.getFullReportAsString());
+								pw.flush();
+							}
+							catch(IOException ioe)
+							{
+								
+							}
+						}
+					}
 				}
 			}
 		}

@@ -31,4 +31,10 @@ public final class DifferentialApproximationDialog extends ApproximationDialog
 	{
 		handleHelp(HelpMessageConstants.HELP_DLG_LDC_DIFF);
 	}
+
+	@Override
+	protected int[][] getTableFor(SBox sb)
+	{
+		return sb.getDDT();
+	}
 }

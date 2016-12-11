@@ -5,7 +5,10 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -16,6 +19,7 @@ import javax.swing.border.EmptyBorder;
 import net.mjcarpenter.maledict.crypto.ldc.AbstractApproximation;
 import net.mjcarpenter.maledict.crypto.spn.SBox;
 import net.mjcarpenter.maledict.crypto.spn.SPNetwork;
+import net.mjcarpenter.maledict.reports.SBoxReport;
 import net.mjcarpenter.maledict.ui.component.CoordinateToggleButton;
 import net.mjcarpenter.maledict.ui.message.help.HelpMessage;
 import net.mjcarpenter.maledict.ui.util.MasterPropertiesCache;
@@ -33,6 +37,8 @@ public abstract class ApproximationDialog extends JDialog implements ActionListe
 	
 	protected int lastRow;
 	
+	private Map<CoordinateToggleButton, SBoxReport> reports;
+	
 	private HelpMessage msg;
 	private boolean successful;
 	
@@ -49,6 +55,7 @@ public abstract class ApproximationDialog extends JDialog implements ActionListe
 		this.roundOutMasks = new long[spn.getRounds().length];
 		this.boxButtons = new CoordinateToggleButton[spn.getRounds().length][spn.getRounds()[0].getSBoxes().length];
 		this.successful = false;
+		this.reports = new HashMap<CoordinateToggleButton, SBoxReport>();
 		
 		allButtons = new ArrayList<CoordinateToggleButton>();
 		
@@ -216,7 +223,11 @@ public abstract class ApproximationDialog extends JDialog implements ActionListe
 				{
 					long inMask = ad.getSelectedIn()<<shift;
 					long outMask = ad.getSelectedOut()<<shift;
-					int bias = ad.getSelectedBias();
+					
+					SBoxReport relevantReport = new SBoxReport(getTableFor(relevantBox),
+							ad.getSelectedIn(), ad.getSelectedOut(), btn.row, btn.col, true);
+					
+					reports.put(btn, relevantReport);
 										
 					if(btn.row == 0)
 					{
@@ -228,6 +239,7 @@ public abstract class ApproximationDialog extends JDialog implements ActionListe
 				else
 				{
 					btn.setSelected(false);
+					reports.remove(btn);
 					if(btn.row == 0) roundInMasks[0] &= (~boxMask);
 					roundOutMasks[btn.row] &= (~boxMask);
 				}
@@ -238,6 +250,7 @@ public abstract class ApproximationDialog extends JDialog implements ActionListe
 			{
 				if(btn.row == 0) roundInMasks[0] &= (~boxMask);
 				roundOutMasks[btn.row] &= (~boxMask);
+				reports.remove(btn);
 			}
 			
 			if(btn.row != roundInMasks.length-1)
@@ -275,6 +288,13 @@ public abstract class ApproximationDialog extends JDialog implements ActionListe
 			// boxes that need to be approximated have been established.
 			jbOK.setEnabled(lastRowHasSelection && numSelected == numEnabled);
 		}
+	}
+	
+	protected abstract int[][] getTableFor(SBox sb);
+	
+	public Collection<SBoxReport> reportActiveSBoxes()
+	{
+		return reports.values();
 	}
 	
 	protected SBox getBoxForButton(CoordinateToggleButton btn)
