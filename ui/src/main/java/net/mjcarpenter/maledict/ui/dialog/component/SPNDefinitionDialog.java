@@ -74,8 +74,8 @@ import net.mjcarpenter.maledict.ui.util.MasterPropertiesCache;
 @SuppressWarnings("serial")
 public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> implements ActionListener
 {
-	private JMenu       jmFile, jmAnalyze;
-	private JMenuItem   jmiSave, jmiLinear, jmiDiff;
+	private JMenu       jmFile, jmAnalyze, jmHelp;
+	private JMenuItem   jmiSave, jmiLinear, jmiDiff, jmiAbout;
 	private JTree       spnTree;
 	private ContextMenu<?> rightClickMenu;
 	
@@ -91,6 +91,8 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 		jmFile.setMnemonic('F');
 		jmAnalyze = new JMenu("Analyze");
 		jmAnalyze.setMnemonic('A');
+		jmHelp = new JMenu("Help");
+		jmHelp.setMnemonic('H');
 		
 		jmiSave = new JMenuItem("Save");
 		jmiSave.setMnemonic('S');
@@ -101,13 +103,18 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 		jmiDiff = new JMenuItem("Differential");
 		jmiDiff.setMnemonic('D');
 		jmiDiff.addActionListener(this);
+		jmiAbout = new JMenuItem("About");
+		jmiAbout.setMnemonic('A');
+		jmiAbout.addActionListener(this);
 		
 		jmFile.add(jmiSave);
 		jmAnalyze.add(jmiLinear);
 		jmAnalyze.add(jmiDiff);
+		jmHelp.add(jmiAbout);
 		
 		jmb.add(jmFile);
 		jmb.add(jmAnalyze);
+		jmb.add(jmHelp);
 		
 		
 		setJMenuBar(jmb);
@@ -202,6 +209,25 @@ public class SPNDefinitionDialog extends ComponentDefinitionDialog<SPNetwork> im
 		else if(arg0.getSource().equals(jmiDiff))
 		{
 			processKeyBiasExtraction(DifferentialApproximation.class);
+		}
+		else if(arg0.getSource().equals(jmiAbout))
+		{
+			JOptionPane.showMessageDialog(this,
+					"Maledict - An Interactive Tool for Learning Linear and Differential Cryptanalysis of SPNs\n"+
+						"<https://github.com/mjc7806/maledict>\n\n"+
+						"Copyright (C) 2016  Mike Carpenter\n"+
+						"This program is free software: you can redistribute it and/or modify\n"+
+						"it under the terms of the GNU Lesser General Public License as published by\n"+
+						"the Free Software Foundation, either version 3 of the License, or\n"+
+						"(at your option) any later version.\n\n"+
+						"This program is distributed in the hope that it will be useful,\n"+
+						"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"+
+						"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"+
+						"GNU Lesser General Public License for more details.\n\n"+
+						"You should have received a copy of the GNU Lesser General Public License\n"+
+						"along with this program.  If not, see <http://www.gnu.org/licenses/>.",
+					"About Maledict",
+					JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 	
