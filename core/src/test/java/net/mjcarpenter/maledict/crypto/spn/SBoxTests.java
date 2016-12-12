@@ -190,30 +190,4 @@ public final class SBoxTests
 			assertEquals(String.format("Col %d sum is %d, expecting 16!",i,colsums[i]),
 					16,colsums[i]);
 	}
-	
-	private static String printableLAT(int[][] inLAT)
-	{
-		StringBuilder sb = new StringBuilder();
-		sb.append("   "); // Header offset
-		for(int i=0; i<inLAT.length; i++)
-			sb.append(String.format("  %x", i));
-		sb.append("\n  +");
-		for(int i=0; i<inLAT.length; i++)
-			sb.append("---");
-		sb.append("\n");
-		
-		for(int i=0; i<inLAT.length; i++)
-		{
-			sb.append(String.format("%x |", i));
-			
-			for(int j=0; j<inLAT[i].length; j++)
-			{
-				sb.append(String.format((inLAT[i][j] < 0) ? " %d" : "  %d", inLAT[i][j]));
-			}
-			
-			sb.append("\n");
-		}
-		
-		return sb.toString();
-	}
 }
