@@ -25,7 +25,7 @@ import org.apache.commons.lang3.ArrayUtils;
 /**
  * A class containing handy static methods for common bit operations.
  * 
- * @author Mike Carpenter
+ * @author <a href="mailto:mjc7806@g.rit.edu">Mike Carpenter</a>
  */
 public final class BitUtils
 {
@@ -47,9 +47,15 @@ public final class BitUtils
 		return (((i + (i >>> 4)) & 0x0F0F0F0F) * 0x01010101) >>> 24;
 	}
 	
-	/*
+	/**
+	 * Converts a given long primitive to a byte array.
+	 * <br /><br />
 	 * Modified conversion code from:
 	 * http://stackoverflow.com/a/29132118/2250867
+	 * 
+	 * @param in The long primitive to convert
+	 * @param trimTo The number of bytes to which to trim the resulting array.
+	 * @return A byte array representing the given long, trimmed to the specified length.
 	 */
 	public static byte[] longToByte(long in, int trimTo)
 	{
@@ -63,9 +69,14 @@ public final class BitUtils
 		return Arrays.copyOfRange(convertIn, convertIn.length-trimTo, convertIn.length);
 	}
 	
-	/*
+	/**
+	 * Converts a given byte array to a long primitive.
+	 * <br /><br />
 	 * Modified conversion code from:
 	 * http://stackoverflow.com/a/29132118/2250867
+	 * 
+	 * @param in The byte array to convert
+	 * @return A long primitive representing the given byte array.
 	 */
 	public static long byteToLong(byte[] in)
 	{
@@ -79,9 +90,15 @@ public final class BitUtils
 		return out;
 	}
 	
-	/*
+	/**
+	 * Converts a {@link BitSet} to a byte array.
+	 * <br /><br />
 	 * Code modified to suit this application based on the following SE answer:
 	 * http://stackoverflow.com/q/6197411/2250867
+	 * 
+	 * @param inSet The {@code BitSet} to convert.
+	 * @param outLength The length of the array to return.
+	 * @return A byte array representing the bits passed in the {@code BitSet}
 	 */
 	public static byte[] convertBitSetToByte(BitSet inSet, int outLength)
 	{
